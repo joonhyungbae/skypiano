@@ -1,0 +1,139 @@
+# === Data & Datasets ===
+MOSA_dataset/
+/Data/
+!alignment-review/src/data/
+backUp/
+$RECYCLE.BIN/
+System Volume Information/
+
+# === Model checkpoints & weights ===
+Annotation/stage2/checkpoints/**/*.ckpt
+Annotation/stage2/checkpoints/**/*.pt
+Annotation/stage2/checkpoints/**/*.pth
+Annotation/stage2/checkpoints/**/*.safetensors
+Annotation/stage2/checkpoints/**/a0_ACE_*
+thirdparty/**/*.ckpt
+thirdparty/**/*.pt
+thirdparty/**/*.pth
+thirdparty/**/*.safetensors
+thirdparty/**/*.bin
+
+# === Intermediate data (preprocessed, embeddings, graphs, etc.) ===
+Annotation/stage2/data/
+Annotation/stage0/output/
+
+# === Wandb ===
+wandb/
+**/wandb/
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+
+# === Numpy / audio cache ===
+**/*.npy
+**/*.npz
+
+# === Thirdparty repos (each has own .git, managed externally) ===
+thirdparty/
+
+# === IDE / Editor ===
+.claude/
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# === OS ===
+.DS_Store
+Thumbs.db
+
+# === Node ===
+**/node_modules/
+
+# === Audio / media (large binary) ===
+YDP-GrandPiano-20160804.sf2
+*.sf2
+*.tar.xz
+
+# === Paper draft (separate repo) ===
+paper/
+*_paper/
+
+# === Local-only utility scripts (not for release) ===
+/*.bat
+/*.sh
+!/setup.sh
+
+# === Web subprojects out of release scope ===
+web/review/
+web/status/
+web/projectPage/dist/
+
+
+# === External tools (install separately) ===
+/tools/
+
+# === Pipeline scratch / log files ===
+pipeline/00_anchors/scratch/
+pipeline/04_piece_split/**/scratch/
+pipeline/06_piece_split/steps/_*.log
+
+# === Top-level temp reports ===
+/detailed_report.json
+
+# === EgoBlur model weights (third-party, install separately) ===
+pipeline/11_ego_blur/models/
+pipeline/10_face_blur/models/
+
+# === Local paper-figure builders (separate workflow, not in release scope) ===
+/paper_builders/
+
+# local secrets
+.env
+tmp/herbie/
+client_secret*.json
+
+# Tipiano baseline: kept local until Tipiano is published
+/baselines/
+
+# Internal review and audit tools (not released)
+pipeline/_common/analyze_silence.py
+pipeline/_common/audit_240828_timing.py
+pipeline/_common/compare_docx_vs_segments.py
+pipeline/_common/compute_trial_midi_coverage.py
+pipeline/_common/inspect_cluster.py
+pipeline/_common/smpte_audit_240828.py
+
+# Stage data outputs kept next to the code (formerly nested .gitignore files)
+pipeline/02_spatial/body/**/*.mp4
+pipeline/02_spatial/body/**/*.mid
+pipeline/02_spatial/body/**/*.mp3
+pipeline/02_spatial/body/**/*.wav
+pipeline/02_spatial/body/**/*.csv
+pipeline/06_hand_imputation/**/*.csv
+pipeline/06_hand_imputation/**/*.pkl
+pipeline/06_hand_imputation/**/*.png
+pipeline/06_hand_imputation/**/*.mp4
+pipeline/06_hand_imputation/**/*.npy
+pipeline/06_hand_imputation/**/*.log
+pipeline/06_hand_imputation/**/*.json
+pipeline/06_hand_imputation/**/*.txt
+pipeline/06_hand_imputation/**/*.yaml
+pipeline/06_hand_imputation/**/*.patch
+pipeline/06_hand_imputation/**/*.wandb
+pipeline/06_hand_imputation/**/*.pth
+pipeline/06_hand_imputation/**/*.pypots
+pipeline/06_hand_imputation/**/*.mid
+pipeline/06_hand_imputation/**/*.wav
+pipeline/06_hand_imputation/**/*.mp3
+pipeline/06_hand_imputation/**/*.joblib
+pipeline/06_hand_imputation/**/*.pt
+
+# explorer sample videos stay out until they pass the strict face-blur check
+web/explorer/public/samples/**/*.mp4

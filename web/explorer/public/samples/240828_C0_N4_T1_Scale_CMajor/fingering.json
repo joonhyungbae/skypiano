@@ -1,0 +1,4948 @@
+{
+  "stem": "240828_C0_N4_T1_P8_t1_p4",
+  "dataset": "240828",
+  "fps": 120,
+  "n_frames": 2835,
+  "n_notes": 272,
+  "n_labeled": 206,
+  "n_multi_candidate": 25,
+  "n_no_candidate": 41,
+  "params": {
+    "half_key_tolerance_mm": 11.75,
+    "normal_threshold": 0.5,
+    "strong_threshold": 0.8,
+    "floating_z_threshold_mm": 30.0,
+    "white_key_width_mm": 23.5,
+    "black_key_width_mm": 13.7,
+    "reference": "Adapted from kim2025pianovam."
+  },
+  "fingering": [
+    {
+      "note_idx": 0,
+      "onset": 0.5,
+      "offset": 0.6954545454545454,
+      "pitch": 48,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 1,
+      "onset": 0.5,
+      "offset": 0.7,
+      "pitch": 60,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 0.677,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.677
+        }
+      ]
+    },
+    {
+      "note_idx": 2,
+      "onset": 0.625,
+      "offset": 0.7727272727272727,
+      "pitch": 50,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 4,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 4,
+          "finger_name": "LRF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 3,
+      "onset": 0.625,
+      "offset": 0.8022727272727272,
+      "pitch": 62,
+      "status": "multi_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 2,
+          "finger_name": "RIF",
+          "score": 1.0
+        },
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.8155
+        }
+      ]
+    },
+    {
+      "note_idx": 4,
+      "onset": 0.75,
+      "offset": 0.8977272727272727,
+      "pitch": 64,
+      "status": "multi_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 3,
+          "finger_name": "RMF",
+          "score": 1.0
+        },
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.8522
+        },
+        {
+          "hand": "Right",
+          "finger": 2,
+          "finger_name": "RIF",
+          "score": 0.6856
+        }
+      ]
+    },
+    {
+      "note_idx": 5,
+      "onset": 0.75,
+      "offset": 0.9136363636363636,
+      "pitch": 52,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 3,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 3,
+          "finger_name": "LMF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 6,
+      "onset": 0.875,
+      "offset": 1.0454545454545454,
+      "pitch": 53,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 2,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 2,
+          "finger_name": "LIF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 7,
+      "onset": 0.875,
+      "offset": 1.0818181818181818,
+      "pitch": 65,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 8,
+      "onset": 1.125,
+      "offset": 1.2886363636363636,
+      "pitch": 55,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 1.0
+        },
+        {
+          "hand": "Left",
+          "finger": 4,
+          "finger_name": "LRF",
+          "score": 0.5856
+        }
+      ]
+    },
+    {
+      "note_idx": 9,
+      "onset": 1.125,
+      "offset": 1.3272727272727272,
+      "pitch": 67,
+      "status": "multi_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 2,
+          "finger_name": "RIF",
+          "score": 1.0
+        },
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.8709
+        }
+      ]
+    },
+    {
+      "note_idx": 10,
+      "onset": 1.25,
+      "offset": 1.4181818181818182,
+      "pitch": 57,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 3,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 3,
+          "finger_name": "LMF",
+          "score": 1.0
+        },
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 0.6458
+        }
+      ]
+    },
+    {
+      "note_idx": 11,
+      "onset": 1.25,
+      "offset": 1.4545454545454546,
+      "pitch": 69,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 3,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 3,
+          "finger_name": "RMF",
+          "score": 1.0
+        },
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.6724
+        },
+        {
+          "hand": "Right",
+          "finger": 2,
+          "finger_name": "RIF",
+          "score": 0.5705
+        }
+      ]
+    },
+    {
+      "note_idx": 12,
+      "onset": 1.375,
+      "offset": 1.5022727272727272,
+      "pitch": 59,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 2,
+      "score": 0.9058,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 2,
+          "finger_name": "LIF",
+          "score": 0.9058
+        },
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 0.5345
+        }
+      ]
+    },
+    {
+      "note_idx": 13,
+      "onset": 1.375,
+      "offset": 1.5068181818181818,
+      "pitch": 71,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 4,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 4,
+          "finger_name": "RRF",
+          "score": 1.0
+        },
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.7548
+        }
+      ]
+    },
+    {
+      "note_idx": 14,
+      "onset": 1.5,
+      "offset": 1.6681818181818182,
+      "pitch": 72,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 0.8762,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.8762
+        }
+      ]
+    },
+    {
+      "note_idx": 15,
+      "onset": 1.625,
+      "offset": 1.759090909090909,
+      "pitch": 60,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 0.913,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 0.913
+        },
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 0.6315
+        }
+      ]
+    },
+    {
+      "note_idx": 16,
+      "onset": 1.75,
+      "offset": 1.9454545454545453,
+      "pitch": 74,
+      "status": "multi_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 2,
+          "finger_name": "RIF",
+          "score": 1.0
+        },
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.8736
+        }
+      ]
+    },
+    {
+      "note_idx": 17,
+      "onset": 1.75,
+      "offset": 1.968181818181818,
+      "pitch": 62,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 4,
+      "score": 0.9217,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 4,
+          "finger_name": "LRF",
+          "score": 0.9217
+        }
+      ]
+    },
+    {
+      "note_idx": 18,
+      "onset": 1.875,
+      "offset": 2.0227272727272725,
+      "pitch": 76,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 3,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 3,
+          "finger_name": "RMF",
+          "score": 1.0
+        },
+        {
+          "hand": "Right",
+          "finger": 2,
+          "finger_name": "RIF",
+          "score": 0.7295
+        },
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.5662
+        }
+      ]
+    },
+    {
+      "note_idx": 19,
+      "onset": 1.875,
+      "offset": 2.0386363636363636,
+      "pitch": 64,
+      "status": "multi_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 3,
+          "finger_name": "LMF",
+          "score": 0.944
+        },
+        {
+          "hand": "Left",
+          "finger": 4,
+          "finger_name": "LRF",
+          "score": 0.8812
+        }
+      ]
+    },
+    {
+      "note_idx": 20,
+      "onset": 2.0,
+      "offset": 2.1545454545454543,
+      "pitch": 65,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 2,
+      "score": 0.7631,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 2,
+          "finger_name": "LIF",
+          "score": 0.7631
+        }
+      ]
+    },
+    {
+      "note_idx": 21,
+      "onset": 2.0,
+      "offset": 2.202272727272727,
+      "pitch": 77,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 0.7453,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.7453
+        }
+      ]
+    },
+    {
+      "note_idx": 22,
+      "onset": 2.25,
+      "offset": 2.409090909090909,
+      "pitch": 67,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 4,
+      "score": 0.7376,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 4,
+          "finger_name": "LRF",
+          "score": 0.7376
+        }
+      ]
+    },
+    {
+      "note_idx": 23,
+      "onset": 2.25,
+      "offset": 2.4568181818181816,
+      "pitch": 79,
+      "status": "multi_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 2,
+          "finger_name": "RIF",
+          "score": 0.9952
+        },
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.9543
+        }
+      ]
+    },
+    {
+      "note_idx": 24,
+      "onset": 2.375,
+      "offset": 2.540909090909091,
+      "pitch": 69,
+      "status": "multi_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 3,
+          "finger_name": "LMF",
+          "score": 1.0
+        },
+        {
+          "hand": "Left",
+          "finger": 4,
+          "finger_name": "LRF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 25,
+      "onset": 2.375,
+      "offset": 2.5818181818181816,
+      "pitch": 81,
+      "status": "multi_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 3,
+          "finger_name": "RMF",
+          "score": 0.9028
+        },
+        {
+          "hand": "Right",
+          "finger": 2,
+          "finger_name": "RIF",
+          "score": 0.8131
+        }
+      ]
+    },
+    {
+      "note_idx": 26,
+      "onset": 2.5,
+      "offset": 2.6477272727272725,
+      "pitch": 71,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 2,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 2,
+          "finger_name": "LIF",
+          "score": 1.0
+        },
+        {
+          "hand": "Left",
+          "finger": 3,
+          "finger_name": "LMF",
+          "score": 0.5225
+        }
+      ]
+    },
+    {
+      "note_idx": 27,
+      "onset": 2.5,
+      "offset": 2.661363636363636,
+      "pitch": 83,
+      "status": "multi_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 4,
+          "finger_name": "RRF",
+          "score": 1.0
+        },
+        {
+          "hand": "Right",
+          "finger": 3,
+          "finger_name": "RMF",
+          "score": 0.8823
+        }
+      ]
+    },
+    {
+      "note_idx": 28,
+      "onset": 2.625,
+      "offset": 2.7954545454545454,
+      "pitch": 72,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 0.9707,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 0.9707
+        }
+      ]
+    },
+    {
+      "note_idx": 29,
+      "onset": 2.625,
+      "offset": 2.8136363636363635,
+      "pitch": 84,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 0.9965,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 0.9965
+        }
+      ]
+    },
+    {
+      "note_idx": 30,
+      "onset": 2.75,
+      "offset": 2.9318181818181817,
+      "pitch": 71,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 2,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 2,
+          "finger_name": "LIF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 31,
+      "onset": 2.75,
+      "offset": 2.9568181818181816,
+      "pitch": 83,
+      "status": "multi_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 4,
+          "finger_name": "RRF",
+          "score": 1.0
+        },
+        {
+          "hand": "Right",
+          "finger": 3,
+          "finger_name": "RMF",
+          "score": 0.8112
+        }
+      ]
+    },
+    {
+      "note_idx": 32,
+      "onset": 3.0,
+      "offset": 3.143181818181818,
+      "pitch": 69,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 3,
+      "score": 0.909,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 3,
+          "finger_name": "LMF",
+          "score": 0.909
+        }
+      ]
+    },
+    {
+      "note_idx": 33,
+      "onset": 3.0,
+      "offset": 3.193181818181818,
+      "pitch": 81,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 3,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 3,
+          "finger_name": "RMF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 34,
+      "onset": 3.125,
+      "offset": 3.2795454545454543,
+      "pitch": 79,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 2,
+      "score": 0.9927,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 2,
+          "finger_name": "RIF",
+          "score": 0.9927
+        },
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.7656
+        }
+      ]
+    },
+    {
+      "note_idx": 35,
+      "onset": 3.125,
+      "offset": 3.3068181818181817,
+      "pitch": 67,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 0.7182,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 0.7182
+        }
+      ]
+    },
+    {
+      "note_idx": 36,
+      "onset": 3.25,
+      "offset": 3.4090909090909087,
+      "pitch": 77,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 0.9831,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.9831
+        }
+      ]
+    },
+    {
+      "note_idx": 37,
+      "onset": 3.25,
+      "offset": 3.443181818181818,
+      "pitch": 65,
+      "status": "multi_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 2,
+          "finger_name": "LIF",
+          "score": 1.0
+        },
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 0.8388
+        }
+      ]
+    },
+    {
+      "note_idx": 38,
+      "onset": 3.375,
+      "offset": 3.5568181818181817,
+      "pitch": 64,
+      "status": "multi_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 3,
+          "finger_name": "LMF",
+          "score": 1.0
+        },
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 0.9213
+        }
+      ]
+    },
+    {
+      "note_idx": 39,
+      "onset": 3.375,
+      "offset": 3.577272727272727,
+      "pitch": 76,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 3,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 3,
+          "finger_name": "RMF",
+          "score": 1.0
+        },
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.5064
+        }
+      ]
+    },
+    {
+      "note_idx": 40,
+      "onset": 3.5,
+      "offset": 3.645454545454545,
+      "pitch": 62,
+      "status": "multi_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 4,
+          "finger_name": "LRF",
+          "score": 1.0
+        },
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 0.9102
+        }
+      ]
+    },
+    {
+      "note_idx": 41,
+      "onset": 3.5,
+      "offset": 3.6727272727272724,
+      "pitch": 74,
+      "status": "multi_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 2,
+          "finger_name": "RIF",
+          "score": 1.0
+        },
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.9919
+        }
+      ]
+    },
+    {
+      "note_idx": 42,
+      "onset": 3.75,
+      "offset": 3.9,
+      "pitch": 60,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 43,
+      "onset": 3.75,
+      "offset": 3.9,
+      "pitch": 72,
+      "status": "multi_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 0.5174
+        },
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.511
+        }
+      ]
+    },
+    {
+      "note_idx": 44,
+      "onset": 3.875,
+      "offset": 4.05,
+      "pitch": 59,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 2,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 2,
+          "finger_name": "LIF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 45,
+      "onset": 3.875,
+      "offset": 4.070454545454545,
+      "pitch": 71,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 4,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 4,
+          "finger_name": "RRF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 46,
+      "onset": 4.0,
+      "offset": 4.134090909090909,
+      "pitch": 57,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 3,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 3,
+          "finger_name": "LMF",
+          "score": 1.0
+        },
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 0.5074
+        }
+      ]
+    },
+    {
+      "note_idx": 47,
+      "onset": 4.0,
+      "offset": 4.213636363636364,
+      "pitch": 69,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 3,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 3,
+          "finger_name": "RMF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 48,
+      "onset": 4.125,
+      "offset": 4.277272727272727,
+      "pitch": 67,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 2,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 2,
+          "finger_name": "RIF",
+          "score": 1.0
+        },
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.6433
+        }
+      ]
+    },
+    {
+      "note_idx": 49,
+      "onset": 4.125,
+      "offset": 4.281818181818181,
+      "pitch": 55,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 1.0
+        },
+        {
+          "hand": "Left",
+          "finger": 2,
+          "finger_name": "LIF",
+          "score": 0.5818
+        }
+      ]
+    },
+    {
+      "note_idx": 50,
+      "onset": 4.25,
+      "offset": 4.406818181818181,
+      "pitch": 65,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 51,
+      "onset": 4.25,
+      "offset": 4.463636363636364,
+      "pitch": 53,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 2,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 2,
+          "finger_name": "LIF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 52,
+      "onset": 4.375,
+      "offset": 4.529545454545454,
+      "pitch": 64,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 3,
+      "score": 0.9618,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 3,
+          "finger_name": "RMF",
+          "score": 0.9618
+        },
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.6503
+        }
+      ]
+    },
+    {
+      "note_idx": 53,
+      "onset": 4.5,
+      "offset": 4.640909090909091,
+      "pitch": 52,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 3,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 3,
+          "finger_name": "LMF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 54,
+      "onset": 4.625,
+      "offset": 4.827272727272727,
+      "pitch": 62,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 2,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 2,
+          "finger_name": "RIF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 55,
+      "onset": 4.625,
+      "offset": 4.838636363636363,
+      "pitch": 50,
+      "status": "multi_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 4,
+          "finger_name": "LRF",
+          "score": 1.0
+        },
+        {
+          "hand": "Left",
+          "finger": 3,
+          "finger_name": "LMF",
+          "score": 0.9893
+        }
+      ]
+    },
+    {
+      "note_idx": 56,
+      "onset": 4.75,
+      "offset": 5.422727272727273,
+      "pitch": 48,
+      "status": "multi_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 0.6042
+        },
+        {
+          "hand": "Left",
+          "finger": 4,
+          "finger_name": "LRF",
+          "score": 0.5553
+        }
+      ]
+    },
+    {
+      "note_idx": 57,
+      "onset": 4.75,
+      "offset": 5.45,
+      "pitch": 60,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 0.988,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.988
+        }
+      ]
+    },
+    {
+      "note_idx": 58,
+      "onset": 6.0,
+      "offset": 6.154545454545454,
+      "pitch": 60,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 1.0
+        },
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 0.7945
+        }
+      ]
+    },
+    {
+      "note_idx": 59,
+      "onset": 6.0,
+      "offset": 6.243181818181818,
+      "pitch": 48,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 60,
+      "onset": 6.125,
+      "offset": 6.265909090909091,
+      "pitch": 64,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 2,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 2,
+          "finger_name": "RIF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 61,
+      "onset": 6.25,
+      "offset": 6.449999999999999,
+      "pitch": 52,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 4,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 4,
+          "finger_name": "LRF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 62,
+      "onset": 6.375,
+      "offset": 6.459090909090909,
+      "pitch": 67,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 3,
+      "score": 0.8437,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 3,
+          "finger_name": "RMF",
+          "score": 0.8437
+        },
+        {
+          "hand": "Right",
+          "finger": 2,
+          "finger_name": "RIF",
+          "score": 0.6802
+        }
+      ]
+    },
+    {
+      "note_idx": 63,
+      "onset": 6.375,
+      "offset": 6.5,
+      "pitch": 55,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 2,
+      "score": 0.9953,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 2,
+          "finger_name": "LIF",
+          "score": 0.9953
+        }
+      ]
+    },
+    {
+      "note_idx": 64,
+      "onset": 6.5,
+      "offset": 6.6,
+      "pitch": 60,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 0.6236,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 0.6236
+        }
+      ]
+    },
+    {
+      "note_idx": 65,
+      "onset": 6.5,
+      "offset": 6.665909090909091,
+      "pitch": 72,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 0.7068,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.7068
+        }
+      ]
+    },
+    {
+      "note_idx": 66,
+      "onset": 6.625,
+      "offset": 6.781818181818181,
+      "pitch": 76,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 2,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 2,
+          "finger_name": "RIF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 67,
+      "onset": 6.625,
+      "offset": 6.811363636363636,
+      "pitch": 64,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 4,
+      "score": 0.8819,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 4,
+          "finger_name": "LRF",
+          "score": 0.8819
+        }
+      ]
+    },
+    {
+      "note_idx": 68,
+      "onset": 6.75,
+      "offset": 6.838636363636363,
+      "pitch": 79,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 3,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 3,
+          "finger_name": "RMF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 69,
+      "onset": 6.75,
+      "offset": 6.86590909090909,
+      "pitch": 67,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 2,
+      "score": 0.9681,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 2,
+          "finger_name": "LIF",
+          "score": 0.9681
+        },
+        {
+          "hand": "Left",
+          "finger": 3,
+          "finger_name": "LMF",
+          "score": 0.5181
+        }
+      ]
+    },
+    {
+      "note_idx": 70,
+      "onset": 6.875,
+      "offset": 6.977272727272727,
+      "pitch": 72,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 0.8918,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 0.8918
+        }
+      ]
+    },
+    {
+      "note_idx": 71,
+      "onset": 6.875,
+      "offset": 7.038636363636363,
+      "pitch": 84,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 0.8804,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.8804
+        }
+      ]
+    },
+    {
+      "note_idx": 72,
+      "onset": 7.0,
+      "offset": 7.181818181818182,
+      "pitch": 76,
+      "status": "multi_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 4,
+          "finger_name": "LRF",
+          "score": 0.749
+        },
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 0.5029
+        }
+      ]
+    },
+    {
+      "note_idx": 73,
+      "onset": 7.0,
+      "offset": 7.1931818181818175,
+      "pitch": 88,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 2,
+      "score": 0.9089,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 2,
+          "finger_name": "RIF",
+          "score": 0.9089
+        }
+      ]
+    },
+    {
+      "note_idx": 74,
+      "onset": 7.25,
+      "offset": 7.384090909090909,
+      "pitch": 79,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 3,
+      "score": 0.9824,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 3,
+          "finger_name": "LMF",
+          "score": 0.9824
+        },
+        {
+          "hand": "Left",
+          "finger": 2,
+          "finger_name": "LIF",
+          "score": 0.6643
+        }
+      ]
+    },
+    {
+      "note_idx": 75,
+      "onset": 7.25,
+      "offset": 7.418181818181818,
+      "pitch": 91,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 3,
+      "score": 0.8957,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 3,
+          "finger_name": "RMF",
+          "score": 0.8957
+        }
+      ]
+    },
+    {
+      "note_idx": 76,
+      "onset": 7.375,
+      "offset": 7.472727272727273,
+      "pitch": 84,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 0.8124,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 0.8124
+        }
+      ]
+    },
+    {
+      "note_idx": 77,
+      "onset": 7.375,
+      "offset": 7.561363636363636,
+      "pitch": 96,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 78,
+      "onset": 7.5,
+      "offset": 7.638636363636364,
+      "pitch": 79,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 2,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 2,
+          "finger_name": "LIF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 79,
+      "onset": 7.5,
+      "offset": 7.697727272727272,
+      "pitch": 91,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 3,
+      "score": 0.9327,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 3,
+          "finger_name": "RMF",
+          "score": 0.9327
+        }
+      ]
+    },
+    {
+      "note_idx": 80,
+      "onset": 7.625,
+      "offset": 7.722727272727273,
+      "pitch": 76,
+      "status": "multi_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 4,
+          "finger_name": "LRF",
+          "score": 0.9808
+        },
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 0.8028
+        }
+      ]
+    },
+    {
+      "note_idx": 81,
+      "onset": 7.625,
+      "offset": 7.765909090909091,
+      "pitch": 88,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 2,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 2,
+          "finger_name": "RIF",
+          "score": 1.0
+        },
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.515
+        }
+      ]
+    },
+    {
+      "note_idx": 82,
+      "onset": 7.75,
+      "offset": 7.8545454545454545,
+      "pitch": 84,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 0.7644,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.7644
+        }
+      ]
+    },
+    {
+      "note_idx": 83,
+      "onset": 7.75,
+      "offset": 7.886363636363636,
+      "pitch": 72,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 84,
+      "onset": 7.875,
+      "offset": 8.020454545454545,
+      "pitch": 67,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 2,
+      "score": 0.7727,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 2,
+          "finger_name": "LIF",
+          "score": 0.7727
+        }
+      ]
+    },
+    {
+      "note_idx": 85,
+      "onset": 7.875,
+      "offset": 8.093181818181817,
+      "pitch": 79,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 3,
+      "score": 0.8846,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 3,
+          "finger_name": "RMF",
+          "score": 0.8846
+        }
+      ]
+    },
+    {
+      "note_idx": 86,
+      "onset": 8.125,
+      "offset": 8.229545454545454,
+      "pitch": 64,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 3,
+      "score": 0.8232,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 3,
+          "finger_name": "LMF",
+          "score": 0.8232
+        },
+        {
+          "hand": "Left",
+          "finger": 2,
+          "finger_name": "LIF",
+          "score": 0.7185
+        },
+        {
+          "hand": "Left",
+          "finger": 4,
+          "finger_name": "LRF",
+          "score": 0.7102
+        }
+      ]
+    },
+    {
+      "note_idx": 87,
+      "onset": 8.125,
+      "offset": 8.275,
+      "pitch": 76,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 2,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 2,
+          "finger_name": "RIF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 88,
+      "onset": 8.25,
+      "offset": 8.35681818181818,
+      "pitch": 72,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 89,
+      "onset": 8.25,
+      "offset": 8.409090909090908,
+      "pitch": 60,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 0.9254,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 0.9254
+        }
+      ]
+    },
+    {
+      "note_idx": 90,
+      "onset": 8.375,
+      "offset": 8.51590909090909,
+      "pitch": 55,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 2,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 2,
+          "finger_name": "LIF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 91,
+      "onset": 8.375,
+      "offset": 8.554545454545455,
+      "pitch": 67,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 3,
+      "score": 0.9623,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 3,
+          "finger_name": "RMF",
+          "score": 0.9623
+        },
+        {
+          "hand": "Right",
+          "finger": 4,
+          "finger_name": "RRF",
+          "score": 0.7839
+        }
+      ]
+    },
+    {
+      "note_idx": 92,
+      "onset": 8.5,
+      "offset": 8.654545454545454,
+      "pitch": 52,
+      "status": "multi_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 3,
+          "finger_name": "LMF",
+          "score": 1.0
+        },
+        {
+          "hand": "Left",
+          "finger": 4,
+          "finger_name": "LRF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 93,
+      "onset": 8.5,
+      "offset": 8.695454545454545,
+      "pitch": 64,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 2,
+      "score": 0.9936,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 2,
+          "finger_name": "RIF",
+          "score": 0.9936
+        }
+      ]
+    },
+    {
+      "note_idx": 94,
+      "onset": 8.75,
+      "offset": 9.288636363636364,
+      "pitch": 48,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 4,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 4,
+          "finger_name": "LRF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 95,
+      "onset": 8.75,
+      "offset": 9.338636363636363,
+      "pitch": 60,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 96,
+      "onset": 10.125,
+      "offset": 10.163636363636364,
+      "pitch": 48,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 97,
+      "onset": 10.125,
+      "offset": 10.165909090909091,
+      "pitch": 60,
+      "status": "multi_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 1.0
+        },
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 98,
+      "onset": 10.125,
+      "offset": 10.165909090909091,
+      "pitch": 72,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 99,
+      "onset": 10.25,
+      "offset": 10.286363636363635,
+      "pitch": 72,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 100,
+      "onset": 10.25,
+      "offset": 10.297727272727272,
+      "pitch": 60,
+      "status": "multi_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 1.0
+        },
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 101,
+      "onset": 10.25,
+      "offset": 10.299999999999999,
+      "pitch": 48,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 102,
+      "onset": 10.375,
+      "offset": 10.411363636363635,
+      "pitch": 60,
+      "status": "multi_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 1.0
+        },
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 103,
+      "onset": 10.375,
+      "offset": 10.420454545454545,
+      "pitch": 48,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 0.9998,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 0.9998
+        }
+      ]
+    },
+    {
+      "note_idx": 104,
+      "onset": 10.375,
+      "offset": 10.429545454545455,
+      "pitch": 72,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 105,
+      "onset": 10.625,
+      "offset": 10.659090909090908,
+      "pitch": 60,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 0.603,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.603
+        }
+      ]
+    },
+    {
+      "note_idx": 106,
+      "onset": 10.625,
+      "offset": 10.659090909090908,
+      "pitch": 72,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 107,
+      "onset": 10.625,
+      "offset": 10.681818181818182,
+      "pitch": 48,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 108,
+      "onset": 10.75,
+      "offset": 10.795454545454545,
+      "pitch": 60,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 0.8349,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.8349
+        }
+      ]
+    },
+    {
+      "note_idx": 109,
+      "onset": 10.75,
+      "offset": 10.802272727272726,
+      "pitch": 48,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 4,
+      "score": 0.9252,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 4,
+          "finger_name": "LRF",
+          "score": 0.9252
+        }
+      ]
+    },
+    {
+      "note_idx": 110,
+      "onset": 10.75,
+      "offset": 10.802272727272726,
+      "pitch": 72,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 111,
+      "onset": 10.875,
+      "offset": 10.906818181818181,
+      "pitch": 72,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 112,
+      "onset": 10.875,
+      "offset": 10.909090909090908,
+      "pitch": 48,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 4,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 4,
+          "finger_name": "LRF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 113,
+      "onset": 10.875,
+      "offset": 10.920454545454545,
+      "pitch": 60,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 0.9648,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.9648
+        }
+      ]
+    },
+    {
+      "note_idx": 114,
+      "onset": 11.0,
+      "offset": 11.043181818181818,
+      "pitch": 60,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 0.7888,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.7888
+        }
+      ]
+    },
+    {
+      "note_idx": 115,
+      "onset": 11.0,
+      "offset": 11.056818181818182,
+      "pitch": 48,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 4,
+      "score": 0.9816,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 4,
+          "finger_name": "LRF",
+          "score": 0.9816
+        }
+      ]
+    },
+    {
+      "note_idx": 116,
+      "onset": 11.0,
+      "offset": 11.061363636363636,
+      "pitch": 72,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 117,
+      "onset": 11.25,
+      "offset": 11.438636363636363,
+      "pitch": 60,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 118,
+      "onset": 11.25,
+      "offset": 11.44090909090909,
+      "pitch": 72,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 119,
+      "onset": 11.25,
+      "offset": 11.488636363636363,
+      "pitch": 48,
+      "status": "multi_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 4,
+          "finger_name": "LRF",
+          "score": 0.8173
+        },
+        {
+          "hand": "Left",
+          "finger": 2,
+          "finger_name": "LIF",
+          "score": 0.8025
+        },
+        {
+          "hand": "Left",
+          "finger": 3,
+          "finger_name": "LMF",
+          "score": 0.7927
+        }
+      ]
+    },
+    {
+      "note_idx": 120,
+      "onset": 13.625,
+      "offset": 13.670454545454545,
+      "pitch": 36,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 0.8,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 0.8
+        }
+      ]
+    },
+    {
+      "note_idx": 121,
+      "onset": 13.625,
+      "offset": 13.670454545454545,
+      "pitch": 48,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 0.8,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 0.8
+        }
+      ]
+    },
+    {
+      "note_idx": 122,
+      "onset": 13.625,
+      "offset": 13.670454545454545,
+      "pitch": 60,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 123,
+      "onset": 13.625,
+      "offset": 13.670454545454545,
+      "pitch": 72,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 0.8207,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 0.8207
+        }
+      ]
+    },
+    {
+      "note_idx": 124,
+      "onset": 13.75,
+      "offset": 13.788636363636362,
+      "pitch": 62,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 125,
+      "onset": 13.75,
+      "offset": 13.790909090909091,
+      "pitch": 50,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 126,
+      "onset": 13.75,
+      "offset": 13.790909090909091,
+      "pitch": 74,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 0.6726,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 0.6726
+        }
+      ]
+    },
+    {
+      "note_idx": 127,
+      "onset": 13.75,
+      "offset": 13.795454545454545,
+      "pitch": 38,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 0.9898,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 0.9898
+        }
+      ]
+    },
+    {
+      "note_idx": 128,
+      "onset": 13.875,
+      "offset": 13.913636363636362,
+      "pitch": 52,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 129,
+      "onset": 13.875,
+      "offset": 13.913636363636362,
+      "pitch": 76,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 0.6069,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 0.6069
+        }
+      ]
+    },
+    {
+      "note_idx": 130,
+      "onset": 13.875,
+      "offset": 13.915909090909091,
+      "pitch": 64,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 131,
+      "onset": 13.875,
+      "offset": 13.924999999999999,
+      "pitch": 40,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 132,
+      "onset": 14.125,
+      "offset": 14.161363636363635,
+      "pitch": 53,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 133,
+      "onset": 14.125,
+      "offset": 14.161363636363635,
+      "pitch": 77,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 134,
+      "onset": 14.125,
+      "offset": 14.165909090909091,
+      "pitch": 41,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 135,
+      "onset": 14.125,
+      "offset": 14.165909090909091,
+      "pitch": 65,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 136,
+      "onset": 14.25,
+      "offset": 14.252272727272727,
+      "pitch": 69,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 137,
+      "onset": 14.25,
+      "offset": 14.279545454545454,
+      "pitch": 67,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 138,
+      "onset": 14.25,
+      "offset": 14.279545454545454,
+      "pitch": 79,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 4,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 4,
+          "finger_name": "RRF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 139,
+      "onset": 14.25,
+      "offset": 14.279545454545454,
+      "pitch": 81,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 140,
+      "onset": 14.25,
+      "offset": 14.284090909090908,
+      "pitch": 43,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 141,
+      "onset": 14.25,
+      "offset": 14.286363636363635,
+      "pitch": 55,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 142,
+      "onset": 14.375,
+      "offset": 14.404545454545454,
+      "pitch": 45,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 143,
+      "onset": 14.375,
+      "offset": 14.409090909090908,
+      "pitch": 69,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 144,
+      "onset": 14.375,
+      "offset": 14.411363636363635,
+      "pitch": 57,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 145,
+      "onset": 14.375,
+      "offset": 14.434090909090909,
+      "pitch": 81,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 0.8917,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 0.8917
+        }
+      ]
+    },
+    {
+      "note_idx": 146,
+      "onset": 14.5,
+      "offset": 14.529545454545454,
+      "pitch": 47,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 147,
+      "onset": 14.5,
+      "offset": 14.534090909090908,
+      "pitch": 59,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 148,
+      "onset": 14.5,
+      "offset": 14.547727272727272,
+      "pitch": 71,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 149,
+      "onset": 14.5,
+      "offset": 14.556818181818182,
+      "pitch": 83,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 0.7019,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 0.7019
+        }
+      ]
+    },
+    {
+      "note_idx": 150,
+      "onset": 14.75,
+      "offset": 14.784090909090908,
+      "pitch": 60,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 151,
+      "onset": 14.75,
+      "offset": 14.790909090909091,
+      "pitch": 48,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 152,
+      "onset": 14.75,
+      "offset": 14.797727272727272,
+      "pitch": 84,
+      "status": "multi_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 0.687
+        },
+        {
+          "hand": "Right",
+          "finger": 4,
+          "finger_name": "RRF",
+          "score": 0.5118
+        }
+      ]
+    },
+    {
+      "note_idx": 153,
+      "onset": 14.75,
+      "offset": 14.804545454545455,
+      "pitch": 72,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 0.967,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.967
+        }
+      ]
+    },
+    {
+      "note_idx": 154,
+      "onset": 14.875,
+      "offset": 14.911363636363635,
+      "pitch": 47,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 155,
+      "onset": 14.875,
+      "offset": 14.918181818181818,
+      "pitch": 59,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 156,
+      "onset": 14.875,
+      "offset": 14.931818181818182,
+      "pitch": 71,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 157,
+      "onset": 14.875,
+      "offset": 14.936363636363636,
+      "pitch": 83,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 0.635,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 0.635
+        }
+      ]
+    },
+    {
+      "note_idx": 158,
+      "onset": 15.0,
+      "offset": 15.036363636363635,
+      "pitch": 45,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 159,
+      "onset": 15.0,
+      "offset": 15.036363636363635,
+      "pitch": 57,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 0.957,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 0.957
+        }
+      ]
+    },
+    {
+      "note_idx": 160,
+      "onset": 15.0,
+      "offset": 15.047727272727272,
+      "pitch": 81,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 161,
+      "onset": 15.0,
+      "offset": 15.049999999999999,
+      "pitch": 69,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 162,
+      "onset": 15.125,
+      "offset": 15.161363636363635,
+      "pitch": 55,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 0.6965,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 0.6965
+        }
+      ]
+    },
+    {
+      "note_idx": 163,
+      "onset": 15.125,
+      "offset": 15.168181818181818,
+      "pitch": 43,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 0.5241,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 0.5241
+        }
+      ]
+    },
+    {
+      "note_idx": 164,
+      "onset": 15.125,
+      "offset": 15.170454545454545,
+      "pitch": 67,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 165,
+      "onset": 15.125,
+      "offset": 15.172727272727272,
+      "pitch": 79,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 166,
+      "onset": 15.375,
+      "offset": 15.411363636363635,
+      "pitch": 41,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 0.9938,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 0.9938
+        }
+      ]
+    },
+    {
+      "note_idx": 167,
+      "onset": 15.375,
+      "offset": 15.411363636363635,
+      "pitch": 53,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 168,
+      "onset": 15.375,
+      "offset": 15.415909090909091,
+      "pitch": 65,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 0.9571,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.9571
+        }
+      ]
+    },
+    {
+      "note_idx": 169,
+      "onset": 15.375,
+      "offset": 15.415909090909091,
+      "pitch": 77,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 0.9586,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 0.9586
+        }
+      ]
+    },
+    {
+      "note_idx": 170,
+      "onset": 15.5,
+      "offset": 15.536363636363635,
+      "pitch": 52,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 0.5919,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 0.5919
+        }
+      ]
+    },
+    {
+      "note_idx": 171,
+      "onset": 15.5,
+      "offset": 15.540909090909091,
+      "pitch": 40,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 172,
+      "onset": 15.5,
+      "offset": 15.552272727272726,
+      "pitch": 76,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 173,
+      "onset": 15.5,
+      "offset": 15.556818181818182,
+      "pitch": 64,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 174,
+      "onset": 15.625,
+      "offset": 15.661363636363635,
+      "pitch": 50,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 0.75,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 0.75
+        }
+      ]
+    },
+    {
+      "note_idx": 175,
+      "onset": 15.625,
+      "offset": 15.668181818181818,
+      "pitch": 38,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 0.6,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 0.6
+        }
+      ]
+    },
+    {
+      "note_idx": 176,
+      "onset": 15.625,
+      "offset": 15.670454545454545,
+      "pitch": 74,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 177,
+      "onset": 15.625,
+      "offset": 15.684090909090909,
+      "pitch": 62,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 178,
+      "onset": 15.875,
+      "offset": 16.361363636363635,
+      "pitch": 48,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 179,
+      "onset": 15.875,
+      "offset": 16.368181818181817,
+      "pitch": 36,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 180,
+      "onset": 15.875,
+      "offset": 16.370454545454546,
+      "pitch": 60,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 181,
+      "onset": 15.875,
+      "offset": 16.388636363636362,
+      "pitch": 72,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 182,
+      "onset": 18.25,
+      "offset": 18.277272727272727,
+      "pitch": 60,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 183,
+      "onset": 18.25,
+      "offset": 18.288636363636364,
+      "pitch": 36,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 0.9825,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 0.9825
+        }
+      ]
+    },
+    {
+      "note_idx": 184,
+      "onset": 18.25,
+      "offset": 18.288636363636364,
+      "pitch": 48,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 185,
+      "onset": 18.25,
+      "offset": 18.297727272727272,
+      "pitch": 72,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 0.702,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 0.702
+        }
+      ]
+    },
+    {
+      "note_idx": 186,
+      "onset": 18.375,
+      "offset": 18.40681818181818,
+      "pitch": 67,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 187,
+      "onset": 18.375,
+      "offset": 18.409090909090907,
+      "pitch": 43,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 0.5868,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 0.5868
+        }
+      ]
+    },
+    {
+      "note_idx": 188,
+      "onset": 18.375,
+      "offset": 18.409090909090907,
+      "pitch": 55,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 0.75,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 0.75
+        }
+      ]
+    },
+    {
+      "note_idx": 189,
+      "onset": 18.375,
+      "offset": 18.411363636363635,
+      "pitch": 79,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 4,
+      "score": 0.75,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 4,
+          "finger_name": "RRF",
+          "score": 0.75
+        }
+      ]
+    },
+    {
+      "note_idx": 190,
+      "onset": 18.625,
+      "offset": 18.652272727272727,
+      "pitch": 64,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 0.9053,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.9053
+        }
+      ]
+    },
+    {
+      "note_idx": 191,
+      "onset": 18.625,
+      "offset": 18.659090909090907,
+      "pitch": 52,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 192,
+      "onset": 18.625,
+      "offset": 18.668181818181818,
+      "pitch": 40,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 193,
+      "onset": 18.625,
+      "offset": 18.668181818181818,
+      "pitch": 76,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 194,
+      "onset": 18.75,
+      "offset": 18.775,
+      "pitch": 60,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 195,
+      "onset": 18.75,
+      "offset": 18.775,
+      "pitch": 83,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 4,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 4,
+          "finger_name": "RRF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 196,
+      "onset": 18.75,
+      "offset": 18.775,
+      "pitch": 84,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 197,
+      "onset": 18.75,
+      "offset": 18.779545454545453,
+      "pitch": 72,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 0.9517,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.9517
+        }
+      ]
+    },
+    {
+      "note_idx": 198,
+      "onset": 18.75,
+      "offset": 18.784090909090907,
+      "pitch": 48,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 199,
+      "onset": 18.875,
+      "offset": 18.909090909090907,
+      "pitch": 55,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 0.75,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 0.75
+        }
+      ]
+    },
+    {
+      "note_idx": 200,
+      "onset": 18.875,
+      "offset": 18.911363636363635,
+      "pitch": 67,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 0.8326,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.8326
+        }
+      ]
+    },
+    {
+      "note_idx": 201,
+      "onset": 18.875,
+      "offset": 18.91590909090909,
+      "pitch": 43,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 0.8,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 0.8
+        }
+      ]
+    },
+    {
+      "note_idx": 202,
+      "onset": 18.875,
+      "offset": 18.922727272727272,
+      "pitch": 79,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 203,
+      "onset": 19.125,
+      "offset": 19.15,
+      "pitch": 64,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 204,
+      "onset": 19.125,
+      "offset": 19.159090909090907,
+      "pitch": 52,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 205,
+      "onset": 19.125,
+      "offset": 19.159090909090907,
+      "pitch": 88,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 0.9841,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 0.9841
+        }
+      ]
+    },
+    {
+      "note_idx": 206,
+      "onset": 19.125,
+      "offset": 19.168181818181818,
+      "pitch": 76,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 0.5211,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.5211
+        }
+      ]
+    },
+    {
+      "note_idx": 207,
+      "onset": 19.25,
+      "offset": 19.28181818181818,
+      "pitch": 60,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 208,
+      "onset": 19.25,
+      "offset": 19.284090909090907,
+      "pitch": 48,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 209,
+      "onset": 19.25,
+      "offset": 19.284090909090907,
+      "pitch": 72,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 0.9028,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.9028
+        }
+      ]
+    },
+    {
+      "note_idx": 210,
+      "onset": 19.25,
+      "offset": 19.31590909090909,
+      "pitch": 84,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 211,
+      "onset": 19.5,
+      "offset": 19.529545454545453,
+      "pitch": 67,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 212,
+      "onset": 19.5,
+      "offset": 19.534090909090907,
+      "pitch": 79,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 213,
+      "onset": 19.5,
+      "offset": 19.534090909090907,
+      "pitch": 91,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 214,
+      "onset": 19.5,
+      "offset": 19.538636363636364,
+      "pitch": 55,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 215,
+      "onset": 19.625,
+      "offset": 19.65,
+      "pitch": 76,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 216,
+      "onset": 19.625,
+      "offset": 19.654545454545453,
+      "pitch": 52,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 0.9457,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 0.9457
+        }
+      ]
+    },
+    {
+      "note_idx": 217,
+      "onset": 19.625,
+      "offset": 19.654545454545453,
+      "pitch": 64,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 218,
+      "onset": 19.625,
+      "offset": 19.670454545454543,
+      "pitch": 62,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 219,
+      "onset": 19.625,
+      "offset": 19.672727272727272,
+      "pitch": 88,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 0.6535,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 0.6535
+        }
+      ]
+    },
+    {
+      "note_idx": 220,
+      "onset": 19.75,
+      "offset": 19.78181818181818,
+      "pitch": 84,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 221,
+      "onset": 19.75,
+      "offset": 19.784090909090907,
+      "pitch": 60,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 222,
+      "onset": 19.75,
+      "offset": 19.784090909090907,
+      "pitch": 72,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 223,
+      "onset": 19.75,
+      "offset": 19.786363636363635,
+      "pitch": 96,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 224,
+      "onset": 20.0,
+      "offset": 20.029545454545453,
+      "pitch": 53,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 225,
+      "onset": 20.0,
+      "offset": 20.029545454545453,
+      "pitch": 65,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 226,
+      "onset": 20.0,
+      "offset": 20.036363636363635,
+      "pitch": 77,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 0.9166,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.9166
+        }
+      ]
+    },
+    {
+      "note_idx": 227,
+      "onset": 20.0,
+      "offset": 20.045454545454543,
+      "pitch": 89,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 4,
+      "score": 0.5341,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 4,
+          "finger_name": "RRF",
+          "score": 0.5341
+        }
+      ]
+    },
+    {
+      "note_idx": 228,
+      "onset": 20.125,
+      "offset": 20.15,
+      "pitch": 96,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 4,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 4,
+          "finger_name": "RRF",
+          "score": 1.0
+        },
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 0.5951
+        }
+      ]
+    },
+    {
+      "note_idx": 229,
+      "onset": 20.125,
+      "offset": 20.159090909090907,
+      "pitch": 72,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 230,
+      "onset": 20.125,
+      "offset": 20.161363636363635,
+      "pitch": 60,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 231,
+      "onset": 20.125,
+      "offset": 20.163636363636364,
+      "pitch": 84,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 232,
+      "onset": 20.375,
+      "offset": 20.377272727272725,
+      "pitch": 86,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 233,
+      "onset": 20.375,
+      "offset": 20.404545454545453,
+      "pitch": 64,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 234,
+      "onset": 20.375,
+      "offset": 20.409090909090907,
+      "pitch": 52,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 0.5093,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 0.5093
+        }
+      ]
+    },
+    {
+      "note_idx": 235,
+      "onset": 20.375,
+      "offset": 20.420454545454543,
+      "pitch": 76,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 236,
+      "onset": 20.375,
+      "offset": 20.43409090909091,
+      "pitch": 88,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 237,
+      "onset": 20.5,
+      "offset": 20.529545454545453,
+      "pitch": 55,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 0.7998,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 0.7998
+        }
+      ]
+    },
+    {
+      "note_idx": 238,
+      "onset": 20.5,
+      "offset": 20.529545454545453,
+      "pitch": 67,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 0.9116,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 0.9116
+        }
+      ]
+    },
+    {
+      "note_idx": 239,
+      "onset": 20.5,
+      "offset": 20.534090909090907,
+      "pitch": 79,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 240,
+      "onset": 20.5,
+      "offset": 20.534090909090907,
+      "pitch": 91,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 4,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 4,
+          "finger_name": "RRF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 241,
+      "onset": 20.625,
+      "offset": 20.659090909090907,
+      "pitch": 60,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 242,
+      "onset": 20.625,
+      "offset": 20.66590909090909,
+      "pitch": 48,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 0.9404,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 0.9404
+        }
+      ]
+    },
+    {
+      "note_idx": 243,
+      "onset": 20.625,
+      "offset": 20.668181818181818,
+      "pitch": 72,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 244,
+      "onset": 20.625,
+      "offset": 20.679545454545455,
+      "pitch": 84,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 0.7619,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 0.7619
+        }
+      ]
+    },
+    {
+      "note_idx": 245,
+      "onset": 20.875,
+      "offset": 20.902272727272727,
+      "pitch": 64,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 246,
+      "onset": 20.875,
+      "offset": 20.902272727272727,
+      "pitch": 76,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 0.9657,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 0.9657
+        }
+      ]
+    },
+    {
+      "note_idx": 247,
+      "onset": 20.875,
+      "offset": 20.902272727272727,
+      "pitch": 88,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 4,
+      "score": 0.8194,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 4,
+          "finger_name": "RRF",
+          "score": 0.8194
+        },
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 0.7608
+        }
+      ]
+    },
+    {
+      "note_idx": 248,
+      "onset": 20.875,
+      "offset": 20.911363636363635,
+      "pitch": 52,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 0.5612,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 0.5612
+        }
+      ]
+    },
+    {
+      "note_idx": 249,
+      "onset": 20.875,
+      "offset": 20.911363636363635,
+      "pitch": 77,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 250,
+      "onset": 21.0,
+      "offset": 21.034090909090907,
+      "pitch": 55,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 0.75,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 0.75
+        }
+      ]
+    },
+    {
+      "note_idx": 251,
+      "onset": 21.0,
+      "offset": 21.034090909090907,
+      "pitch": 67,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 252,
+      "onset": 21.0,
+      "offset": 21.036363636363635,
+      "pitch": 43,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 0.9715,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 0.9715
+        }
+      ]
+    },
+    {
+      "note_idx": 253,
+      "onset": 21.0,
+      "offset": 21.05,
+      "pitch": 79,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 0.6771,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 0.6771
+        }
+      ]
+    },
+    {
+      "note_idx": 254,
+      "onset": 21.25,
+      "offset": 21.275,
+      "pitch": 60,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 255,
+      "onset": 21.25,
+      "offset": 21.277272727272727,
+      "pitch": 72,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 256,
+      "onset": 21.25,
+      "offset": 21.277272727272727,
+      "pitch": 84,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 257,
+      "onset": 21.25,
+      "offset": 21.286363636363635,
+      "pitch": 48,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 258,
+      "onset": 21.25,
+      "offset": 21.293181818181818,
+      "pitch": 74,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 259,
+      "onset": 21.375,
+      "offset": 21.404545454545453,
+      "pitch": 64,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 1,
+          "finger_name": "RTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 260,
+      "onset": 21.375,
+      "offset": 21.409090909090907,
+      "pitch": 52,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 0.8675,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 0.8675
+        }
+      ]
+    },
+    {
+      "note_idx": 261,
+      "onset": 21.375,
+      "offset": 21.413636363636364,
+      "pitch": 76,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 262,
+      "onset": 21.375,
+      "offset": 21.41590909090909,
+      "pitch": 40,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 263,
+      "onset": 21.5,
+      "offset": 21.525,
+      "pitch": 81,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 264,
+      "onset": 21.5,
+      "offset": 21.529545454545453,
+      "pitch": 55,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 1.0,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 1.0
+        }
+      ]
+    },
+    {
+      "note_idx": 265,
+      "onset": 21.5,
+      "offset": 21.534090909090907,
+      "pitch": 43,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 0.9064,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 0.9064
+        }
+      ]
+    },
+    {
+      "note_idx": 266,
+      "onset": 21.5,
+      "offset": 21.534090909090907,
+      "pitch": 69,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 267,
+      "onset": 21.75,
+      "offset": 21.777272727272727,
+      "pitch": 62,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 268,
+      "onset": 21.75,
+      "offset": 22.584090909090907,
+      "pitch": 48,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 1,
+      "score": 0.99,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 1,
+          "finger_name": "LTF",
+          "score": 0.99
+        }
+      ]
+    },
+    {
+      "note_idx": 269,
+      "onset": 21.75,
+      "offset": 22.602272727272727,
+      "pitch": 36,
+      "status": "labeled",
+      "hand": "Left",
+      "finger": 5,
+      "score": 0.988,
+      "candidates": [
+        {
+          "hand": "Left",
+          "finger": 5,
+          "finger_name": "LLF",
+          "score": 0.988
+        }
+      ]
+    },
+    {
+      "note_idx": 270,
+      "onset": 21.75,
+      "offset": 22.613636363636363,
+      "pitch": 60,
+      "status": "no_candidate",
+      "hand": null,
+      "finger": null,
+      "score": null,
+      "candidates": []
+    },
+    {
+      "note_idx": 271,
+      "onset": 21.75,
+      "offset": 22.620454545454546,
+      "pitch": 72,
+      "status": "labeled",
+      "hand": "Right",
+      "finger": 5,
+      "score": 0.9426,
+      "candidates": [
+        {
+          "hand": "Right",
+          "finger": 5,
+          "finger_name": "RLF",
+          "score": 0.9426
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.vite/
+*.log
+
+# Data — populate locally; never committed.
+public/audio/*
+public/videos/*
+public/data/*
+!public/audio/.gitkeep
+!public/videos/.gitkeep
+!public/data/.gitkeep

@@ -1,0 +1,158 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Design tokens mirror the explorer's MUI theme (src/theme.ts there) so the
+   project page and the embedded explorer read as one site: light navy system,
+   white cards on a cool grey ground, 10px radius, soft navy-tinted shadows.
+   Values are HSL so Tailwind's `/opacity` modifiers keep working. */
+
+@layer base {
+  :root {
+    --background: 240 20% 97%;          /* #F7F7FA */
+    --foreground: 240 28% 14%;          /* #1A1A2E */
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 28% 14%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 28% 14%;
+
+    --primary: 240 76% 25%;             /* #0F0F70 navy */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 213 100% 28%;          /* #004191 blue */
+    --secondary-foreground: 0 0% 100%;
+
+    --accent: 270 60% 29%;              /* #4B1E78 purple */
+    --accent-foreground: 0 0% 100%;
+
+    --muted: 240 20% 95%;
+    --muted-foreground: 240 10% 39%;    /* #5A5A6E */
+    --subtle-foreground: 240 7% 57%;    /* #8A8A9A */
+
+    --destructive: 0 65% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 240 76% 25% / 0.12;
+    --border-strong: 240 76% 25% / 0.24;
+    --input: 240 76% 25% / 0.24;
+    --ring: 240 76% 25%;
+
+    --radius: 0.625rem;                 /* 10px, matching the explorer */
+
+    --shadow-card: 0 4px 16px hsl(240 76% 25% / 0.08);
+    --shadow-card-hover: 0 8px 24px hsl(240 76% 25% / 0.14);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+      'Helvetica Neue', Arial, sans-serif;
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  /* The explorer's card surface: white, hairline navy border, soft shadow. */
+  .surface-card {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+  }
+
+  .surface-card-hover {
+    transition: box-shadow 0.2s ease, border-color 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .surface-card-hover:hover {
+    border-color: hsl(var(--border-strong));
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  /* Faint navy wash used behind table headers and inset panels. */
+  .surface-tint {
+    background: hsl(var(--primary) / 0.04);
+  }
+
+  /* The explorer's signature navy→purple gradient, as text or as a fill. */
+  .brand-gradient-text {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--primary)),
+      hsl(var(--accent))
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .brand-gradient-fill {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--primary)),
+      hsl(var(--accent))
+    );
+  }
+
+  /* Micro-label above section titles and in table heads. */
+  .eyebrow {
+    @apply text-[11px] font-bold uppercase tracking-[0.08em];
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Pill notice, as used for the release banner in the explorer home header. */
+  .notice-pill {
+    @apply inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs;
+    border: 1px solid hsl(var(--primary) / 0.2);
+    background: hsl(var(--primary) / 0.05);
+    color: hsl(var(--foreground));
+  }
+
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--primary) / 0.35) transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary) / 0.25);
+    border-radius: 10px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary) / 0.4);
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}

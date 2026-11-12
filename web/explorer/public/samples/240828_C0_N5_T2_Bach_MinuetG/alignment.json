@@ -1,0 +1,1641 @@
+{
+  "version": 1,
+  "matcher": "AutomaticNoteMatcher",
+  "score": "score.mxl",
+  "midi": "midi.mid",
+  "stats": {
+    "score_notes": 203,
+    "perf_notes": 214,
+    "matches": 203,
+    "score_match_rate": 1.0,
+    "perf_match_rate": 0.9485981308411215,
+    "insertions": 11,
+    "deletions": 0
+  },
+  "matches": [
+    {
+      "score_id": "p0n3",
+      "score_pitch": 55,
+      "score_onset_quarter": 0.0,
+      "midi_pitch": 55,
+      "midi_time_sec": 0.5,
+      "midi_duration_sec": 1.1863635778427124
+    },
+    {
+      "score_id": "p0n1",
+      "score_pitch": 59,
+      "score_onset_quarter": 0.0,
+      "midi_pitch": 59,
+      "midi_time_sec": 0.5,
+      "midi_duration_sec": 1.0522726774215698
+    },
+    {
+      "score_id": "p0n2",
+      "score_pitch": 62,
+      "score_onset_quarter": 0.0,
+      "midi_pitch": 62,
+      "midi_time_sec": 0.5,
+      "midi_duration_sec": 1.524999976158142
+    },
+    {
+      "score_id": "p0n0",
+      "score_pitch": 74,
+      "score_onset_quarter": 0.0,
+      "midi_pitch": 74,
+      "midi_time_sec": 0.5,
+      "midi_duration_sec": 1.0
+    },
+    {
+      "score_id": "p0n4",
+      "score_pitch": 67,
+      "score_onset_quarter": 1.0,
+      "midi_pitch": 67,
+      "midi_time_sec": 1.0,
+      "midi_duration_sec": 0.5
+    },
+    {
+      "score_id": "p0n5",
+      "score_pitch": 69,
+      "score_onset_quarter": 1.5,
+      "midi_pitch": 69,
+      "midi_time_sec": 1.25,
+      "midi_duration_sec": 0.3068181872367859
+    },
+    {
+      "score_id": "p0n7",
+      "score_pitch": 57,
+      "score_onset_quarter": 2.0,
+      "midi_pitch": 57,
+      "midi_time_sec": 1.5,
+      "midi_duration_sec": 0.5545454621315002
+    },
+    {
+      "score_id": "p0n6",
+      "score_pitch": 71,
+      "score_onset_quarter": 2.0,
+      "midi_pitch": 71,
+      "midi_time_sec": 1.5,
+      "midi_duration_sec": 0.25681817531585693
+    },
+    {
+      "score_id": "p0n8",
+      "score_pitch": 72,
+      "score_onset_quarter": 2.5,
+      "midi_pitch": 72,
+      "midi_time_sec": 1.625,
+      "midi_duration_sec": 0.30000001192092896
+    },
+    {
+      "score_id": "p0n10",
+      "score_pitch": 59,
+      "score_onset_quarter": 3.0,
+      "midi_pitch": 59,
+      "midi_time_sec": 1.875,
+      "midi_duration_sec": 1.399999976158142
+    },
+    {
+      "score_id": "p0n9",
+      "score_pitch": 74,
+      "score_onset_quarter": 3.0,
+      "midi_pitch": 74,
+      "midi_time_sec": 1.875,
+      "midi_duration_sec": 0.46590909361839294
+    },
+    {
+      "score_id": "p0n11",
+      "score_pitch": 67,
+      "score_onset_quarter": 4.0,
+      "midi_pitch": 67,
+      "midi_time_sec": 2.25,
+      "midi_duration_sec": 0.09318181872367859
+    },
+    {
+      "score_id": "p0n12",
+      "score_pitch": 67,
+      "score_onset_quarter": 5.0,
+      "midi_pitch": 67,
+      "midi_time_sec": 2.75,
+      "midi_duration_sec": 0.04772727191448212
+    },
+    {
+      "score_id": "p0n14",
+      "score_pitch": 60,
+      "score_onset_quarter": 6.0,
+      "midi_pitch": 60,
+      "midi_time_sec": 3.25,
+      "midi_duration_sec": 1.3090908527374268
+    },
+    {
+      "score_id": "p0n13",
+      "score_pitch": 76,
+      "score_onset_quarter": 6.0,
+      "midi_pitch": 76,
+      "midi_time_sec": 3.25,
+      "midi_duration_sec": 0.36818182468414307
+    },
+    {
+      "score_id": "p0n15",
+      "score_pitch": 72,
+      "score_onset_quarter": 7.0,
+      "midi_pitch": 72,
+      "midi_time_sec": 3.5,
+      "midi_duration_sec": 0.11818181723356247
+    },
+    {
+      "score_id": "p0n16",
+      "score_pitch": 74,
+      "score_onset_quarter": 7.5,
+      "midi_pitch": 74,
+      "midi_time_sec": 3.875,
+      "midi_duration_sec": 0.2613636255264282
+    },
+    {
+      "score_id": "p0n17",
+      "score_pitch": 76,
+      "score_onset_quarter": 8.0,
+      "midi_pitch": 76,
+      "midi_time_sec": 4.125,
+      "midi_duration_sec": 0.23863635957241058
+    },
+    {
+      "score_id": "p0n18",
+      "score_pitch": 78,
+      "score_onset_quarter": 8.5,
+      "midi_pitch": 78,
+      "midi_time_sec": 4.25,
+      "midi_duration_sec": 0.2772727310657501
+    },
+    {
+      "score_id": "p0n20",
+      "score_pitch": 59,
+      "score_onset_quarter": 9.0,
+      "midi_pitch": 59,
+      "midi_time_sec": 4.5,
+      "midi_duration_sec": 1.4363635778427124
+    },
+    {
+      "score_id": "p0n19",
+      "score_pitch": 79,
+      "score_onset_quarter": 9.0,
+      "midi_pitch": 79,
+      "midi_time_sec": 4.5,
+      "midi_duration_sec": 0.4954545497894287
+    },
+    {
+      "score_id": "p0n21",
+      "score_pitch": 67,
+      "score_onset_quarter": 9.666666984558105,
+      "midi_pitch": 67,
+      "midi_time_sec": 5.0,
+      "midi_duration_sec": 0.10000000149011612
+    },
+    {
+      "score_id": "p0n22",
+      "score_pitch": 67,
+      "score_onset_quarter": 10.333333015441895,
+      "midi_pitch": 67,
+      "midi_time_sec": 5.5,
+      "midi_duration_sec": 0.3954545557498932
+    },
+    {
+      "score_id": "p0n24",
+      "score_pitch": 57,
+      "score_onset_quarter": 12.0,
+      "midi_pitch": 57,
+      "midi_time_sec": 6.0,
+      "midi_duration_sec": 1.3068181276321411
+    },
+    {
+      "score_id": "p0n23",
+      "score_pitch": 72,
+      "score_onset_quarter": 12.0,
+      "midi_pitch": 72,
+      "midi_time_sec": 6.0,
+      "midi_duration_sec": 0.4795454442501068
+    },
+    {
+      "score_id": "p0n25",
+      "score_pitch": 74,
+      "score_onset_quarter": 13.0,
+      "midi_pitch": 74,
+      "midi_time_sec": 6.375,
+      "midi_duration_sec": 0.2704545557498932
+    },
+    {
+      "score_id": "p0n26",
+      "score_pitch": 72,
+      "score_onset_quarter": 13.5,
+      "midi_pitch": 72,
+      "midi_time_sec": 6.625,
+      "midi_duration_sec": 0.27954545617103577
+    },
+    {
+      "score_id": "p0n27",
+      "score_pitch": 71,
+      "score_onset_quarter": 14.0,
+      "midi_pitch": 71,
+      "midi_time_sec": 6.75,
+      "midi_duration_sec": 0.24772727489471436
+    },
+    {
+      "score_id": "p0n28",
+      "score_pitch": 69,
+      "score_onset_quarter": 14.5,
+      "midi_pitch": 69,
+      "midi_time_sec": 7.0,
+      "midi_duration_sec": 0.2454545497894287
+    },
+    {
+      "score_id": "p0n30",
+      "score_pitch": 55,
+      "score_onset_quarter": 15.0,
+      "midi_pitch": 55,
+      "midi_time_sec": 7.25,
+      "midi_duration_sec": 1.3727272748947144
+    },
+    {
+      "score_id": "p0n29",
+      "score_pitch": 71,
+      "score_onset_quarter": 15.0,
+      "midi_pitch": 71,
+      "midi_time_sec": 7.25,
+      "midi_duration_sec": 0.5068181753158569
+    },
+    {
+      "score_id": "p0n31",
+      "score_pitch": 72,
+      "score_onset_quarter": 16.0,
+      "midi_pitch": 72,
+      "midi_time_sec": 7.75,
+      "midi_duration_sec": 0.2659091055393219
+    },
+    {
+      "score_id": "p0n32",
+      "score_pitch": 71,
+      "score_onset_quarter": 16.5,
+      "midi_pitch": 71,
+      "midi_time_sec": 7.875,
+      "midi_duration_sec": 0.2659091055393219
+    },
+    {
+      "score_id": "p0n33",
+      "score_pitch": 69,
+      "score_onset_quarter": 17.0,
+      "midi_pitch": 69,
+      "midi_time_sec": 8.125,
+      "midi_duration_sec": 0.1818181872367859
+    },
+    {
+      "score_id": "p0n34",
+      "score_pitch": 67,
+      "score_onset_quarter": 17.5,
+      "midi_pitch": 67,
+      "midi_time_sec": 8.375,
+      "midi_duration_sec": 0.2772727310657501
+    },
+    {
+      "score_id": "p0n36",
+      "score_pitch": 62,
+      "score_onset_quarter": 18.0,
+      "midi_pitch": 62,
+      "midi_time_sec": 8.625,
+      "midi_duration_sec": 0.48636364936828613
+    },
+    {
+      "score_id": "p0n35",
+      "score_pitch": 66,
+      "score_onset_quarter": 18.0,
+      "midi_pitch": 66,
+      "midi_time_sec": 8.625,
+      "midi_duration_sec": 0.4204545319080353
+    },
+    {
+      "score_id": "p0n38",
+      "score_pitch": 59,
+      "score_onset_quarter": 19.0,
+      "midi_pitch": 59,
+      "midi_time_sec": 9.0,
+      "midi_duration_sec": 0.4000000059604645
+    },
+    {
+      "score_id": "p0n37",
+      "score_pitch": 67,
+      "score_onset_quarter": 19.0,
+      "midi_pitch": 67,
+      "midi_time_sec": 9.0,
+      "midi_duration_sec": 0.2750000059604645
+    },
+    {
+      "score_id": "p0n39",
+      "score_pitch": 69,
+      "score_onset_quarter": 19.5,
+      "midi_pitch": 69,
+      "midi_time_sec": 9.25,
+      "midi_duration_sec": 0.2818181812763214
+    },
+    {
+      "score_id": "p0n41",
+      "score_pitch": 55,
+      "score_onset_quarter": 20.0,
+      "midi_pitch": 55,
+      "midi_time_sec": 9.5,
+      "midi_duration_sec": 0.4068181812763214
+    },
+    {
+      "score_id": "p0n40",
+      "score_pitch": 71,
+      "score_onset_quarter": 20.0,
+      "midi_pitch": 71,
+      "midi_time_sec": 9.5,
+      "midi_duration_sec": 0.3499999940395355
+    },
+    {
+      "score_id": "p0n42",
+      "score_pitch": 67,
+      "score_onset_quarter": 20.5,
+      "midi_pitch": 67,
+      "midi_time_sec": 9.75,
+      "midi_duration_sec": 0.10000000149011612
+    },
+    {
+      "score_id": "p0n44",
+      "score_pitch": 62,
+      "score_onset_quarter": 21.0,
+      "midi_pitch": 62,
+      "midi_time_sec": 9.875,
+      "midi_duration_sec": 0.4954545497894287
+    },
+    {
+      "score_id": "p0n43",
+      "score_pitch": 69,
+      "score_onset_quarter": 21.0,
+      "midi_pitch": 69,
+      "midi_time_sec": 9.875,
+      "midi_duration_sec": 1.1022727489471436
+    },
+    {
+      "score_id": "p0n45",
+      "score_pitch": 50,
+      "score_onset_quarter": 22.0,
+      "midi_pitch": 50,
+      "midi_time_sec": 10.375,
+      "midi_duration_sec": 0.4749999940395355
+    },
+    {
+      "score_id": "p0n46",
+      "score_pitch": 60,
+      "score_onset_quarter": 22.5,
+      "midi_pitch": 60,
+      "midi_time_sec": 10.625,
+      "midi_duration_sec": 0.30454546213150024
+    },
+    {
+      "score_id": "p0n47",
+      "score_pitch": 59,
+      "score_onset_quarter": 23.0,
+      "midi_pitch": 59,
+      "midi_time_sec": 10.875,
+      "midi_duration_sec": 0.2659091055393219
+    },
+    {
+      "score_id": "p0n48",
+      "score_pitch": 57,
+      "score_onset_quarter": 23.5,
+      "midi_pitch": 57,
+      "midi_time_sec": 11.0,
+      "midi_duration_sec": 0.30000001192092896
+    },
+    {
+      "score_id": "p0n50",
+      "score_pitch": 59,
+      "score_onset_quarter": 24.0,
+      "midi_pitch": 59,
+      "midi_time_sec": 11.25,
+      "midi_duration_sec": 1.0113636255264282
+    },
+    {
+      "score_id": "p0n49",
+      "score_pitch": 74,
+      "score_onset_quarter": 24.0,
+      "midi_pitch": 74,
+      "midi_time_sec": 11.25,
+      "midi_duration_sec": 0.9386363625526428
+    },
+    {
+      "score_id": "p0n51",
+      "score_pitch": 67,
+      "score_onset_quarter": 25.0,
+      "midi_pitch": 67,
+      "midi_time_sec": 11.75,
+      "midi_duration_sec": 0.4386363625526428
+    },
+    {
+      "score_id": "p0n52",
+      "score_pitch": 69,
+      "score_onset_quarter": 25.5,
+      "midi_pitch": 69,
+      "midi_time_sec": 11.875,
+      "midi_duration_sec": 0.3136363625526428
+    },
+    {
+      "score_id": "p0n54",
+      "score_pitch": 57,
+      "score_onset_quarter": 26.0,
+      "midi_pitch": 57,
+      "midi_time_sec": 12.125,
+      "midi_duration_sec": 0.5272727012634277
+    },
+    {
+      "score_id": "p0n53",
+      "score_pitch": 71,
+      "score_onset_quarter": 26.0,
+      "midi_pitch": 71,
+      "midi_time_sec": 12.125,
+      "midi_duration_sec": 0.2590909004211426
+    },
+    {
+      "score_id": "p0n55",
+      "score_pitch": 72,
+      "score_onset_quarter": 26.5,
+      "midi_pitch": 72,
+      "midi_time_sec": 12.375,
+      "midi_duration_sec": 0.31590908765792847
+    },
+    {
+      "score_id": "p0n57",
+      "score_pitch": 55,
+      "score_onset_quarter": 27.0,
+      "midi_pitch": 55,
+      "midi_time_sec": 12.625,
+      "midi_duration_sec": 0.44999998807907104
+    },
+    {
+      "score_id": "p0n56",
+      "score_pitch": 74,
+      "score_onset_quarter": 27.0,
+      "midi_pitch": 74,
+      "midi_time_sec": 12.625,
+      "midi_duration_sec": 0.4431818127632141
+    },
+    {
+      "score_id": "p0n59",
+      "score_pitch": 59,
+      "score_onset_quarter": 28.0,
+      "midi_pitch": 59,
+      "midi_time_sec": 13.0,
+      "midi_duration_sec": 0.4272727370262146
+    },
+    {
+      "score_id": "p0n58",
+      "score_pitch": 67,
+      "score_onset_quarter": 28.0,
+      "midi_pitch": 67,
+      "midi_time_sec": 13.0,
+      "midi_duration_sec": 0.05681818351149559
+    },
+    {
+      "score_id": "p0n61",
+      "score_pitch": 55,
+      "score_onset_quarter": 29.0,
+      "midi_pitch": 55,
+      "midi_time_sec": 13.5,
+      "midi_duration_sec": 0.4431818127632141
+    },
+    {
+      "score_id": "p0n60",
+      "score_pitch": 67,
+      "score_onset_quarter": 29.0,
+      "midi_pitch": 67,
+      "midi_time_sec": 13.5,
+      "midi_duration_sec": 0.3909091055393219
+    },
+    {
+      "score_id": "p0n63",
+      "score_pitch": 60,
+      "score_onset_quarter": 30.0,
+      "midi_pitch": 60,
+      "midi_time_sec": 14.0,
+      "midi_duration_sec": 1.3113635778427124
+    },
+    {
+      "score_id": "p0n62",
+      "score_pitch": 76,
+      "score_onset_quarter": 30.0,
+      "midi_pitch": 76,
+      "midi_time_sec": 14.0,
+      "midi_duration_sec": 0.34545454382896423
+    },
+    {
+      "score_id": "p0n64",
+      "score_pitch": 72,
+      "score_onset_quarter": 31.0,
+      "midi_pitch": 72,
+      "midi_time_sec": 14.25,
+      "midi_duration_sec": 0.09545454382896423
+    },
+    {
+      "score_id": "p0n65",
+      "score_pitch": 74,
+      "score_onset_quarter": 31.5,
+      "midi_pitch": 74,
+      "midi_time_sec": 14.625,
+      "midi_duration_sec": 0.24772727489471436
+    },
+    {
+      "score_id": "p0n66",
+      "score_pitch": 76,
+      "score_onset_quarter": 32.0,
+      "midi_pitch": 76,
+      "midi_time_sec": 14.875,
+      "midi_duration_sec": 0.21136364340782166
+    },
+    {
+      "score_id": "p0n67",
+      "score_pitch": 78,
+      "score_onset_quarter": 32.5,
+      "midi_pitch": 78,
+      "midi_time_sec": 15.0,
+      "midi_duration_sec": 0.2613636255264282
+    },
+    {
+      "score_id": "p0n69",
+      "score_pitch": 59,
+      "score_onset_quarter": 33.0,
+      "midi_pitch": 59,
+      "midi_time_sec": 15.25,
+      "midi_duration_sec": 0.4681818187236786
+    },
+    {
+      "score_id": "p0n68",
+      "score_pitch": 79,
+      "score_onset_quarter": 33.0,
+      "midi_pitch": 79,
+      "midi_time_sec": 15.25,
+      "midi_duration_sec": 0.4545454680919647
+    },
+    {
+      "score_id": "p0n71",
+      "score_pitch": 60,
+      "score_onset_quarter": 34.0,
+      "midi_pitch": 60,
+      "midi_time_sec": 15.625,
+      "midi_duration_sec": 0.2613636255264282
+    },
+    {
+      "score_id": "p0n70",
+      "score_pitch": 67,
+      "score_onset_quarter": 34.0,
+      "midi_pitch": 67,
+      "midi_time_sec": 15.625,
+      "midi_duration_sec": 0.09318181872367859
+    },
+    {
+      "score_id": "p0n72",
+      "score_pitch": 59,
+      "score_onset_quarter": 34.5,
+      "midi_pitch": 59,
+      "midi_time_sec": 15.875,
+      "midi_duration_sec": 0.24772727489471436
+    },
+    {
+      "score_id": "p0n74",
+      "score_pitch": 57,
+      "score_onset_quarter": 35.0,
+      "midi_pitch": 57,
+      "midi_time_sec": 16.125,
+      "midi_duration_sec": 0.2181818187236786
+    },
+    {
+      "score_id": "p0n73",
+      "score_pitch": 67,
+      "score_onset_quarter": 35.0,
+      "midi_pitch": 67,
+      "midi_time_sec": 16.125,
+      "midi_duration_sec": 0.059090908616781235
+    },
+    {
+      "score_id": "p0n75",
+      "score_pitch": 55,
+      "score_onset_quarter": 35.5,
+      "midi_pitch": 55,
+      "midi_time_sec": 16.375,
+      "midi_duration_sec": 0.25227272510528564
+    },
+    {
+      "score_id": "p0n77",
+      "score_pitch": 57,
+      "score_onset_quarter": 36.0,
+      "midi_pitch": 57,
+      "midi_time_sec": 16.625,
+      "midi_duration_sec": 0.925000011920929
+    },
+    {
+      "score_id": "p0n76",
+      "score_pitch": 72,
+      "score_onset_quarter": 36.0,
+      "midi_pitch": 72,
+      "midi_time_sec": 16.625,
+      "midi_duration_sec": 0.5181818008422852
+    },
+    {
+      "score_id": "p0n78",
+      "score_pitch": 74,
+      "score_onset_quarter": 37.0,
+      "midi_pitch": 74,
+      "midi_time_sec": 17.125,
+      "midi_duration_sec": 0.24318182468414307
+    },
+    {
+      "score_id": "p0n79",
+      "score_pitch": 72,
+      "score_onset_quarter": 37.5,
+      "midi_pitch": 72,
+      "midi_time_sec": 17.25,
+      "midi_duration_sec": 0.33636364340782166
+    },
+    {
+      "score_id": "p0n81",
+      "score_pitch": 54,
+      "score_onset_quarter": 38.0,
+      "midi_pitch": 54,
+      "midi_time_sec": 17.5,
+      "midi_duration_sec": 0.4272727370262146
+    },
+    {
+      "score_id": "p0n80",
+      "score_pitch": 71,
+      "score_onset_quarter": 38.0,
+      "midi_pitch": 71,
+      "midi_time_sec": 17.5,
+      "midi_duration_sec": 0.2545454502105713
+    },
+    {
+      "score_id": "p0n82",
+      "score_pitch": 69,
+      "score_onset_quarter": 38.5,
+      "midi_pitch": 69,
+      "midi_time_sec": 17.75,
+      "midi_duration_sec": 0.25
+    },
+    {
+      "score_id": "p0n84",
+      "score_pitch": 55,
+      "score_onset_quarter": 39.0,
+      "midi_pitch": 55,
+      "midi_time_sec": 18.0,
+      "midi_duration_sec": 0.8363636136054993
+    },
+    {
+      "score_id": "p0n83",
+      "score_pitch": 71,
+      "score_onset_quarter": 39.0,
+      "midi_pitch": 71,
+      "midi_time_sec": 18.0,
+      "midi_duration_sec": 0.4954545497894287
+    },
+    {
+      "score_id": "p0n85",
+      "score_pitch": 72,
+      "score_onset_quarter": 40.0,
+      "midi_pitch": 72,
+      "midi_time_sec": 18.375,
+      "midi_duration_sec": 0.2590909004211426
+    },
+    {
+      "score_id": "p0n86",
+      "score_pitch": 71,
+      "score_onset_quarter": 40.5,
+      "midi_pitch": 71,
+      "midi_time_sec": 18.625,
+      "midi_duration_sec": 0.22499999403953552
+    },
+    {
+      "score_id": "p0n88",
+      "score_pitch": 59,
+      "score_onset_quarter": 41.0,
+      "midi_pitch": 59,
+      "midi_time_sec": 18.875,
+      "midi_duration_sec": 0.44545453786849976
+    },
+    {
+      "score_id": "p0n87",
+      "score_pitch": 69,
+      "score_onset_quarter": 41.0,
+      "midi_pitch": 69,
+      "midi_time_sec": 18.875,
+      "midi_duration_sec": 0.32499998807907104
+    },
+    {
+      "score_id": "p0n89",
+      "score_pitch": 67,
+      "score_onset_quarter": 41.5,
+      "midi_pitch": 67,
+      "midi_time_sec": 19.0,
+      "midi_duration_sec": 0.24772727489471436
+    },
+    {
+      "score_id": "p0n91",
+      "score_pitch": 60,
+      "score_onset_quarter": 42.0,
+      "midi_pitch": 60,
+      "midi_time_sec": 19.25,
+      "midi_duration_sec": 0.4272727370262146
+    },
+    {
+      "score_id": "p0n90",
+      "score_pitch": 69,
+      "score_onset_quarter": 42.0,
+      "midi_pitch": 69,
+      "midi_time_sec": 19.25,
+      "midi_duration_sec": 0.46590909361839294
+    },
+    {
+      "score_id": "p0n93",
+      "score_pitch": 62,
+      "score_onset_quarter": 43.0,
+      "midi_pitch": 62,
+      "midi_time_sec": 19.75,
+      "midi_duration_sec": 0.38181817531585693
+    },
+    {
+      "score_id": "p0n92",
+      "score_pitch": 71,
+      "score_onset_quarter": 43.0,
+      "midi_pitch": 71,
+      "midi_time_sec": 19.75,
+      "midi_duration_sec": 0.22045454382896423
+    },
+    {
+      "score_id": "p0n94",
+      "score_pitch": 69,
+      "score_onset_quarter": 43.5,
+      "midi_pitch": 69,
+      "midi_time_sec": 19.875,
+      "midi_duration_sec": 0.1977272778749466
+    },
+    {
+      "score_id": "p0n96",
+      "score_pitch": 50,
+      "score_onset_quarter": 44.0,
+      "midi_pitch": 50,
+      "midi_time_sec": 20.125,
+      "midi_duration_sec": 0.4840908944606781
+    },
+    {
+      "score_id": "p0n95",
+      "score_pitch": 67,
+      "score_onset_quarter": 44.0,
+      "midi_pitch": 67,
+      "midi_time_sec": 20.125,
+      "midi_duration_sec": 0.23636363446712494
+    },
+    {
+      "score_id": "p0n97",
+      "score_pitch": 66,
+      "score_onset_quarter": 44.5,
+      "midi_pitch": 66,
+      "midi_time_sec": 20.375,
+      "midi_duration_sec": 0.24772727489471436
+    },
+    {
+      "score_id": "p0n99",
+      "score_pitch": 55,
+      "score_onset_quarter": 45.0,
+      "midi_pitch": 55,
+      "midi_time_sec": 20.625,
+      "midi_duration_sec": 1.1727272272109985
+    },
+    {
+      "score_id": "p0n98",
+      "score_pitch": 67,
+      "score_onset_quarter": 45.0,
+      "midi_pitch": 67,
+      "midi_time_sec": 20.625,
+      "midi_duration_sec": 1.1727272272109985
+    },
+    {
+      "score_id": "p0n100",
+      "score_pitch": 43,
+      "score_onset_quarter": 47.0,
+      "midi_pitch": 43,
+      "midi_time_sec": 21.5,
+      "midi_duration_sec": 0.4363636374473572
+    },
+    {
+      "score_id": "p0n102",
+      "score_pitch": 55,
+      "score_onset_quarter": 48.0,
+      "midi_pitch": 55,
+      "midi_time_sec": 22.0,
+      "midi_duration_sec": 1.4159090518951416
+    },
+    {
+      "score_id": "p0n101",
+      "score_pitch": 83,
+      "score_onset_quarter": 48.0,
+      "midi_pitch": 83,
+      "midi_time_sec": 22.0,
+      "midi_duration_sec": 0.875
+    },
+    {
+      "score_id": "p0n103",
+      "score_pitch": 79,
+      "score_onset_quarter": 49.0,
+      "midi_pitch": 79,
+      "midi_time_sec": 22.5,
+      "midi_duration_sec": 0.625
+    },
+    {
+      "score_id": "p0n104",
+      "score_pitch": 81,
+      "score_onset_quarter": 49.5,
+      "midi_pitch": 81,
+      "midi_time_sec": 22.75,
+      "midi_duration_sec": 0.625
+    },
+    {
+      "score_id": "p0n105",
+      "score_pitch": 83,
+      "score_onset_quarter": 50.0,
+      "midi_pitch": 83,
+      "midi_time_sec": 22.875,
+      "midi_duration_sec": 0.5409091114997864
+    },
+    {
+      "score_id": "p0n106",
+      "score_pitch": 79,
+      "score_onset_quarter": 50.5,
+      "midi_pitch": 79,
+      "midi_time_sec": 23.125,
+      "midi_duration_sec": 0.290909081697464
+    },
+    {
+      "score_id": "p0n108",
+      "score_pitch": 54,
+      "score_onset_quarter": 51.0,
+      "midi_pitch": 54,
+      "midi_time_sec": 23.375,
+      "midi_duration_sec": 1.3795454502105713
+    },
+    {
+      "score_id": "p0n107",
+      "score_pitch": 81,
+      "score_onset_quarter": 51.0,
+      "midi_pitch": 81,
+      "midi_time_sec": 23.375,
+      "midi_duration_sec": 1.3795454502105713
+    },
+    {
+      "score_id": "p0n109",
+      "score_pitch": 74,
+      "score_onset_quarter": 52.0,
+      "midi_pitch": 74,
+      "midi_time_sec": 23.875,
+      "midi_duration_sec": 0.625
+    },
+    {
+      "score_id": "p0n110",
+      "score_pitch": 76,
+      "score_onset_quarter": 52.5,
+      "midi_pitch": 76,
+      "midi_time_sec": 24.0,
+      "midi_duration_sec": 0.7545454502105713
+    },
+    {
+      "score_id": "p0n111",
+      "score_pitch": 78,
+      "score_onset_quarter": 53.0,
+      "midi_pitch": 78,
+      "midi_time_sec": 24.25,
+      "midi_duration_sec": 0.5045454502105713
+    },
+    {
+      "score_id": "p0n112",
+      "score_pitch": 74,
+      "score_onset_quarter": 53.5,
+      "midi_pitch": 74,
+      "midi_time_sec": 24.5,
+      "midi_duration_sec": 0.3113636374473572
+    },
+    {
+      "score_id": "p0n114",
+      "score_pitch": 52,
+      "score_onset_quarter": 54.0,
+      "midi_pitch": 52,
+      "midi_time_sec": 24.75,
+      "midi_duration_sec": 0.8227272629737854
+    },
+    {
+      "score_id": "p0n113",
+      "score_pitch": 79,
+      "score_onset_quarter": 54.0,
+      "midi_pitch": 79,
+      "midi_time_sec": 24.75,
+      "midi_duration_sec": 0.8227272629737854
+    },
+    {
+      "score_id": "p0n116",
+      "score_pitch": 55,
+      "score_onset_quarter": 55.0,
+      "midi_pitch": 55,
+      "midi_time_sec": 25.125,
+      "midi_duration_sec": 0.4477272629737854
+    },
+    {
+      "score_id": "p0n115",
+      "score_pitch": 76,
+      "score_onset_quarter": 55.0,
+      "midi_pitch": 76,
+      "midi_time_sec": 25.125,
+      "midi_duration_sec": 0.4477272629737854
+    },
+    {
+      "score_id": "p0n117",
+      "score_pitch": 78,
+      "score_onset_quarter": 55.5,
+      "midi_pitch": 78,
+      "midi_time_sec": 25.375,
+      "midi_duration_sec": 0.27272728085517883
+    },
+    {
+      "score_id": "p0n119",
+      "score_pitch": 52,
+      "score_onset_quarter": 56.0,
+      "midi_pitch": 52,
+      "midi_time_sec": 25.625,
+      "midi_duration_sec": 0.4909090995788574
+    },
+    {
+      "score_id": "p0n118",
+      "score_pitch": 79,
+      "score_onset_quarter": 56.0,
+      "midi_pitch": 79,
+      "midi_time_sec": 25.625,
+      "midi_duration_sec": 0.18636363744735718
+    },
+    {
+      "score_id": "p0n120",
+      "score_pitch": 74,
+      "score_onset_quarter": 56.5,
+      "midi_pitch": 74,
+      "midi_time_sec": 25.875,
+      "midi_duration_sec": 0.2704545557498932
+    },
+    {
+      "score_id": "p0n122",
+      "score_pitch": 57,
+      "score_onset_quarter": 57.0,
+      "midi_pitch": 57,
+      "midi_time_sec": 26.125,
+      "midi_duration_sec": 0.918181836605072
+    },
+    {
+      "score_id": "p0n121",
+      "score_pitch": 73,
+      "score_onset_quarter": 57.0,
+      "midi_pitch": 73,
+      "midi_time_sec": 26.125,
+      "midi_duration_sec": 0.47727271914482117
+    },
+    {
+      "score_id": "p0n123",
+      "score_pitch": 71,
+      "score_onset_quarter": 58.0,
+      "midi_pitch": 71,
+      "midi_time_sec": 26.5,
+      "midi_duration_sec": 0.2454545497894287
+    },
+    {
+      "score_id": "p0n124",
+      "score_pitch": 73,
+      "score_onset_quarter": 58.5,
+      "midi_pitch": 73,
+      "midi_time_sec": 26.75,
+      "midi_duration_sec": 0.23181818425655365
+    },
+    {
+      "score_id": "p0n126",
+      "score_pitch": 45,
+      "score_onset_quarter": 59.0,
+      "midi_pitch": 45,
+      "midi_time_sec": 27.0,
+      "midi_duration_sec": 0.47045454382896423
+    },
+    {
+      "score_id": "p0n125",
+      "score_pitch": 69,
+      "score_onset_quarter": 59.0,
+      "midi_pitch": 69,
+      "midi_time_sec": 27.0,
+      "midi_duration_sec": 0.4522727131843567
+    },
+    {
+      "score_id": "p0n128",
+      "score_pitch": 57,
+      "score_onset_quarter": 60.0,
+      "midi_pitch": 57,
+      "midi_time_sec": 27.5,
+      "midi_duration_sec": 1.475000023841858
+    },
+    {
+      "score_id": "p0n127",
+      "score_pitch": 69,
+      "score_onset_quarter": 60.0,
+      "midi_pitch": 69,
+      "midi_time_sec": 27.5,
+      "midi_duration_sec": 0.25
+    },
+    {
+      "score_id": "p0n129",
+      "score_pitch": 71,
+      "score_onset_quarter": 60.5,
+      "midi_pitch": 71,
+      "midi_time_sec": 27.625,
+      "midi_duration_sec": 0.24090908467769623
+    },
+    {
+      "score_id": "p0n130",
+      "score_pitch": 73,
+      "score_onset_quarter": 61.0,
+      "midi_pitch": 73,
+      "midi_time_sec": 27.875,
+      "midi_duration_sec": 0.21136364340782166
+    },
+    {
+      "score_id": "p0n131",
+      "score_pitch": 74,
+      "score_onset_quarter": 61.5,
+      "midi_pitch": 74,
+      "midi_time_sec": 28.125,
+      "midi_duration_sec": 0.28409090638160706
+    },
+    {
+      "score_id": "p0n132",
+      "score_pitch": 76,
+      "score_onset_quarter": 62.0,
+      "midi_pitch": 76,
+      "midi_time_sec": 28.375,
+      "midi_duration_sec": 0.25227272510528564
+    },
+    {
+      "score_id": "p0n133",
+      "score_pitch": 78,
+      "score_onset_quarter": 62.5,
+      "midi_pitch": 78,
+      "midi_time_sec": 28.5,
+      "midi_duration_sec": 0.3068181872367859
+    },
+    {
+      "score_id": "p0n135",
+      "score_pitch": 59,
+      "score_onset_quarter": 63.0,
+      "midi_pitch": 59,
+      "midi_time_sec": 28.75,
+      "midi_duration_sec": 0.6181818246841431
+    },
+    {
+      "score_id": "p0n134",
+      "score_pitch": 79,
+      "score_onset_quarter": 63.0,
+      "midi_pitch": 79,
+      "midi_time_sec": 28.75,
+      "midi_duration_sec": 0.5772727131843567
+    },
+    {
+      "score_id": "p0n137",
+      "score_pitch": 62,
+      "score_onset_quarter": 64.0,
+      "midi_pitch": 62,
+      "midi_time_sec": 29.25,
+      "midi_duration_sec": 0.5545454621315002
+    },
+    {
+      "score_id": "p0n136",
+      "score_pitch": 78,
+      "score_onset_quarter": 64.0,
+      "midi_pitch": 78,
+      "midi_time_sec": 29.25,
+      "midi_duration_sec": 0.5363636612892151
+    },
+    {
+      "score_id": "p0n139",
+      "score_pitch": 61,
+      "score_onset_quarter": 65.0,
+      "midi_pitch": 61,
+      "midi_time_sec": 29.625,
+      "midi_duration_sec": 0.4545454680919647
+    },
+    {
+      "score_id": "p0n138",
+      "score_pitch": 76,
+      "score_onset_quarter": 65.0,
+      "midi_pitch": 76,
+      "midi_time_sec": 29.625,
+      "midi_duration_sec": 0.4954545497894287
+    },
+    {
+      "score_id": "p0n141",
+      "score_pitch": 62,
+      "score_onset_quarter": 66.0,
+      "midi_pitch": 62,
+      "midi_time_sec": 30.125,
+      "midi_duration_sec": 0.5204545259475708
+    },
+    {
+      "score_id": "p0n140",
+      "score_pitch": 78,
+      "score_onset_quarter": 66.0,
+      "midi_pitch": 78,
+      "midi_time_sec": 30.125,
+      "midi_duration_sec": 0.4727272689342499
+    },
+    {
+      "score_id": "p0n143",
+      "score_pitch": 54,
+      "score_onset_quarter": 67.0,
+      "midi_pitch": 54,
+      "midi_time_sec": 30.625,
+      "midi_duration_sec": 0.5522727370262146
+    },
+    {
+      "score_id": "p0n142",
+      "score_pitch": 69,
+      "score_onset_quarter": 67.0,
+      "midi_pitch": 69,
+      "midi_time_sec": 30.625,
+      "midi_duration_sec": 0.4795454442501068
+    },
+    {
+      "score_id": "p0n145",
+      "score_pitch": 57,
+      "score_onset_quarter": 68.0,
+      "midi_pitch": 57,
+      "midi_time_sec": 31.0,
+      "midi_duration_sec": 0.5
+    },
+    {
+      "score_id": "p0n144",
+      "score_pitch": 73,
+      "score_onset_quarter": 68.0,
+      "midi_pitch": 73,
+      "midi_time_sec": 31.0,
+      "midi_duration_sec": 0.46590909361839294
+    },
+    {
+      "score_id": "p0n147",
+      "score_pitch": 62,
+      "score_onset_quarter": 69.0,
+      "midi_pitch": 62,
+      "midi_time_sec": 31.5,
+      "midi_duration_sec": 0.5659090876579285
+    },
+    {
+      "score_id": "p0n146",
+      "score_pitch": 74,
+      "score_onset_quarter": 69.0,
+      "midi_pitch": 74,
+      "midi_time_sec": 31.5,
+      "midi_duration_sec": 0.9909090995788574
+    },
+    {
+      "score_id": "p0n148",
+      "score_pitch": 50,
+      "score_onset_quarter": 70.0,
+      "midi_pitch": 50,
+      "midi_time_sec": 32.0,
+      "midi_duration_sec": 0.48636364936828613
+    },
+    {
+      "score_id": "p0n149",
+      "score_pitch": 60,
+      "score_onset_quarter": 71.0,
+      "midi_pitch": 60,
+      "midi_time_sec": 32.5,
+      "midi_duration_sec": 0.5613636374473572
+    },
+    {
+      "score_id": "p0n151",
+      "score_pitch": 59,
+      "score_onset_quarter": 72.0,
+      "midi_pitch": 59,
+      "midi_time_sec": 33.0,
+      "midi_duration_sec": 0.4840908944606781
+    },
+    {
+      "score_id": "p0n150",
+      "score_pitch": 74,
+      "score_onset_quarter": 72.0,
+      "midi_pitch": 74,
+      "midi_time_sec": 33.0,
+      "midi_duration_sec": 0.9340909123420715
+    },
+    {
+      "score_id": "p0n154",
+      "score_pitch": 62,
+      "score_onset_quarter": 73.0,
+      "midi_pitch": 62,
+      "midi_time_sec": 33.5,
+      "midi_duration_sec": 0.5227272510528564
+    },
+    {
+      "score_id": "p0n153",
+      "score_pitch": 67,
+      "score_onset_quarter": 73.0,
+      "midi_pitch": 67,
+      "midi_time_sec": 33.5,
+      "midi_duration_sec": 0.07954545319080353
+    },
+    {
+      "score_id": "p0n155",
+      "score_pitch": 66,
+      "score_onset_quarter": 73.5,
+      "midi_pitch": 66,
+      "midi_time_sec": 33.625,
+      "midi_duration_sec": 0.036363635212183
+    },
+    {
+      "score_id": "p0n157",
+      "score_pitch": 59,
+      "score_onset_quarter": 74.0,
+      "midi_pitch": 59,
+      "midi_time_sec": 33.875,
+      "midi_duration_sec": 0.6295454502105713
+    },
+    {
+      "score_id": "p0n156",
+      "score_pitch": 67,
+      "score_onset_quarter": 74.0,
+      "midi_pitch": 67,
+      "midi_time_sec": 33.875,
+      "midi_duration_sec": 0.6295454502105713
+    },
+    {
+      "score_id": "p0n159",
+      "score_pitch": 60,
+      "score_onset_quarter": 75.0,
+      "midi_pitch": 60,
+      "midi_time_sec": 34.375,
+      "midi_duration_sec": 0.459090918302536
+    },
+    {
+      "score_id": "p0n158",
+      "score_pitch": 76,
+      "score_onset_quarter": 75.0,
+      "midi_pitch": 76,
+      "midi_time_sec": 34.375,
+      "midi_duration_sec": 0.925000011920929
+    },
+    {
+      "score_id": "p0n162",
+      "score_pitch": 64,
+      "score_onset_quarter": 76.0,
+      "midi_pitch": 64,
+      "midi_time_sec": 34.75,
+      "midi_duration_sec": 0.5022727251052856
+    },
+    {
+      "score_id": "p0n161",
+      "score_pitch": 67,
+      "score_onset_quarter": 76.0,
+      "midi_pitch": 67,
+      "midi_time_sec": 34.75,
+      "midi_duration_sec": 0.04772727191448212
+    },
+    {
+      "score_id": "p0n163",
+      "score_pitch": 66,
+      "score_onset_quarter": 76.5,
+      "midi_pitch": 66,
+      "midi_time_sec": 35.0,
+      "midi_duration_sec": 0.03863636404275894
+    },
+    {
+      "score_id": "p0n165",
+      "score_pitch": 60,
+      "score_onset_quarter": 77.0,
+      "midi_pitch": 60,
+      "midi_time_sec": 35.25,
+      "midi_duration_sec": 0.5136363506317139
+    },
+    {
+      "score_id": "p0n164",
+      "score_pitch": 67,
+      "score_onset_quarter": 77.0,
+      "midi_pitch": 67,
+      "midi_time_sec": 35.25,
+      "midi_duration_sec": 0.4727272689342499
+    },
+    {
+      "score_id": "p0n167",
+      "score_pitch": 59,
+      "score_onset_quarter": 78.0,
+      "midi_pitch": 59,
+      "midi_time_sec": 35.75,
+      "midi_duration_sec": 0.5522727370262146
+    },
+    {
+      "score_id": "p0n166",
+      "score_pitch": 74,
+      "score_onset_quarter": 78.0,
+      "midi_pitch": 74,
+      "midi_time_sec": 35.75,
+      "midi_duration_sec": 0.625
+    },
+    {
+      "score_id": "p0n169",
+      "score_pitch": 57,
+      "score_onset_quarter": 79.0,
+      "midi_pitch": 57,
+      "midi_time_sec": 36.125,
+      "midi_duration_sec": 0.48181816935539246
+    },
+    {
+      "score_id": "p0n168",
+      "score_pitch": 72,
+      "score_onset_quarter": 79.0,
+      "midi_pitch": 72,
+      "midi_time_sec": 36.125,
+      "midi_duration_sec": 0.5613636374473572
+    },
+    {
+      "score_id": "p0n171",
+      "score_pitch": 55,
+      "score_onset_quarter": 80.0,
+      "midi_pitch": 55,
+      "midi_time_sec": 36.625,
+      "midi_duration_sec": 0.5090909004211426
+    },
+    {
+      "score_id": "p0n170",
+      "score_pitch": 71,
+      "score_onset_quarter": 80.0,
+      "midi_pitch": 71,
+      "midi_time_sec": 36.625,
+      "midi_duration_sec": 0.5409091114997864
+    },
+    {
+      "score_id": "p0n173",
+      "score_pitch": 62,
+      "score_onset_quarter": 81.0,
+      "midi_pitch": 62,
+      "midi_time_sec": 37.125,
+      "midi_duration_sec": 1.375
+    },
+    {
+      "score_id": "p0n172",
+      "score_pitch": 69,
+      "score_onset_quarter": 81.0,
+      "midi_pitch": 69,
+      "midi_time_sec": 37.125,
+      "midi_duration_sec": 0.20681817829608917
+    },
+    {
+      "score_id": "p0n174",
+      "score_pitch": 67,
+      "score_onset_quarter": 81.5,
+      "midi_pitch": 67,
+      "midi_time_sec": 37.375,
+      "midi_duration_sec": 0.2340909093618393
+    },
+    {
+      "score_id": "p0n175",
+      "score_pitch": 66,
+      "score_onset_quarter": 82.0,
+      "midi_pitch": 66,
+      "midi_time_sec": 37.5,
+      "midi_duration_sec": 0.25
+    },
+    {
+      "score_id": "p0n176",
+      "score_pitch": 67,
+      "score_onset_quarter": 82.5,
+      "midi_pitch": 67,
+      "midi_time_sec": 37.75,
+      "midi_duration_sec": 0.2863636314868927
+    },
+    {
+      "score_id": "p0n177",
+      "score_pitch": 69,
+      "score_onset_quarter": 83.0,
+      "midi_pitch": 69,
+      "midi_time_sec": 38.0,
+      "midi_duration_sec": 0.5204545259475708
+    },
+    {
+      "score_id": "p0n180",
+      "score_pitch": 50,
+      "score_onset_quarter": 84.0,
+      "midi_pitch": 50,
+      "midi_time_sec": 38.5,
+      "midi_duration_sec": 0.9522727131843567
+    },
+    {
+      "score_id": "p0n179",
+      "score_pitch": 62,
+      "score_onset_quarter": 84.0,
+      "midi_pitch": 62,
+      "midi_time_sec": 38.5,
+      "midi_duration_sec": 0.06136363744735718
+    },
+    {
+      "score_id": "p0n182",
+      "score_pitch": 64,
+      "score_onset_quarter": 84.5,
+      "midi_pitch": 64,
+      "midi_time_sec": 38.75,
+      "midi_duration_sec": 0.2454545497894287
+    },
+    {
+      "score_id": "p0n183",
+      "score_pitch": 66,
+      "score_onset_quarter": 85.0,
+      "midi_pitch": 66,
+      "midi_time_sec": 38.875,
+      "midi_duration_sec": 0.22499999403953552
+    },
+    {
+      "score_id": "p0n185",
+      "score_pitch": 67,
+      "score_onset_quarter": 85.5,
+      "midi_pitch": 67,
+      "midi_time_sec": 39.125,
+      "midi_duration_sec": 0.2704545557498932
+    },
+    {
+      "score_id": "p0n187",
+      "score_pitch": 54,
+      "score_onset_quarter": 86.0,
+      "midi_pitch": 54,
+      "midi_time_sec": 39.375,
+      "midi_duration_sec": 0.41363635659217834
+    },
+    {
+      "score_id": "p0n186",
+      "score_pitch": 69,
+      "score_onset_quarter": 86.0,
+      "midi_pitch": 69,
+      "midi_time_sec": 39.375,
+      "midi_duration_sec": 0.23863635957241058
+    },
+    {
+      "score_id": "p0n188",
+      "score_pitch": 71,
+      "score_onset_quarter": 86.5,
+      "midi_pitch": 71,
+      "midi_time_sec": 39.625,
+      "midi_duration_sec": 0.27272728085517883
+    },
+    {
+      "score_id": "p0n190",
+      "score_pitch": 52,
+      "score_onset_quarter": 87.0,
+      "midi_pitch": 52,
+      "midi_time_sec": 39.875,
+      "midi_duration_sec": 0.3954545557498932
+    },
+    {
+      "score_id": "p0n189",
+      "score_pitch": 72,
+      "score_onset_quarter": 87.0,
+      "midi_pitch": 72,
+      "midi_time_sec": 39.875,
+      "midi_duration_sec": 0.25
+    },
+    {
+      "score_id": "p0n191",
+      "score_pitch": 71,
+      "score_onset_quarter": 88.0,
+      "midi_pitch": 71,
+      "midi_time_sec": 40.25,
+      "midi_duration_sec": 0.543181836605072
+    },
+    {
+      "score_id": "p0n192",
+      "score_pitch": 55,
+      "score_onset_quarter": 88.0,
+      "midi_pitch": 55,
+      "midi_time_sec": 40.25,
+      "midi_duration_sec": 0.47045454382896423
+    },
+    {
+      "score_id": "p0n194",
+      "score_pitch": 54,
+      "score_onset_quarter": 89.0,
+      "midi_pitch": 54,
+      "midi_time_sec": 40.75,
+      "midi_duration_sec": 0.459090918302536
+    },
+    {
+      "score_id": "p0n193",
+      "score_pitch": 69,
+      "score_onset_quarter": 89.0,
+      "midi_pitch": 69,
+      "midi_time_sec": 40.75,
+      "midi_duration_sec": 0.550000011920929
+    },
+    {
+      "score_id": "p0n196",
+      "score_pitch": 55,
+      "score_onset_quarter": 90.0,
+      "midi_pitch": 55,
+      "midi_time_sec": 41.125,
+      "midi_duration_sec": 0.4840908944606781
+    },
+    {
+      "score_id": "p0n195",
+      "score_pitch": 71,
+      "score_onset_quarter": 90.0,
+      "midi_pitch": 71,
+      "midi_time_sec": 41.125,
+      "midi_duration_sec": 0.2704545557498932
+    },
+    {
+      "score_id": "p0n197",
+      "score_pitch": 74,
+      "score_onset_quarter": 90.5,
+      "midi_pitch": 74,
+      "midi_time_sec": 41.375,
+      "midi_duration_sec": 0.3022727370262146
+    },
+    {
+      "score_id": "p0n199",
+      "score_pitch": 47,
+      "score_onset_quarter": 91.0,
+      "midi_pitch": 47,
+      "midi_time_sec": 41.625,
+      "midi_duration_sec": 0.574999988079071
+    },
+    {
+      "score_id": "p0n198",
+      "score_pitch": 67,
+      "score_onset_quarter": 91.0,
+      "midi_pitch": 67,
+      "midi_time_sec": 41.625,
+      "midi_duration_sec": 0.3113636374473572
+    },
+    {
+      "score_id": "p0n201",
+      "score_pitch": 50,
+      "score_onset_quarter": 92.0,
+      "midi_pitch": 50,
+      "midi_time_sec": 42.125,
+      "midi_duration_sec": 0.4795454442501068
+    },
+    {
+      "score_id": "p0n200",
+      "score_pitch": 66,
+      "score_onset_quarter": 92.0,
+      "midi_pitch": 66,
+      "midi_time_sec": 42.125,
+      "midi_duration_sec": 0.47045454382896423
+    },
+    {
+      "score_id": "p0n205",
+      "score_pitch": 55,
+      "score_onset_quarter": 93.0,
+      "midi_pitch": 55,
+      "midi_time_sec": 42.625,
+      "midi_duration_sec": 0.5090909004211426
+    },
+    {
+      "score_id": "p0n203",
+      "score_pitch": 59,
+      "score_onset_quarter": 93.0,
+      "midi_pitch": 59,
+      "midi_time_sec": 42.625,
+      "midi_duration_sec": 2.4272727966308594
+    },
+    {
+      "score_id": "p0n204",
+      "score_pitch": 62,
+      "score_onset_quarter": 93.0,
+      "midi_pitch": 62,
+      "midi_time_sec": 42.625,
+      "midi_duration_sec": 2.4272727966308594
+    },
+    {
+      "score_id": "p0n202",
+      "score_pitch": 67,
+      "score_onset_quarter": 93.0,
+      "midi_pitch": 67,
+      "midi_time_sec": 42.625,
+      "midi_duration_sec": 2.4272727966308594
+    },
+    {
+      "score_id": "p0n206",
+      "score_pitch": 50,
+      "score_onset_quarter": 94.0,
+      "midi_pitch": 50,
+      "midi_time_sec": 43.125,
+      "midi_duration_sec": 0.6499999761581421
+    },
+    {
+      "score_id": "p0n207",
+      "score_pitch": 43,
+      "score_onset_quarter": 95.0,
+      "midi_pitch": 43,
+      "midi_time_sec": 43.75,
+      "midi_duration_sec": 1.3022726774215698
+    }
+  ]
+}

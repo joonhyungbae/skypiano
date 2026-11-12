@@ -1,0 +1,56 @@
+$sectionPadding: 20px 33px;
+
+// Piano-Inspired Dark Elegance Theme (Matching projectPage)
+:root {
+  --background: 240 10% 3%;
+  --foreground: 0 0% 95%;
+
+  --card: 240 10% 6%;
+  --card-foreground: 0 0% 95%;
+
+  --popover: 240 10% 6%;
+  --popover-foreground: 0 0% 95%;
+
+  --primary: 260 60% 60%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 240 10% 12%;
+  --secondary-foreground: 0 0% 95%;
+
+  --muted: 240 10% 15%;
+  --muted-foreground: 240 5% 60%;
+
+  --accent: 220 70% 55%;
+  --accent-foreground: 0 0% 100%;
+
+  --destructive: 0 62% 50%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 240 10% 18%;
+  --input: 240 10% 18%;
+  --ring: 260 60% 60%;
+
+  --radius: 0.75rem;
+
+  // Glassmorphism
+  --glass-bg: 240 10% 10% / 0.6;
+  --glass-border: 0 0% 100% / 0.1;
+  --glass-shadow: 0 0% 0% / 0.3;
+}
+
+// Color variables for easier usage in SCSS
+$bg-background: hsl(240 10% 3%);
+$bg-card: hsl(240 10% 6%);
+$bg-secondary: hsl(240 10% 12%);
+$bg-muted: hsl(240 10% 15%);
+
+$text-foreground: hsl(0 0% 95%);
+$text-muted: hsl(240 5% 60%);
+
+$primary-color: hsl(260 60% 60%);
+$accent-color: hsl(220 70% 55%);
+$border-color: hsl(240 10% 18%);
+
+// Legacy color mapping
+$orange-primary: $primary-color;  // Was #dd672c
+$blue-secondary: $accent-color;   // Was #8ec1d6

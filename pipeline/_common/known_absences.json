@@ -1,0 +1,215 @@
+{
+  "_comment": "Single source of truth for known data absences across the SKY Piano corpus. Loaded by pipeline._common.known_absences. Each entry describes data that is permanently missing from the raw capture (camera off, marker dislodge, sensor failure, etc.) and SHOULD NOT be treated as a pipeline failure or release-time gap. Schema: each entry has a unique id, a kind (defines which selector keys apply), a scope, selectors (what trials/views/markers are affected), a reason, and provenance.",
+  "_kinds": {
+    "video_view": "A camera view (Top|Left|Right|RightLow) is missing for a set of trials. Selector: trial_stems[], views[].",
+    "body_data": "Entire body-motion stream is missing for a trial (raw TSV not captured / unrecoverable). Selector: trial_stems[].",
+    "hand_marker": "One or more hand-motion markers/columns are missing in raw capture. Selector: trial_stems[] OR (cohort + pool_id + task), markers[]. May still be downstream-recoverable (offset model, anchor-median injection); 'recovered_in' notes that.",
+    "marker_restored": "Markers/columns were missing in raw capture but are reconstructed by Stage 02 hand s02_restore_markers via an offset model from a sibling-marker pair. Selector: trial_stems[], filenames[] (csv basenames as referenced by markers.py DATASET_CONFIGS), missing_cols[]. recovery.method/target_cols/input_cols feeds the restore step.",
+    "trial_skip": "An entire trial is excluded from a stage. Selector: trial_stems[], stages[].",
+    "audio_midi": "A take's audio and MIDI are not in the session recording (the recorder was paused or stopped during it); the trial keeps its motion only. Selector: trial_stems[]."
+  },
+  "absences": [
+    {
+      "id": "240828_C0_N8_set1_p4to8_left_camera_off",
+      "kind": "video_view",
+      "scope": {
+        "ds": "240828",
+        "cohort": "C0_N8"
+      },
+      "selectors": {
+        "trial_stems": [
+          "240828_C0_N8_T2_P4_t1",
+          "240828_C0_N8_T2_P5_t1",
+          "240828_C0_N8_T2_P6_t1",
+          "240828_C0_N8_T2_P7_t1",
+          "240828_C0_N8_T2_P8_t1"
+        ],
+        "views": [
+          "Left"
+        ]
+      },
+      "reason": "Left-deck camera was not recording during sub08 Set1 second-half pieces (P4-P8). Raw video files for these SMPTE ranges do not exist in Raw/240828/C0/N8/Video/Left/.",
+      "since": "2026-05-02",
+      "discovered_by": "Stage 04 s05_slice_piece_videos.py NO-match log on Set1 40-take slice run"
+    },
+    {
+      "id": "240828_C0_N6_T9_P1_body_tsv_missing",
+      "kind": "body_data",
+      "scope": {
+        "ds": "240828",
+        "cohort": "C0_N6"
+      },
+      "selectors": {
+        "trial_stems": [
+          "240828_C0_N6_T9_P1_t1"
+        ]
+      },
+      "reason": "Body Qualisys TSV not captured for sub0636 (raw stem). Unrecoverable - 3 piece-csvs absent in Stage 04 body output. Stage 07 body imputation cannot recover an entirely missing trial.",
+      "since": "2026-04-22",
+      "discovered_by": "Stage 02 body_aligned audit (352/355 body-csv after REnd offset restore)"
+    },
+    {
+      "id": "240828_C0_N5_T9_ravel_la_valse_rh_lhend_markers",
+      "kind": "hand_marker",
+      "scope": {
+        "ds": "240828",
+        "cohort": "C0_N5"
+      },
+      "selectors": {
+        "pool_id": "ravel_la_valse",
+        "task": "T9",
+        "markers_removed": [
+          "RH_*",
+          "LEnd1",
+          "LEnd2"
+        ]
+      },
+      "reason": "Glissando passages caused mocap markers to fall off mid-take. Curator removed all right-hand markers and left-hand End markers from that point on. Audio + MIDI intact; only motion is partially marker-stripped. The End-offset reconstruction trick (used in feedback_rend_lend_regression) does NOT recover RH because RH is fully stripped - downstream RH analysis should be marked 'not applicable' rather than imputed.",
+      "since": "2026-05-01",
+      "recorded_in": "Data/Metadata/240828/free_pieces.json pieces_by_subject.sub05[ravel_la_valse].capture_notes",
+      "discovered_by": "Curator note 2026-05-01"
+    },
+    {
+      "id": "240523_C1_N0_P8_P9_upper_body_anchor_markers_recovered",
+      "kind": "hand_marker",
+      "scope": {
+        "ds": "240523",
+        "cohort": "C1_N0"
+      },
+      "selectors": {
+        "trial_stems": [
+          "240523_C1_N0_T0_P8_t1",
+          "240523_C1_N0_T0_P9_t1"
+        ],
+        "markers_missing": [
+          "LSh",
+          "RSh",
+          "LElbow",
+          "RElbow"
+        ]
+      },
+      "reason": "Raw OptiTrack capture for P8/P9 used a different marker set - hand CSVs lack Lsh/Rsh/Lelbow/Relbow columns (P8 only LLAW/RLAW wrist; P9 only Lwrist). Recovered downstream by anchor-median injection (session-median across P1-P7) into temp copies; geometric residuals elevated (P8 mean 85mm/max 157mm, P9 mean 76mm/max 111mm).",
+      "since": "2026-04-23",
+      "recovered_in": "a separate anchor-hand rebuild outside the pipeline (Stage 02 hand Aligned CSVs intentionally retain NaN)",
+      "discovered_by": "Stage 02 body alignment for newly-added 240523 body integration"
+    },
+    {
+      "id": "220819_C0_N0_T1_P3_t2_lend_missing_restored",
+      "kind": "marker_restored",
+      "scope": {
+        "ds": "220819",
+        "cohort": "C0_N0"
+      },
+      "selectors": {
+        "trial_stems": [
+          "220819_C0_N0_T1_P3_t2"
+        ],
+        "filenames": [
+          "220819_C0_N0_T1_P3_t2.csv"
+        ],
+        "missing_cols": [
+          "LEnd_x",
+          "LEnd_y",
+          "LEnd_z"
+        ]
+      },
+      "recovery": {
+        "method": "offset_model",
+        "target_cols": [
+          "LEnd_x",
+          "LEnd_y",
+          "LEnd_z"
+        ],
+        "input_cols": [
+          "REnd_x",
+          "REnd_y",
+          "REnd_z"
+        ]
+      },
+      "reason": "LEnd not recorded in mocap capture for this trial. LEnd reconstructed from REnd via median offset learned across complete trials (piano-stationary so offset is near-constant per setup).",
+      "since": "2024-08-01",
+      "consumed_by": "pipeline/02_spatial/hand/src/markers.py DATASET_CONFIGS['220819'] missing_files/missing_restore; pipeline/02_spatial/hand/steps/s02_restore_markers.py"
+    },
+    {
+      "id": "240828_C0_N4_T1_P14_P15_P16_rend_missing_restored",
+      "kind": "marker_restored",
+      "scope": {
+        "ds": "240828",
+        "cohort": "C0_N4"
+      },
+      "selectors": {
+        "trial_stems": [
+          "240828_C0_N4_T1_P14_t1",
+          "240828_C0_N4_T1_P15_t1",
+          "240828_C0_N4_T1_P16_t1"
+        ],
+        "raw_stems": [
+          "240828sub0417",
+          "240828sub0419",
+          "240828sub0420"
+        ],
+        "filenames": [
+          "240828_C0_N4_T1_P14_t1.csv",
+          "240828sub0417.csv",
+          "240828_C0_N4_T1_P15_t1.csv",
+          "240828sub0419.csv",
+          "240828_C0_N4_T1_P16_t1.csv",
+          "240828sub0420.csv"
+        ],
+        "missing_cols": [
+          "REnd_x",
+          "REnd_y",
+          "REnd_z"
+        ]
+      },
+      "recovery": {
+        "method": "offset_model",
+        "target_cols": [
+          "REnd_x",
+          "REnd_y",
+          "REnd_z"
+        ],
+        "input_cols": [
+          "LEnd_x",
+          "LEnd_y",
+          "LEnd_z"
+        ]
+      },
+      "reason": "REnd not recorded in mocap capture for these 3 trials. REnd reconstructed from LEnd via median offset learned across complete trials (piano-stationary so offset is near-constant per setup). filenames carries both canonical trial_stem and raw sub-numbered stem because Stage 02 hand copies pre-canonical files in some cases.",
+      "since": "2026-04-22",
+      "consumed_by": "pipeline/02_spatial/hand/src/markers.py DATASET_CONFIGS['240828'] missing_files/missing_restore; pipeline/02_spatial/hand/steps/s02_restore_markers.py"
+    },
+    {
+      "id": "220819_C1_N0_T1_P4_t1_body_stub",
+      "kind": "body_data",
+      "scope": {
+        "ds": "220819",
+        "cohort": "C1_N0"
+      },
+      "selectors": {
+        "trial_stems": [
+          "220819_C1_N0_T1_P4_t1"
+        ]
+      },
+      "reason": "The body take of this trial (raw 2022Piano02_02_02_01.tsv) holds about 2 s of data. Without this entry the Stage 01 matcher pairs the trial with 2022Piano02_02_02_02.tsv, the body take of the next hand take (no audio/MIDI exported); registered onto this trial's hand frame that file leaves a 70 mm mean landmark residual (3.8-14 mm for the session's other trials).",
+      "since": "2026-10-09",
+      "consumed_by": "pipeline/01_ingest/steps/s03_220819_match.py"
+    },
+    {
+      "id": "221112_C1_N7_T1_P1_t4_audio_midi_not_recorded",
+      "kind": "audio_midi",
+      "scope": {
+        "ds": "221112",
+        "cohort": "C1_N7"
+      },
+      "selectors": {
+        "trial_stems": [
+          "221112_C1_N7_T1_P1_t4"
+        ]
+      },
+      "reason": "Hand take Piano02_08_01_04 (363 s) does not fit the session recording: by the capture start frames it lies between takes t3 and t5, whose recording positions leave 317 s, so the recorder was paused during it; no position matches its key presses, and the reviewer rejected the best one by eye.",
+      "since": "2026-11-06",
+      "discovered_by": "221112 placement review (Stage 01 s04, Stage 05 sync check)"
+    }
+  ]
+}
