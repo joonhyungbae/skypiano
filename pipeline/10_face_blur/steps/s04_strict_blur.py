@@ -12,11 +12,17 @@ covered 99.5% at about 7% of the frame. Per frame:
     keypoints with score >= KEYPOINT_THRESHOLD, sized by the shoulder width;
   * optionally RetinaFace-R50 boxes (--retinaface);
   * Left view: a fixed head zone at the bottom-right corner (LEFT_ZONE, the
-    region of the labelled Left faces) while pose sees the player (--left-zone).
+    region of the labelled Left faces) while pose sees the player (--left-zone),
+    minus the player's hands on that frame (a box around each wrist, extended
+    along the forearm; when pose loses the player, the hands of the nearest
+    frame within +-HOLD), so the zone never hides a hand on the keyboard. The
+    same cut applies to the pose head boxes (coarse, and large when the player
+    leans in) and to the padding of the face boxes; the face boxes themselves,
+    padded only by CORE_PAD, are drawn after the cut and always win.
 
 Every box is padded by PAD of its size on each side, and a frame is masked
 with the union of the boxes of the frames within +-HOLD. The mask is either
-an opaque fill of the padded ellipse (--mask solid, default) or a pixel
+an opaque fill of the ellipse inscribed in the padded box (--mask solid, default; the zone as a box) or a pixel
 mosaic (--mask mosaic).
 
 Coverage check, on the original frames against the mask: a face is
@@ -56,6 +62,7 @@ YOLO_FACE = ("arnabdhar/YOLOv8-Face-Detection", "model.pt")
 FACE_THRESHOLD = 0.5
 KEYPOINT_THRESHOLD = 0.3
 PAD = 0.4
+CORE_PAD = 0.1                            # the part of a face box a hand cut never removes
 HOLD = 15
 NMS_IOU = 0.3
 LEFT_ZONE = (1170, 620, 1920, 1080)       # 1920x1080 frame; scaled to other sizes
@@ -96,9 +103,20 @@ class Detectors:
             return [bb + [ss] for bb, ss in zip(b[keep].tolist(), s[keep].tolist())]
 
     def heads(self, bgr):
-        """(head boxes with a score, whether a person is seen)."""
+        """(head boxes with a score, hand boxes, whether a person is seen)."""
         kps, scores = self.pose(bgr)
-        out = []
+        out, hands = [], []
+        for k, s in zip(kps, scores):
+            for wi, ei in ((9, 7), (10, 8)):                                 # wrists, elbows (COCO)
+                if s[wi] < KEYPOINT_THRESHOLD:
+                    continue
+                w = k[wi]
+                if s[ei] >= KEYPOINT_THRESHOLD:
+                    c, r = w + 0.35 * (w - k[ei]), max(0.6 * float(np.linalg.norm(w - k[ei])), 80.0)
+                else:
+                    c, r = w, 140.0
+                hands.append((int(c[0] - r), int(c[1] - r), int(c[0] + r), int(c[1] + r)))
+                hands.append((int(w[0] - 40), int(w[1] - 40), int(w[0] + 40), int(w[1] + 40)))
         for k, s in zip(kps, scores):
             head = [i for i in range(5) if s[i] >= KEYPOINT_THRESHOLD]       # nose, eyes, ears (COCO 0-4)
             if not head:
@@ -112,7 +130,7 @@ class Detectors:
             cx, cy = (x1 + x2) / 2, (y1 + y2) / 2
             out.append([cx - r, cy - r * 1.2, cx + r, cy + r, float(np.mean(s[head]))])
         person = any(float(np.max(s)) >= KEYPOINT_THRESHOLD for s in scores)
-        return out, person
+        return out, hands, person
 
     def retinaface(self, bgr):
         if self.retina is None:
@@ -149,30 +167,46 @@ def padded(b, w: int, h: int, pad: float = PAD):
     return (max(0, int(b[0] - dx)), max(0, int(b[1] - dy)), min(w, int(b[2] + dx + 1)), min(h, int(b[3] + dy + 1)))
 
 
-def mask_of(boxes, w: int, h: int, shape: str) -> np.ndarray:
+def mask_of(faces, cores, heads, zone, hands, w: int, h: int, shape: str) -> np.ndarray:
+    """Face boxes as the ellipse inscribed in the padded box (solid) or the box (mosaic); the zone as a box.
+
+    The inscribed ellipse still holds the whole unpadded face box: with PAD = 0.4 on each side the face is
+    1/1.8 of the padded box, inside the ellipse's inner rectangle of 0.707.
+    """
     m = np.zeros((h, w), np.uint8)
-    for x1, y1, x2, y2 in boxes:
-        if shape == "solid":
-            # the ellipse through the box corners covers the whole box
-            c = ((x1 + x2) // 2, (y1 + y2) // 2)
-            ax = (int((x2 - x1) * 0.7072) + 1, int((y2 - y1) * 0.7072) + 1)
-            cv2.ellipse(m, c, ax, 0, 0, 360, 255, -1)
-        else:
-            m[y1:y2, x1:x2] = 255
+
+    def draw(boxes):
+        for x1, y1, x2, y2 in boxes:
+            if shape == "solid":
+                cv2.ellipse(m, ((x1 + x2) // 2, (y1 + y2) // 2), ((x2 - x1) // 2 + 1, (y2 - y1) // 2 + 1),
+                            0, 0, 360, 255, -1)
+            else:
+                m[y1:y2, x1:x2] = 255
+
+    if zone is not None:
+        m[zone[1]:zone[3], zone[0]:zone[2]] = 255
+    draw(heads)
+    draw(faces)
+    for x1, y1, x2, y2 in hands:                             # no padding, head box or zone hides a hand
+        m[max(0, y1):max(0, y2), max(0, x1):max(0, x2)] = 0
+    for x1, y1, x2, y2 in cores:                             # the faces themselves always stay masked
+        m[y1:y2, x1:x2] = 255
     return m
 
 
-def apply_mask(fr: np.ndarray, m: np.ndarray, shape: str, boxes) -> None:
+MOSAIC_CELL = 24          # pixels per mosaic cell (1920 px wide frame)
+
+
+def apply_mask(fr: np.ndarray, m: np.ndarray, shape: str) -> None:
+    if not m.any():
+        return
     if shape == "solid":
         fr[m > 0] = (32, 32, 32)
         return
-    for x1, y1, x2, y2 in boxes:
-        if x2 - x1 < 2 or y2 - y1 < 2:
-            continue
-        roi = fr[y1:y2, x1:x2]
-        small = cv2.resize(roi, (8, max(1, round(8 * (y2 - y1) / (x2 - x1)))), interpolation=cv2.INTER_AREA)
-        big = cv2.resize(small, (x2 - x1, y2 - y1), interpolation=cv2.INTER_NEAREST)
-        fr[y1:y2, x1:x2] = cv2.GaussianBlur(big, (0, 0), sigmaX=max(3.0, (x2 - x1) / 16))
+    h, w = fr.shape[:2]
+    small = cv2.resize(fr, (max(1, w // MOSAIC_CELL), max(1, h // MOSAIC_CELL)), interpolation=cv2.INTER_AREA)
+    big = cv2.resize(small, (w, h), interpolation=cv2.INTER_NEAREST)
+    fr[m > 0] = big[m > 0]
 
 
 def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zone: bool) -> dict:
@@ -185,11 +219,13 @@ def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zo
     per = []
     for fr in frames(src):
         d = {"egoblur": det.egoblur(fr), "retinaface": det.retinaface(fr)}
-        d["pose_head"], person = det.heads(fr)
+        d["pose_head"], hands, person = det.heads(fr)
         if det.yolo is not None:
             d["yolo_face"] = det.yolo_face(fr)
-        mask_boxes = [b for b in d["egoblur"] + d["retinaface"] if b[4] >= FACE_THRESHOLD] + d["pose_head"]
-        per.append({"d": d, "boxes": [padded(b, w, h) for b in mask_boxes],
+        face_boxes = [b for b in d["egoblur"] + d["retinaface"] if b[4] >= FACE_THRESHOLD]
+        per.append({"d": d, "faces": [padded(b, w, h) for b in face_boxes],
+                    "cores": [padded(b, w, h, CORE_PAD) for b in face_boxes],
+                    "heads": [padded(b, w, h) for b in d["pose_head"]], "hands": hands,
                     "zone": left_zone and view == "Left" and person})
     n = len(per)
     # pass 2: write the masked clip; the coverage check runs on each frame's mask
@@ -204,21 +240,25 @@ def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zo
     flags = []
     try:
         for i, fr in enumerate(frames(src)):
-            boxes = [b for j in range(max(0, i - HOLD), min(n, i + HOLD + 1)) for b in per[j]["boxes"]]
-            if any(per[j]["zone"] for j in range(max(0, i - HOLD), min(n, i + HOLD + 1))):
-                boxes.append(zone)
-            m = mask_of(boxes, w, h, "solid" if shape == "solid" else "box")
-            masked += bool(boxes)
+            near = range(max(0, i - HOLD), min(n, i + HOLD + 1))
+            faces = [b for j in near for b in per[j]["faces"]]
+            heads = [b for j in near for b in per[j]["heads"]]
+            z = zone if any(per[j]["zone"] for j in near) else None
+            # pose often loses the player for a few frames (upside-down, occluded): take the hands of the
+            # nearest frame that has them
+            hands = next((per[j]["hands"] for j in sorted(near, key=lambda j: abs(j - i)) if per[j]["hands"]), [])
+            m = mask_of(faces, per[i]["cores"], heads, z, hands, w, h, shape)
+            masked += bool(m.any())
             area += float((m > 0).mean())
-            faces = confirmed_faces(per[i]["d"])
-            confirmed += len(faces)
-            for f in faces:
+            seen = confirmed_faces(per[i]["d"])
+            confirmed += len(seen)
+            for f in seen:
                 x1, y1, x2, y2 = (max(0, int(f[0])), max(0, int(f[1])), min(w, int(f[2])), min(h, int(f[3])))
                 if x2 > x1 and y2 > y1 and (m[y1:y2, x1:x2] > 0).mean() < COVER_MIN:
                     flagged += 1
                     flags.append(round(i / fps, 2))
                     break
-            apply_mask(fr, m, shape, boxes)
+            apply_mask(fr, m, shape)
             ff.stdin.write(fr.tobytes())
     finally:
         ff.stdin.close()
