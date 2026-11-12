@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>SKY-Piano</title>
+    <link rel="icon" type="image/png" href="/skypiano/grand-piano.png" />
+    <script>
+      // GitHub Pages SPA redirect — rafgraph/spa-github-pages (MIT).
+      // Pages serves this one file for every unmatched path across the whole
+      // site, so it has to route deep links for two apps: the project page at
+      // /skypiano/ and the explorer nested at /skypiano/explorer/. It encodes
+      // the original path in the query string; each app's index.html decodes it
+      // back before its router boots.
+      (function () {
+        var l = window.location;
+        var segments = l.pathname.split('/').filter(Boolean);
+        // Keep the repository segment, plus the explorer mount when present.
+        var pathSegmentsToKeep = segments[1] === 'explorer' ? 2 : 1;
+        l.replace(
+          l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+          l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+          l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+          (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+          l.hash
+        );
+      })();
+    </script>
+  </head>
+  <body>Redirecting…</body>
+</html>

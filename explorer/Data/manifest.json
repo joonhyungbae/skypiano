@@ -1,0 +1,138 @@
+{
+  "version": 2,
+  "generatedAt": "2026-04-25T00:00:00",
+  "datasets": [
+    {
+      "date": "220819",
+      "label": "2022.08.19",
+      "status": "ready",
+      "basePath": "/Data/Processed/220819",
+      "dataFile": "/Data/final_data_220819.json",
+      "adapter": "220819",
+      "modalities": {
+        "video": true,
+        "audio": true,
+        "motion": true,
+        "midi": true,
+        "score": true
+      }
+    }
+  ],
+  "samples": [
+    {
+      "trialId": "240828_C0_N4_T2_Clementi_Op36_No1",
+      "session": "240828",
+      "subject": "C0_N4",
+      "level": "Professional",
+      "task": "T2",
+      "pieceLabel": "Clementi — Sonatina Op.36 No.1, C major",
+      "basePath": "/samples",
+      "videoViews": [],
+      "modalities": {
+        "audio": true,
+        "midi": true,
+        "motionHand": true,
+        "motionBody": true,
+        "kinematics": true,
+        "fingering": true,
+        "video": false,
+        "score": true
+      },
+      "narrativeBlurb": "Beginner-grade Set1 piece — Clementi — Sonatina Op.36 No.1, C major. Source trial 240828_C0_N4_T2_P6_t1 piece 1, ~49s, 736 performance notes. Score↔performance alignment quality 0.979 (score-match 0.992, perf-match 0.967).",
+      "durationLabel": "~0:49",
+      "pieceLevel": "Beginner"
+    },
+    {
+      "trialId": "240828_C0_N5_T2_Bach_MinuetG",
+      "session": "240828",
+      "subject": "C0_N5",
+      "level": "Professional",
+      "task": "T2",
+      "pieceLabel": "Bach (Petzold) — Minuet in G major, BWV Anh.114",
+      "basePath": "/samples",
+      "videoViews": [],
+      "modalities": {
+        "audio": true,
+        "midi": true,
+        "motionHand": true,
+        "motionBody": true,
+        "kinematics": true,
+        "fingering": true,
+        "video": false,
+        "score": true
+      },
+      "narrativeBlurb": "Beginner-grade Set1 piece — Bach (Petzold) — Minuet in G major, BWV Anh.114. Source trial 240828_C0_N5_T2_P5_t1 piece 1, ~45s, 214 performance notes. Score↔performance alignment quality 0.974 (score-match 1.000, perf-match 0.949).",
+      "durationLabel": "~0:45",
+      "pieceLevel": "Beginner"
+    },
+    {
+      "trialId": "240828_C0_N6_T2_Schubert_Op90_No4",
+      "session": "240828",
+      "subject": "C0_N6",
+      "level": "Professional",
+      "task": "T2",
+      "pieceLabel": "Schubert — Impromptu Op.90 No.4 (Allegretto)",
+      "basePath": "/samples",
+      "videoViews": [],
+      "modalities": {
+        "audio": true,
+        "midi": true,
+        "motionHand": true,
+        "motionBody": true,
+        "kinematics": true,
+        "fingering": true,
+        "video": false,
+        "score": true
+      },
+      "narrativeBlurb": "Advanced-grade Set1 piece — Schubert — Impromptu Op.90 No.4 (Allegretto). Source trial 240828_C0_N6_T2_P6_t1 piece 1, ~94s, 1014 performance notes. Score↔performance alignment quality 0.921 (score-match 0.918, perf-match 0.924).",
+      "durationLabel": "~1:34",
+      "pieceLevel": "Advanced"
+    },
+    {
+      "trialId": "240828_C0_N7_T2_Chopin_Prelude_Op28_No4",
+      "session": "240828",
+      "subject": "C0_N7",
+      "level": "Professional",
+      "task": "T2",
+      "pieceLabel": "Chopin — Prelude Op.28 No.4 in E minor",
+      "basePath": "/samples",
+      "videoViews": [],
+      "modalities": {
+        "audio": true,
+        "midi": true,
+        "motionHand": true,
+        "motionBody": true,
+        "kinematics": true,
+        "fingering": true,
+        "video": false,
+        "score": true
+      },
+      "narrativeBlurb": "Intermediate-grade Set1 piece — Chopin — Prelude Op.28 No.4 in E minor. Source trial 240828_C0_N7_T2_P1_t1 piece 1, ~111s, 601 performance notes. Score↔performance alignment quality 0.983 (score-match 0.992, perf-match 0.975).",
+      "durationLabel": "~1:51",
+      "pieceLevel": "Intermediate"
+    },
+    {
+      "trialId": "240828_C0_N8_T2_Mozart_K545",
+      "session": "240828",
+      "subject": "C0_N8",
+      "level": "Professional",
+      "task": "T2",
+      "pieceLabel": "Mozart — Piano Sonata K.545, 1st mvt",
+      "basePath": "/samples",
+      "videoViews": [],
+      "modalities": {
+        "audio": true,
+        "midi": true,
+        "motionHand": true,
+        "motionBody": true,
+        "kinematics": true,
+        "fingering": true,
+        "video": false,
+        "score": true
+      },
+      "narrativeBlurb": "Intermediate-grade Set1 piece — Mozart — Piano Sonata K.545, 1st mvt. Source trial 240828_C0_N8_T2_P3_t1 piece 1, ~60s, 517 performance notes. Score↔performance alignment quality 0.960 (score-match 0.990, perf-match 0.932).",
+      "durationLabel": "~1:00",
+      "pieceLevel": "Intermediate"
+    }
+  ]
+}
