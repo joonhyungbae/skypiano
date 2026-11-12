@@ -123,9 +123,9 @@ extra_gated_fields:
 
 A multimodal piano performance dataset: audio, MIDI, hand and body motion
 capture and per-note fingering, synchronized per performance. This is a pre-1.0
-release; later versions add gap-filled (imputed) motion with fingering labeled
-from it, Visual3D kinematics, score alignment and face-anonymized video. Each
-version is a tag of this repository (`v0.1.0`, `v0.1.1`, ...).
+release; later versions add Visual3D kinematics, score alignment and
+face-anonymized video. Each version is a tag of this repository (`v0.1.0`,
+`v0.1.1`, ...).
 
 ## Access
 
@@ -155,6 +155,9 @@ data/P<id>/<task>/<piece>/r<n>/audio.wav    audio
                                body.csv     body motion, 120 fps
                                fingering.csv  per-note hand and finger, from the raw motion
                                hand_suspect_mask.csv  1 = observed but implausible (ghost or swapped marker)
+                               hand_imputed.csv       hand motion with short gaps filled (where listed)
+                               hand_imputed_mask.csv  1 = value filled by the model
+                               fingering_imputed.csv  fingering labeled from hand_imputed.csv
                                top.mp4      top-view video, faces blurred (where available)
 data/P<id>/free/take<nn>/...                free repertoire, whole takes
 metadata/performances.csv   one row per performance: path, participant, task,
@@ -176,6 +179,19 @@ more than 150 mm from the median of the same hand's markers in that frame, or a
 one-frame excursion of more than 50 mm out and back -- typically a ghost
 reflection or a swapped marker label. Those values are kept in `hand.csv` as
 recorded; drop them where 1.
+
+`hand_imputed.csv` (professional cohort only, the pianists the gap-filling
+model was trained on) is `hand.csv` with short gaps filled by a learned
+imputation model; observed values are unchanged and `hand_imputed_mask.csv`
+marks every filled value. To stay precise, only gaps of at most 29 frames
+(0.24 s) are filled, and a fill is left empty when the frame has fewer than 5
+observed hand markers, when it breaks the recording's bone lengths by more
+than 5 mm / 10%, or when it moves faster than that marker ever does in the
+recording; markers never observed in a recording, implausible observations
+(`hand_suspect_mask.csv`), and the arm and keyboard reference markers are not
+filled. On recordings held out from training, masked gaps of 10-29 frames are
+filled with a mean error of about 1.4 mm (1.3% of values off by more than
+10 mm).
 
 ## License
 
