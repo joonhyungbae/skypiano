@@ -154,6 +154,7 @@ data/P<id>/<task>/<piece>/r<n>/audio.wav    audio
                                hand.csv     hand motion, 120 fps
                                body.csv     body motion, 120 fps
                                fingering.csv  per-note hand and finger, from the raw motion
+                               hand_suspect_mask.csv  1 = observed but implausible (ghost or swapped marker)
                                top.mp4      top-view video, faces blurred (where available)
 data/P<id>/free/take<nn>/...                free repertoire, whole takes
 metadata/performances.csv   one row per performance: path, participant, task,
@@ -169,7 +170,12 @@ of a piece in play order. Frame 0 of the motion files is time 0 of the audio and
 the capture system lost are left empty in this version. `fingering.csv` has one
 row per note of `midi.mid` (onset, offset in seconds from the file's start,
 pitch, velocity, hand L/R, finger 1-5, tier A geometric / B press-depth refined
-/ C learned fill, ambiguity flag, candidates, confidence).
+/ C learned fill, ambiguity flag, candidates, confidence). `hand_suspect_mask.csv`
+has the columns of `hand.csv`; 1 marks an observed value that is implausible --
+more than 150 mm from the median of the same hand's markers in that frame, or a
+one-frame excursion of more than 50 mm out and back -- typically a ghost
+reflection or a swapped marker label. Those values are kept in `hand.csv` as
+recorded; drop them where 1.
 
 ## License
 
