@@ -22,8 +22,8 @@ covered 99.5% at about 7% of the frame. Per frame:
 
 Every box is padded by PAD of its size on each side, and a frame is masked
 with the union of the boxes of the frames within +-HOLD. The mask is either
-an opaque fill of the ellipse inscribed in the padded box (--mask solid, default; the zone as a box) or a pixel
-mosaic (--mask mosaic).
+a pixel mosaic of MOSAIC_CELL px cells (--mask mosaic, default; --mosaic-cell) or an opaque fill
+(--mask solid); face and head regions are the ellipse inscribed in the padded box, the zone a box.
 
 Coverage check, on the original frames against the mask: a face is
 "confirmed" where two different detectors agree (score >= 0.5, IoU > 0.3) or
@@ -194,7 +194,7 @@ def mask_of(faces, cores, heads, zone, hands, w: int, h: int, shape: str) -> np.
     return m
 
 
-MOSAIC_CELL = 24          # pixels per mosaic cell (1920 px wide frame)
+MOSAIC_CELL = 48          # pixels per mosaic cell (--mosaic-cell); 24 px still showed hair and face outline
 
 
 def apply_mask(fr: np.ndarray, m: np.ndarray, shape: str) -> None:
@@ -268,7 +268,7 @@ def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zo
         raise RuntimeError(f"ffmpeg failed on {src.name}")
     out = dst if flagged == 0 else dst.with_suffix(".flagged.mp4")
     tmp.replace(out)
-    return {"clip": dst.name, "view": view, "mask": shape, "frames": n, "frames_masked": masked,
+    return {"clip": dst.name, "view": view, "mask": shape, "mosaic_cell": MOSAIC_CELL if shape == "mosaic" else None, "frames": n, "frames_masked": masked,
             "mask_area": round(area / max(1, n), 4), "confirmed": confirmed, "flagged_frames": flagged,
             "flag_times_sec": flags[:50], "passed": flagged == 0}
 
@@ -287,6 +287,8 @@ def confirmed_faces(d: dict) -> list:
 
 
 def worker(a, names: list[str], q) -> None:
+    global MOSAIC_CELL
+    MOSAIC_CELL = a.mosaic_cell
     det = Detectors(a.gpu, a.retinaface, verify=True)
     src_dir, dst_dir = Path(a.src_dir), Path(a.dst_dir)
     for name in names:
@@ -311,7 +313,8 @@ def main():
     ap.add_argument("--only", required=True, help="file listing clip names (one per line)")
     ap.add_argument("--stats-csv", required=True)
     ap.add_argument("--view", default=None, help="camera view (default: from the clip name)")
-    ap.add_argument("--mask", choices=["solid", "mosaic"], default="solid")
+    ap.add_argument("--mask", choices=["solid", "mosaic"], default="mosaic")
+    ap.add_argument("--mosaic-cell", type=int, default=MOSAIC_CELL, help="mosaic cell size in pixels")
     ap.add_argument("--retinaface", action="store_true", help="add RetinaFace-R50 boxes to the mask")
     ap.add_argument("--left-zone", action=argparse.BooleanOptionalAction, default=True,
                     help="Left view: mask the bottom-right head zone while pose sees the player")
