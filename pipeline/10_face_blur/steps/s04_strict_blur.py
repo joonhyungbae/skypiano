@@ -20,6 +20,11 @@ covered 99.5% at about 7% of the frame. Per frame:
     leans in) and to the padding of the face boxes; the face boxes themselves,
     padded only by CORE_PAD, are drawn after the cut and always win.
 
+EgoBlur (the slowest detector by far) may run on every FACE_STRIDE-th frame
+only (--face-stride, default 1): the benchmark's held union sampled every
+5th frame (offsets 0, +-5, +-10, +-15) and covered 99.5% of faces, and pose
+and the verifier still run on every frame.
+
 Every box is padded by PAD of its size on each side, and a frame is masked
 with the union of the boxes of the frames within +-HOLD. The mask is either
 a pixel mosaic of MOSAIC_CELL px cells (--mask mosaic, default; --mosaic-cell) or an opaque fill
@@ -209,7 +214,8 @@ def apply_mask(fr: np.ndarray, m: np.ndarray, shape: str) -> None:
     fr[m > 0] = big[m > 0]
 
 
-def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zone: bool) -> dict:
+def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zone: bool,
+            face_stride: int = 1) -> dict:
     cap = cv2.VideoCapture(str(src))
     fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
     w, h = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -221,7 +227,8 @@ def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zo
     for fr in frames(src):
         if len(per) % 600 == 0:
             print(f"PROGRESS {dst.name} detect {len(per)} frames {time.time() - t0:.0f}s", flush=True)
-        d = {"egoblur": det.egoblur(fr), "retinaface": det.retinaface(fr)}
+        on = len(per) % face_stride == 0
+        d = {"egoblur": det.egoblur(fr) if on else [], "retinaface": det.retinaface(fr) if on else []}
         d["pose_head"], hands, person = det.heads(fr)
         if det.yolo is not None:
             d["yolo_face"] = det.yolo_face(fr)
@@ -305,7 +312,8 @@ def worker(a, names: list[str], q) -> None:
         view = a.view or next((v for v in ("RightLow", "Right", "Left", "Top") if f"_{v}." in name), "")
         print(f"START {name}", flush=True)
         t0 = time.time()
-        row = process(det, src_dir / name, dst, view, a.mask, a.left_zone)
+        row = process(det, src_dir / name, dst, view, a.mask, a.left_zone, a.face_stride)
+        row["face_stride"] = a.face_stride
         row["elapsed_sec"] = round(time.time() - t0, 1)
         meta.write_text(json.dumps(row), encoding="utf-8")
         print("DONE " + json.dumps(row), flush=True)
@@ -321,6 +329,7 @@ def main():
     ap.add_argument("--view", default=None, help="camera view (default: from the clip name)")
     ap.add_argument("--mask", choices=["solid", "mosaic"], default="mosaic")
     ap.add_argument("--mosaic-cell", type=int, default=MOSAIC_CELL, help="mosaic cell size in pixels")
+    ap.add_argument("--face-stride", type=int, default=1, help="run EgoBlur / RetinaFace on every n-th frame")
     ap.add_argument("--retinaface", action="store_true", help="add RetinaFace-R50 boxes to the mask")
     ap.add_argument("--left-zone", action=argparse.BooleanOptionalAction, default=True,
                     help="Left view: mask the bottom-right head zone while pose sees the player")
