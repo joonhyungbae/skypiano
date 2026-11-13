@@ -217,7 +217,10 @@ def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zo
     zone = tuple(int(v * s) for v, s in zip(LEFT_ZONE, (w / 1920, h / 1080, w / 1920, h / 1080)))
     # pass 1: detections on the original frames
     per = []
+    t0 = time.time()
     for fr in frames(src):
+        if len(per) % 600 == 0:
+            print(f"PROGRESS {dst.name} detect {len(per)} frames {time.time() - t0:.0f}s", flush=True)
         d = {"egoblur": det.egoblur(fr), "retinaface": det.retinaface(fr)}
         d["pose_head"], hands, person = det.heads(fr)
         if det.yolo is not None:
@@ -240,6 +243,8 @@ def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zo
     flags = []
     try:
         for i, fr in enumerate(frames(src)):
+            if i % 600 == 0:
+                print(f"PROGRESS {dst.name} write {i}/{n} frames {time.time() - t0:.0f}s", flush=True)
             near = range(max(0, i - HOLD), min(n, i + HOLD + 1))
             faces = [b for j in near for b in per[j]["faces"]]
             heads = [b for j in near for b in per[j]["heads"]]
@@ -298,11 +303,12 @@ def worker(a, names: list[str], q) -> None:
             q.put(json.loads(meta.read_text(encoding="utf-8")))
             continue
         view = a.view or next((v for v in ("RightLow", "Right", "Left", "Top") if f"_{v}." in name), "")
+        print(f"START {name}", flush=True)
         t0 = time.time()
         row = process(det, src_dir / name, dst, view, a.mask, a.left_zone)
         row["elapsed_sec"] = round(time.time() - t0, 1)
         meta.write_text(json.dumps(row), encoding="utf-8")
-        print(json.dumps(row), flush=True)
+        print("DONE " + json.dumps(row), flush=True)
         q.put(row)
 
 
@@ -329,7 +335,14 @@ def main():
     procs = [ctx.Process(target=worker, args=(a, names[i::a.workers], q)) for i in range(a.workers) if names[i::a.workers]]
     for p in procs:
         p.start()
-    rows = [q.get() for _ in names]
+    import queue
+    rows = []
+    while len(rows) < len(names):
+        try:
+            rows.append(q.get(timeout=60))
+        except queue.Empty:
+            if not any(p.is_alive() for p in procs):         # a worker died: do not wait forever
+                raise SystemExit(f"workers exited with {len(rows)}/{len(names)} clips done; see the log above")
     for p in procs:
         p.join()
     rows.sort(key=lambda r: names.index(r["clip"]))
