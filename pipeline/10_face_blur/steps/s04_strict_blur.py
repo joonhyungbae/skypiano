@@ -18,7 +18,8 @@ covered 99.5% at about 7% of the frame. Per frame:
     frame within +-HOLD), so the zone never hides a hand on the keyboard. The
     same cut applies to the pose head boxes (coarse, and large when the player
     leans in) and to the padding of the face boxes; the face boxes themselves,
-    padded only by CORE_PAD, are drawn after the cut and always win.
+    padded only by CORE_PAD and taken from the frames within +-FACE_STRIDE,
+    are drawn after the cut and always win.
 
 EgoBlur (the slowest detector by far) may run on every FACE_STRIDE-th frame
 only (--face-stride, default 1): the benchmark's held union sampled every
@@ -262,7 +263,10 @@ def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zo
             # pose often loses the player for a few frames (upside-down, occluded): take the hands of the
             # nearest frame that has them
             hands = next((per[j]["hands"] for j in sorted(near, key=lambda j: abs(j - i)) if per[j]["hands"]), [])
-            m = mask_of(faces, per[i]["cores"], heads, z, hands, w, h, shape)
+            # face cores of the frames within +-face_stride: with a stride, most frames have no EgoBlur box of
+            # their own, and a hand cut next to the face would otherwise eat into it
+            cores = [b for j in range(max(0, i - face_stride), min(n, i + face_stride + 1)) for b in per[j]["cores"]]
+            m = mask_of(faces, cores, heads, z, hands, w, h, shape)
             masked += bool(m.any())
             area += float((m > 0).mean())
             seen = confirmed_faces(per[i]["d"], heads)
