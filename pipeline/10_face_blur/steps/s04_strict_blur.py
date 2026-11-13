@@ -31,9 +31,12 @@ a pixel mosaic of MOSAIC_CELL px cells (--mask mosaic, default; --mosaic-cell) o
 (--mask solid); face and head regions are the ellipse inscribed in the padded box, the zone a box.
 
 Coverage check, on the original frames against the mask: a face is
-"confirmed" where two different detectors agree (score >= 0.5, IoU > 0.3) or
-a face detection lies inside a pose head box; the verifier detectors are the
-masking ones plus YOLOv8-face (VERIFY_EXTRA). A frame is flagged when a
+"confirmed" where a face detection lies inside a pose head box of the frame, or
+where two different detectors agree (score >= 0.5, IoU > 0.3) and the face
+centre lies in a padded pose head box of the frames within +-HOLD; when pose
+sees no head in that window, agreement alone confirms. (Two detectors also
+agree on marker-taped shoulders; such boxes are nowhere near a head.) The
+verifier detectors are the masking ones plus YOLOv8-face (VERIFY_EXTRA). A frame is flagged when a
 confirmed face is less than COVER_MIN inside the mask. Per clip ({clip}.json
 and one row of --stats-csv): frames, frames_masked, mask_area, confirmed,
 flagged_frames, passed (no flagged frame). A flagged clip keeps its output
@@ -262,7 +265,7 @@ def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zo
             m = mask_of(faces, per[i]["cores"], heads, z, hands, w, h, shape)
             masked += bool(m.any())
             area += float((m > 0).mean())
-            seen = confirmed_faces(per[i]["d"])
+            seen = confirmed_faces(per[i]["d"], heads)
             confirmed += len(seen)
             for f in seen:
                 x1, y1, x2, y2 = (max(0, int(f[0])), max(0, int(f[1])), min(w, int(f[2])), min(h, int(f[3])))
@@ -285,13 +288,17 @@ def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zo
             "flag_times_sec": flags[:50], "passed": flagged == 0}
 
 
-def confirmed_faces(d: dict) -> list:
-    """Faces two different detectors agree on, or face detections inside a pose head box."""
+def confirmed_faces(d: dict, heads: list) -> list:
+    """Face detections inside a pose head box, or faces two different detectors agree on whose centre
+    lies in one of `heads` (the padded pose head boxes of the frames within +-HOLD; agreement alone
+    when `heads` is empty)."""
     face_methods = [k for k in d if k != "pose_head"]
     boxes = [(k, b) for k in face_methods for b in d[k] if b[4] >= VERIFY_THRESHOLD]
     out = []
     for i, (k, b) in enumerate(boxes):
-        agree = any(k2 != k and iou(b, b2) > VERIFY_IOU for k2, b2 in boxes)
+        cx, cy = (b[0] + b[2]) / 2, (b[1] + b[3]) / 2
+        agree = any(k2 != k and iou(b, b2) > VERIFY_IOU for k2, b2 in boxes) and (
+            not heads or any(hb[0] <= cx <= hb[2] and hb[1] <= cy <= hb[3] for hb in heads))
         in_head = any(b[0] >= hb[0] and b[1] >= hb[1] and b[2] <= hb[2] and b[3] <= hb[3] for hb in d["pose_head"])
         if agree or in_head:
             out.append(b)
