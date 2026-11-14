@@ -23,7 +23,13 @@ What is released (Stage 05 is the gate; a dataset must have passed):
           as a whole, as the paper states for free repertoire.
 
 Cuts the reviewer or Stage 05 called not a piece are left out, and so is every
-session out of release scope (C0_N0; paper_builders/participant_map.py).
+session out of release scope (C0_N0; paper_builders/participant_map.py). In a
+retake dataset (221112) only the confirmed take of a piece is released, never a
+retake Stage 05 settled through it (`represented_by`). Session-log names that
+are no program piece are left out as practice variants: one-hand practice of a
+Fink exercise ("28(left hand)") and notes written in the log's own language
+(any non-ASCII name); the subject's regular performance of the piece is
+released instead.
 
 Layout: data/P{participant id}/{task}/{piece}/r{n}/{modality file}, the
 participant id (1-19) from paper_builders/participant_map.py, r1, r2, ... the
@@ -113,6 +119,7 @@ MODALITIES["hand_suspect_mask"] = "hand_suspect_mask.csv"
 OPTIONAL = {"top", "fingering", "hand_imputed", "hand_imputed_mask", "fingering_imputed", "hand_suspect_mask"}
 IMPUTED_MODALITIES = ("hand_imputed", "hand_imputed_mask", "fingering_imputed")
 SESSION_ORDER = ["220819", "221112", "240523", "240828"]
+PRACTICE_VARIANT = re.compile(r"^\d+\s*\((left|right|both) hands?\)$")   # one-hand practice of a Fink exercise
 FINK = re.compile(r"^(\d+)(?: - (Forte|Piano))?$")
 DRILL = re.compile(r"^(Scale|Arpeggio|Octave Repeat|Octave Scale|Broken Octave Arpeggio) "
                    r"\((moderate|fast|fastest)(, x5)?\)$")
@@ -204,6 +211,12 @@ def piece_rows(ds: str, left_out: dict) -> list[dict]:
             continue
         if not p.get("name"):
             left_out["unnamed"] = left_out.get("unnamed", 0) + 1
+            continue
+        if p.get("represented_by") and not p.get("confirmed"):
+            left_out["retake_of_confirmed_take"] = left_out.get("retake_of_confirmed_take", 0) + 1
+            continue
+        if PRACTICE_VARIANT.match(p["name"]) or not p["name"].isascii():
+            left_out["practice_variant"] = left_out.get("practice_variant", 0) + 1
             continue
         rows.append({**info, "piece": p["piece"], "name": p["name"], "window_sec": p["window_sec"],
                      "confirmed_by": p.get("boundary_confirmed_by")})
