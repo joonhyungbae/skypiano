@@ -53,7 +53,8 @@ where the sounding end is the note's release held on by the sustain pedal
 note struck nor the end of the recording); kept spans are merged, everything
 else is muted, with a 20 ms linear fade inside the muted side of each edge (so
 the kept samples are unchanged). The rule is exact, read from the MIDI. A trial
-with audio but no MIDI cannot be muted by it and gets no audio.
+with audio but no MIDI cannot be muted by it: its audio is written as recorded,
+with audio_muted = false and a note in _trials.json (takes.csv of the release).
 
 MIDI: the notes and control changes of the source, written at the source's
 resolution and tempo (120 BPM), so every note time is kept to the tick; other
@@ -447,11 +448,20 @@ def build_trial(rec: dict) -> dict:
         info["audio_rate"] = wav_p.framerate
         info["muted_sec"] = round(float(cut.sum()) / wav_p.framerate, 3)
         info["kept_spans"] = len(spans)
+        info["audio_muted"] = True
         raw_x, trial_x = trial_x, muted
+    elif has_audio:                              # no MIDI to mute by: the audio as recorded
+        wav_p, x = read_wav(Path(rec["audio"]))
+        write_wav(dst / "audio.wav", wav_p, x)
+        info["files"].append("audio.wav")
+        info["sources"]["audio"] = Path(rec["audio"]).as_posix()
+        info["audio_sec"] = round(wav_p.nframes / wav_p.framerate, 3)
+        info["audio_rate"] = wav_p.framerate
+        info["muted_sec"] = 0.0
+        info["audio_muted"] = False
+        info["audio_note"] = "no MIDI was recorded with this take, so speech is not muted"
     else:
         (dst / "audio.wav").unlink(missing_ok=True)
-        if Path(rec["audio"]).exists() and not has_midi and not rec["audio_midi_absent"]:
-            info["notes"].append("audio left out: no MIDI to mute speech by")
 
     # motion
     for kind in ("hand", "body"):
@@ -610,7 +620,7 @@ def summarize(index: dict) -> dict:
         s = {"trials": 0, "audio_sec": 0.0, "muted_sec": 0.0, "pieces": Counter(), "confirmed": Counter(),
              "residual_pieces": {"hand": 0, "body": 0}, "residual_examples": [], "failures": [],
              "midi_over_1ms": 0, "midi_zero_tick_notes": 0, "notes": 0, "motion_sec": 0.0, "audio_trials": 0,
-             "motion_only_trials": 0, "left_out_audio": []}
+             "motion_only_trials": 0, "unmuted_audio": []}
         for stem, t in index.items():
             if t["dataset"] != ds:
                 continue
@@ -620,8 +630,8 @@ def summarize(index: dict) -> dict:
             s["motion_sec"] += max(t.get("hand_frames", 0), t.get("body_frames", 0)) / FPS
             s["audio_trials"] += "audio.wav" in t["files"]
             s["motion_only_trials"] += "midi.mid" not in t["files"] and "audio.wav" not in t["files"] and bool(t["files"])
-            if any("audio left out" in n for n in t.get("notes", [])):
-                s["left_out_audio"].append(stem)
+            if t.get("audio_muted") is False:
+                s["unmuted_audio"].append(stem)
             s["muted_sec"] += t.get("muted_sec", 0.0)
             for ps, c in t.get("pieces", {}).items():
                 mods = [m for m in ("audio", "midi", "hand", "body") if m in c]
