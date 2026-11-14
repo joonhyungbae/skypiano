@@ -20,7 +20,11 @@ What is released (Stage 05 is the gate; a dataset must have passed):
           drill in planned repeated takes, and some drills twice within a take,
           so there every confirmed cut is its own round. Elsewhere every take of a piece is the same round.
   takes   the take-level dataset (240523, amateur free repertoire): every trial
-          as a whole, as the paper states for free repertoire.
+          as a whole, as the paper states for free repertoire. It is released
+          once, as its take folder (data/P{id}/takes/...; muted, on the trial
+          clock), which performances.csv lists as the performance and
+          pieces.csv marks best; with --no-takes (and before take folders) it
+          was data/P{id}/free/take01, ... from the unmuted trial sources.
   full recordings
           every take (trial) of every released session, whole, in the take
           folders below: on the trial clock of build_trials.py (time 0 = the
@@ -42,7 +46,7 @@ released instead.
 Layout: data/P{participant id}/{task}/{piece}/r{n}/{modality file}, the
 participant id (1-19) from paper_builders/participant_map.py, r1, r2, ... the
 participant's performances of that piece in play order (free repertoire by
-whole take: data/P{id}/free/take01, ...). The task follows the paper's
+whole take: its take folder, see below). The task follows the paper's
 categories, read from the piece rather than from the session's T-tag (240828
 labels its Fink programme "technique2" and its warm-up drills "technique1"):
     technique1        the numbered Fink exercises (4 ... 51)
@@ -61,7 +65,10 @@ take P13, attempt t1; the T-tag is the recording's, not the paper's task) --
 holding audio.wav, midi.mid, hand.csv, body.csv where they exist. A piece window
 of pieces.csv cuts a take's files as build_trials.py states (audio from the
 millisecond, MIDI notes in the window, motion rows hand/body_start_frame ..
-_end_frame). Trial-level video is not released yet.
+_end_frame). Trial-level video is not released yet, except where a free-repertoire
+take carries its own (top.mp4, with fingering and the Stage 06 files, which stay
+keyed by the take's former path free/take{nn}). takes.csv says whether a take's
+audio is muted (audio_muted; false, with audio_note, for a take with no MIDI).
 
 Modalities per version (MODALITIES): audio (.wav), MIDI (.mid), hand and body
 motion (.csv, 120 fps, frame 0 = time 0 of the audio and MIDI); optional ones
@@ -336,18 +343,23 @@ def take_rows_full(datasets: list[str], index: dict, performance_of: dict[str, s
         if pid is None:
             sys.exit(f"no participant id (out of release scope?): {ds} {t['session']}")
         base = take_path(pid, ds, t["session"], stem)
+        listed = performance_of.get(stem) == base       # a free-repertoire take: listed as its performance
         have = []
         for name in TAKE_FILES:
             f = TRIALS / ds / stem / name
             if name in t["files"] and f.exists():
+                have.append(name.split(".")[0])
+                if listed:
+                    continue
                 manifest.append({"release_path": f"{base}/{name}", "source_path": f.as_posix(),
                                  "bytes": f.stat().st_size})
-                have.append(name.split(".")[0])
         motion = max(t.get("hand_frames", 0), t.get("body_frames", 0)) / 120.0
         table.append({"path": base, "participant_id": pid, "group": participant_role(pid), "session": ds,
                       "session_subject": t["session"], "source_take": stem, "modalities": " ".join(have),
                       "audio_sec": t.get("audio_sec"), "motion_sec": round(motion, 3) if motion else None,
                       "midi_notes": t.get("n_notes"), "muted_sec": t.get("muted_sec"),
+                      "audio_muted": t.get("audio_muted", "muted_sec" in t) if "audio" in have else None,
+                      "audio_note": t.get("audio_note", "") if "audio" in have else "",
                       "performance_path": performance_of.get(stem)})
         v = totals.setdefault(ds, {"takes": 0, "audio_hours": 0.0, "motion_hours": 0.0, "midi_notes": 0,
                                    "motion_only_takes": 0, "muted_hours": 0.0})
@@ -380,9 +392,24 @@ def piece_status(p: dict, kept: set[str]) -> str:
     return "retake" if p.get("confirmed") else "unreviewed"
 
 
-def pieces_table(datasets: list[str], index: dict, best: dict[str, str]) -> list[dict]:
-    """pieces.csv: every piece window Stage 04 cut in a released take."""
+def pieces_table(datasets: list[str], index: dict, best: dict[str, str],
+                 performance_of: dict[str, str]) -> list[dict]:
+    """pieces.csv: every piece window Stage 04 cut in a released take; a take released whole as a
+    free-repertoire performance (240523) is one more row spanning the take, the best one."""
     rows = []
+    sync_by = {t["trial"]: t.get("confirmed_by") for ds in datasets
+               for t in read_json(QA / ds / "_status.json", {}).get("trials", [])}
+    for stem, path in performance_of.items():
+        t = index[stem]
+        pid = participant_id(t["dataset"], t["session"])
+        end = t.get("audio_sec") or round(max(t.get("hand_frames", 0), t.get("body_frames", 0)) / 120.0, 3)
+        rows.append({"participant_id": pid, "take": path, "source_piece": stem, "start_sec": 0.0, "end_sec": end,
+                     "hand_start_frame": 0 if t.get("hand_frames") else None, "hand_end_frame": t.get("hand_frames"),
+                     "body_start_frame": 0 if t.get("body_frames") else None, "body_end_frame": t.get("body_frames"),
+                     "motion_residual_frames": 0, "piece_id": "", "name": "", "name_note": "whole take",
+                     "task": "free", "status": "confirmed", "best": True, "best_path": path,
+                     "confirmed_by": "sync_" + (sync_by.get(stem) or "review"),
+                     "reproduces_piece_files": None})
     for ds in datasets:
         for p in read_json(QA / ds / "_status.json", {}).get("pieces", []):
             info = parse(p["piece"])
@@ -466,18 +493,31 @@ def main():
     # r1, r2, ...: a participant's performances of a piece in play order (free takes: take01, ...)
     perf.sort(key=lambda r: (r["pid"], r["cat"], r["piece_id"], SESSION_ORDER.index(r["dataset"]), r["order"],
                              r["window_sec"][0] if r["window_sec"] else 0.0))
+    index = None
+    if not args.no_takes:
+        index = read_json(TRIALS / "_trials.json", None)
+        if index is None:
+            sys.exit(f"{TRIALS / '_trials.json'} missing: run pipeline/12_release/build_trials.py first (or --no-takes)")
     count: dict[tuple, int] = {}
     manifest, table, missing = [], [], {}
-    best, performance_of = {}, {}            # piece stem / take stem -> its piece-level folder
+    best, performance_of = {}, {}            # piece stem / take stem -> the folder of its performance
     for r in perf:
         k = (r["pid"], r["cat"], r["piece_id"])
         count[k] = count.get(k, 0) + 1
         leaf = f"take{count[k]:02d}" if r["level"] == "take" else f"{r['piece_id']}/r{count[k]}"
-        base = f"data/P{r['pid']:02d}/{r['cat']}/{leaf}"
+        base = key = f"data/P{r['pid']:02d}/{r['cat']}/{leaf}"   # key: the path Stage 06 files are stored by
+        if r["level"] == "take" and index is not None:
+            # a free-repertoire take is released once, as its take folder (muted, on the trial clock)
+            base = take_path(r["pid"], r["dataset"], r["session"], r["piece"])
+            t = index.get(r["piece"], {})
+            r["src"] = {**r["src"], **{m: TRIALS / r["dataset"] / r["piece"] / MODALITIES[m]
+                                       for m in ("audio", "midi", "hand", "body")}}
+            if not t:
+                sys.exit(f"{r['piece']}: not in {TRIALS / '_trials.json'}; run build_trials.py")
         (performance_of if r["level"] == "take" else best)[r["piece"]] = base
-        r["src"] = {**r["src"], "hand_suspect_mask": SUSPECT / base / "hand_suspect_mask.csv"}
+        r["src"] = {**r["src"], "hand_suspect_mask": SUSPECT / key / "hand_suspect_mask.csv"}
         if args.imputed_model:
-            fill = IMPUTED / args.imputed_model / base
+            fill = IMPUTED / args.imputed_model / key
             r["src"] = {**r["src"], "hand_imputed": fill / "hand_imputed.csv",
                         "hand_imputed_mask": fill / "hand_imputed_mask.csv",
                         "fingering_imputed": FINGERING_IMPUTED / args.imputed_model / r["dataset"] / f"{r['piece']}.csv"}
@@ -517,13 +557,10 @@ def main():
 
     takes, pieces, take_totals = [], [], {}
     if not args.no_takes:
-        index = read_json(TRIALS / "_trials.json", None)
-        if index is None:
-            sys.exit(f"{TRIALS / '_trials.json'} missing: run pipeline/12_release/build_trials.py first (or --no-takes)")
         dss = sorted(args.dataset, key=SESSION_ORDER.index)
         take_manifest, takes, take_totals = take_rows_full(dss, index, performance_of)
         manifest += take_manifest
-        pieces = pieces_table(dss, index, best)
+        pieces = pieces_table(dss, index, best, performance_of)
         for r in takes:                                # participants released through their takes only
             p = participants.setdefault(r["participant_id"], {"participant_id": r["participant_id"],
                                                               "group": r["group"], "sessions": set()})

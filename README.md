@@ -222,7 +222,7 @@ nothing is copied), `performances.csv`, `participants.csv`, `repertoire.csv`,
 `takes.csv`, `pieces.csv` and `summary.json`. The piece-level layout is
 
 ```
-data/P<id>/<task>/<piece>/r<n>/      one performance (free repertoire: free/take<nn>/)
+data/P<id>/<task>/<piece>/r<n>/      one performance (free repertoire: its take folder, below)
   audio.wav  midi.mid  hand.csv  body.csv  fingering.csv  [top.mp4]
   [hand_imputed.csv  hand_imputed_mask.csv  fingering_imputed.csv]
 ```
@@ -233,7 +233,7 @@ the participant's n-th performance of the piece. The release holds one
 confirmed performance per participant, task, piece and round: `240828` one
 per programme pass, `221112` one confirmed take per subject and piece,
 `220819` every planned repeated take, and `240523` (amateur free repertoire)
-whole takes. `top.mp4` is the EgoBlur-anonymized top view
+whole takes, released once as their take folders. `top.mp4` is the EgoBlur-anonymized top view
 (`--optional-in top=<sessions>`); the imputed files (`--imputed-model TAG`)
 are the gap-filled hand motion, its mask (1 = filled) and the fingering
 computed from it.
@@ -252,7 +252,8 @@ data/P<id>/takes/<session>_<take>/   one whole take, e.g. takes/240828_T1_P13_t1
 ```
 
 (221112 participants 14 and 18 have motion only; take-level video is not
-released yet), with `takes.csv` (one row per take) and `pieces.csv`: every
+released yet; a take without MIDI keeps its audio unmuted, marked
+`audio_muted=false` in `takes.csv`), with `takes.csv` (one row per take) and `pieces.csv`: every
 piece window cut in a take (start and end on the take clock, motion rows),
 its piece id, task and status (`confirmed`, `retake`, `rejected`,
 `practice_variant`, `not_a_piece`, ...), and `best` with the path of the
