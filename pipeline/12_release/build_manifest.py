@@ -289,6 +289,13 @@ def piece_rows(ds: str, left_out: dict) -> list[dict]:
     return out
 
 
+def video_released(f: Path) -> bool:
+    """A blurred clip ships only with its Stage 10 step 04 record: passed the
+    coverage check, or flagged and passed on review ({clip}.json "review")."""
+    j = read_json(f.with_suffix(".json"), None)
+    return bool(j) and (j.get("passed") is True or (j.get("review") or {}).get("verdict") == "pass")
+
+
 def files_for_piece(r: dict) -> dict[str, Path]:
     return {**{m: PIECES / r["dataset"] / f"{r['piece']}{suf}" for m, suf in PIECE_SOURCES.items()},
             "top": BLURRED / r["dataset"] / "videos_blurred" / f"{r['piece']}_Top.mp4",
@@ -525,7 +532,7 @@ def main():
         for m, f in r["src"].items():
             if m in only and r["dataset"] not in only[m]:
                 continue
-            if f.exists():
+            if f.exists() and (m != "top" or video_released(f)):
                 manifest.append({"release_path": f"{base}/{MODALITIES[m]}", "source_path": f.as_posix(),
                                  "bytes": f.stat().st_size})
                 have.append(m)
