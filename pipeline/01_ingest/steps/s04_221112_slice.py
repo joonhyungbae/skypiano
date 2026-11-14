@@ -39,6 +39,11 @@ every later stage.
      KEY_SIGNAL_TOL_S. The search runs on past the recording's last note (a
      session's last take is captured beyond it) and up to MAX_LEAD_PAD_S
      before its start (a first take can start before the recording).
+     A take left without a log trial by the one-to-one pairing (the log has
+     fewer trials than the folder has takes: one logged trial captured in two
+     files) is placed between the placed takes before and after it in capture
+     order, at its best peak (hit + r) starting between their starts, on the
+     log trial of the take before it.
 
 A take whose audio and MIDI the known-absences registry lists as not
 recorded (kind `audio_midi`) is not placed and keeps its motion only.
@@ -259,7 +264,33 @@ def place_takes_by_key(takes, trains, lats, trials, notes, shift):
     # window would let a take claim a neighbouring trial's span); the paired
     # take is then placed at its best position anywhere in the wide window
     pairs = hungarian(S, -0.5)
-    return {i: (signals[j], float(P[i, j]), float(F[i, j])) for i, j in pairs}, S
+    placed = {i: (signals[j], float(P[i, j]), float(F[i, j])) for i, j in pairs}
+    # a take the log has no trial of (a capture split into two files: the log's trial runs on into
+    # the next file) lies between the placed takes before and after it in capture order; it is
+    # placed at its best peak starting between their starts, on the trial of the take before it
+    order = sorted(range(len(takes)), key=lambda i: (takes[i]["piece"], takes[i]["take"], takes[i]["suffix"] or ""))
+    for r_i, i in enumerate(order):
+        if i in placed:
+            continue
+        prev = next((placed[k] for k in reversed(order[:r_i]) if k in placed), None)
+        nxt = next((placed[k] for k in order[r_i + 1:] if k in placed), None)
+        if prev is None or nxt is None:
+            continue
+        a = max(0, int(prev[1] * FS) + lead)
+        b = min(len(otr), int(nxt[1] * FS) + lead + len(trains[i]))
+        r = slide_ncc(otr[a:b], trains[i])
+        peaks = np.flatnonzero((r[1:-1] > 0) & (r[1:-1] >= r[:-2]) & (r[1:-1] >= r[2:])) + 1
+        scored = []
+        for k in peaks:
+            pos = (a + k - lead) / FS
+            if not prev[1] < pos < nxt[1]:
+                continue
+            hit = mx.key_hit(lats[i][1], lats[i][0], onsets, keys, -(pos + mx.PRESS_LEAD_S)) if lats[i] else 0.0
+            scored.append((hit + max(float(r[k]), 0.0), pos))
+        if scored:
+            score, pos = max(scored)
+            placed[i] = (prev[0], pos, score)
+    return placed, S
 
 
 def run(dataset: str | None = None, force: bool = False):
@@ -350,10 +381,13 @@ def write_session(n, takes, f, lg, trials, placed, force):
         dst = out / "motion_hand" / f"{stem}.csv"
         if force or not dst.exists():
             shutil.copy2(tk["path"], dst)
-        # body takes carry no suffix: the first hand file of a piece/take owns it
+        # a body take without the hand file's suffix belongs to the first hand file of that
+        # piece/take; a body take with the same suffix (2022Piano02_06_01_03_2) to its own
         base = f"2022Piano02_{tk['stem'][8:16]}"
-        body = next((body_dir / f"{base}{e}" for e in (".tsv", ".csv") if (body_dir / f"{base}{e}").exists()), None)
-        if body and first_of_key:
+        names = ([f"{base}_{tk['suffix']}"] if tk["suffix"] else []) + ([base] if first_of_key else [])
+        body = next((body_dir / f"{nm}{e}" for nm in names for e in (".tsv", ".csv")
+                     if (body_dir / f"{nm}{e}").exists()), None)
+        if body:
             dst = out / "motion_body" / f"{stem}{body.suffix}"
             if force or not dst.exists():
                 shutil.copy2(body, dst)
