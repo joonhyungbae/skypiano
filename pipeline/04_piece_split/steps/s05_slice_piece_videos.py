@@ -6,7 +6,9 @@ Stage 6 Step 05: Per-piece video slicing for per-piece release samples.
 Uses SMPTE timecode alignment (helpers in align_timecode.py next to this file):
 for each target sample piece, the motion CSV supplies the trial's SMPTE range,
 the piece's trial-local offset comes from `_pieces.json`, and a Deck video is
-matched by its embedded SMPTE timecode.
+matched by its embedded SMPTE timecode. A motion CSV exported without a
+TimeCode column gives way to the trial's session audio window (Stage 1
+_mapping.json); the session audio runs on the same SMPTE clock.
 
 Targets are read from `Data/Metadata/{ds}/web_sample_selection.json` (output of
 `tools/select_web_samples.py`). The trial→raw_motion mapping is recovered from
@@ -68,6 +70,18 @@ def lookup_raw_motion(ds: str, trial_stem: str) -> tuple[tuple[str, str], str]:
                 raise RuntimeError(f"_mapping.json: trial {trial_stem} has no raw_stem")
             return (cohort, node), raw_stem
     raise RuntimeError(f"trial {trial_stem} not found in {ds}/{cohort}_{node}/_mapping.json")
+
+
+def session_audio_window(ds: str, sess_path: tuple[str, str], trial_stem: str) -> tuple[float, float]:
+    """(start, end) of the trial on the session audio clock, from Stage 1 _mapping.json."""
+    mapping = json.loads(
+        (INGEST_ROOT / ds / f"{sess_path[0]}_{sess_path[1]}" / "_mapping.json").read_text(encoding="utf-8")
+    )
+    trow = next(t for t in mapping["trials"] if t.get("trial_stem") == trial_stem)
+    m = re.search(r"\[([\d.]+)-([\d.]+)\]", (trow.get("raw_sources") or {}).get("audio") or "")
+    if not m:
+        raise RuntimeError(f"{trial_stem}: no session audio window in _mapping.json")
+    return float(m.group(1)), float(m.group(2))
 
 
 def load_selection_samples(selection_path: Path, ds: str) -> list[dict]:
@@ -182,7 +196,14 @@ def process_sample(entry: dict) -> None:
         return
 
     # 1. trial SMPTE range from motion CSV
-    trial_smpte_start, trial_smpte_end, _ = process_motion_csv(motion_csv)
+    try:
+        trial_smpte_start, trial_smpte_end, _ = process_motion_csv(motion_csv)
+    except KeyError:
+        # this take's motion export has no TimeCode column; its window on the
+        # session audio clock (the SMPTE master clock), set by the Stage 03
+        # motion-MIDI sync and recorded by Stage 01, stands in
+        trial_smpte_start, trial_smpte_end = session_audio_window(ds, sess_path, trial_stem)
+        print(f"  {trial_stem}: no motion TimeCode, session audio window used")
 
     # 2. piece trial-local offset
     p_start, p_end = load_piece_offset(ds, trial_stem, piece_idx)
