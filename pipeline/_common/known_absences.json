@@ -210,6 +210,53 @@
       "reason": "Hand take Piano02_08_01_04 (363 s) does not fit the session recording: by the capture start frames it lies between takes t3 and t5, whose recording positions leave 317 s, so the recorder was paused during it; no position matches its key presses, and the reviewer rejected the best one by eye.",
       "since": "2026-11-06",
       "discovered_by": "221112 placement review (Stage 01 s04, Stage 05 sync check)"
+    },
+    {
+      "id": "221112_C1_N6_audio_midi_not_recorded",
+      "kind": "audio_midi",
+      "scope": {
+        "ds": "221112",
+        "cohort": "C1_N6"
+      },
+      "selectors": {
+        "trial_stems": [
+          "221112_C1_N6_T1_P1_t1",
+          "221112_C1_N6_T1_P1_t2",
+          "221112_C1_N6_T1_P1_t3",
+          "221112_C1_N6_T1_P1_t4",
+          "221112_C1_N6_T1_P1_t5",
+          "221112_C1_N6_T1_P1_t6",
+          "221112_C1_N6_T1_P2_t1",
+          "221112_C1_N6_T1_P2_t2",
+          "221112_C1_N6_T1_P2_t3"
+        ]
+      },
+      "reason": "No session audio/MIDI recording belongs to this subject: the 221112 session recordings are paired with the motion folders by their content (Normalized/221112/_pairing.json) and none matches this one, so every take keeps its hand and body motion only (participant 14).",
+      "since": "2026-11-14",
+      "discovered_by": "Stage 01 221112 content placement (session_file none); Stage 12 full-take release"
+    },
+    {
+      "id": "221112_C1_N10_audio_midi_not_recorded",
+      "kind": "audio_midi",
+      "scope": {
+        "ds": "221112",
+        "cohort": "C1_N10"
+      },
+      "selectors": {
+        "trial_stems": [
+          "221112_C1_N10_T1_P1_t1",
+          "221112_C1_N10_T1_P1_t2",
+          "221112_C1_N10_T1_P1_t3",
+          "221112_C1_N10_T1_P1_t4",
+          "221112_C1_N10_T1_P1_t5",
+          "221112_C1_N10_T1_P1_t6",
+          "221112_C1_N10_T1_P2_t1",
+          "221112_C1_N10_T1_P2_t2"
+        ]
+      },
+      "reason": "No session audio/MIDI recording belongs to this subject: the 221112 session recordings are paired with the motion folders by their content (Normalized/221112/_pairing.json) and none matches this one, so every take keeps its hand and body motion only (participant 18).",
+      "since": "2026-11-14",
+      "discovered_by": "Stage 01 221112 content placement (session_file none); Stage 12 full-take release"
     }
   ]
 }
