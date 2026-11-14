@@ -21,6 +21,14 @@ What is released (Stage 05 is the gate; a dataset must have passed):
           so there every confirmed cut is its own round. Elsewhere every take of a piece is the same round.
   takes   the take-level dataset (240523, amateur free repertoire): every trial
           as a whole, as the paper states for free repertoire.
+  full recordings
+          every take (trial) of every released session, whole, in the take
+          folders below: on the trial clock of build_trials.py (time 0 = the
+          trial audio's start; Data/Pipeline/12_release/trials), speech muted
+          where the piano is silent by the MIDI. 221112 participants 14 and 18
+          have hand and body motion only (no audio/MIDI was recorded for them).
+          pieces.csv marks every piece window in them, and which one is the
+          representative performance of the piece-level folders.
 
 Cuts the reviewer or Stage 05 called not a piece are left out, and so is every
 session out of release scope (C0_N0; paper_builders/participant_map.py). In a
@@ -47,6 +55,14 @@ labels its Fink programme "technique2" and its warm-up drills "technique1"):
     graded            the Set 1 graded pieces
     free              free repertoire
 
+Take folders: data/P{participant id}/takes/{session}_{take}/ -- the session date
+and the take's own label in the recording (240828_T1_P13_t1 = 240828 task tag 1,
+take P13, attempt t1; the T-tag is the recording's, not the paper's task) --
+holding audio.wav, midi.mid, hand.csv, body.csv where they exist. A piece window
+of pieces.csv cuts a take's files as build_trials.py states (audio from the
+millisecond, MIDI notes in the window, motion rows hand/body_start_frame ..
+_end_frame). Trial-level video is not released yet.
+
 Modalities per version (MODALITIES): audio (.wav), MIDI (.mid), hand and body
 motion (.csv, 120 fps, frame 0 = time 0 of the audio and MIDI); optional ones
 (OPTIONAL, listed only where the file exists, never counted missing): the Top
@@ -62,12 +78,28 @@ Outputs, under Data/Release/v{version}/:
                        onset and release (seconds from the file's start)
     participants.csv   participant id, group, sessions
     repertoire.csv     piece id, task, title
-    summary.json       counts per dataset, and what was left out and why
+    takes.csv          one row per take folder: path, participant, session, source
+                       take, modalities, audio / motion seconds, MIDI notes, muted
+                       seconds, and the free-repertoire performance it is (240523)
+    pieces.csv         one row per piece window Stage 04 cut in a released take
+                       (retakes, practice variants and cuts that are no piece
+                       included): take folder, window (take clock) and motion rows,
+                       piece id, name, task, status (confirmed / retake / rejected /
+                       practice_variant / not_a_piece / unnamed / unreviewed), best
+                       (the performance released in the piece-level folders, with its
+                       path), confirmed_by. Names not written in English are given as
+                       "unlisted" (name_note says so); practice variants keep task
+                       "practice".
+    summary.json       counts per dataset, and what was left out and why; take
+                       totals (count, hours of audio and of motion, MIDI notes)
 
 Usage (from the repository root):
   python pipeline/12_release/build_manifest.py --version 0.1.0 [--dataset 240828 ...]
       [--optional-in top=240523,220819]   (an optional modality for some datasets only)
       [--imputed-model TAG]                (list hand_imputed*, fingering_imputed of that model)
+      [--no-takes]                         (piece-level folders only, no take folders)
+
+Take folders need Data/Pipeline/12_release/trials (build_trials.py) first.
 
 Imputed hand motion is listed only with --imputed-model: the gap-filled hand
 motion of that model (Stage 06 release fill, IMPUTED/<tag>/<release path>/
@@ -110,6 +142,8 @@ FINGERING = PIPE / "08_fingering" / "Notes" / "raw"
 FINGERING_IMPUTED = PIPE / "08_fingering" / "Notes" / "imputed"
 IMPUTED = PIPE / "06_hand_imputation" / "Release"       # <model tag>/<release path>/hand_imputed*.csv
 SUSPECT = PIPE / "06_hand_imputation" / "Suspect"       # <release path>/hand_suspect_mask.csv (flag_suspect_hand.py)
+TRIALS = PIPE / "12_release" / "trials"                 # build_trials.py: whole takes on the trial clock
+TAKE_FILES = ("audio.wav", "midi.mid", "hand.csv", "body.csv")
 MODALITIES["top"] = "top.mp4"
 MODALITIES["fingering"] = "fingering.csv"
 MODALITIES["hand_imputed"] = "hand_imputed.csv"
@@ -280,6 +314,117 @@ def files_for_take(r: dict, raw_stems: dict[str, str]) -> dict[str, Path]:
             "fingering": FINGERING / ds / f"{stem}.csv"}
 
 
+def take_path(pid: int, ds: str, session: str, trial: str) -> str:
+    """data/P{id}/takes/{session date}_{take label}: 240828_C0_N4_T1_P13_t1 -> data/P03/takes/240828_T1_P13_t1."""
+    return f"data/P{pid:02d}/takes/{ds}_{trial[len(ds) + len(session) + 2:]}"
+
+
+def take_rows_full(datasets: list[str], index: dict, performance_of: dict[str, str]) -> tuple[list, list, dict]:
+    """Manifest rows and takes.csv rows of every released take, and the totals per dataset."""
+    manifest, table, totals = [], [], {}
+    sync = {}
+    for ds in datasets:
+        for t in read_json(QA / ds / "_status.json", {}).get("trials", []):
+            sync[t["trial"]] = t.get("sync_verdict")
+    for stem, t in sorted(index.items(), key=lambda kv: (SESSION_ORDER.index(kv[1]["dataset"]), kv[0])):
+        ds = t["dataset"]
+        if ds not in datasets or (ds, t["session"]) in EXCLUDED_FROM_RELEASE or not t["files"]:
+            continue
+        if sync.get(stem) == "no" and ("audio.wav" in t["files"] or "midi.mid" in t["files"]):
+            continue                                   # Stage 05 rejected its sync (a motion-only take has none)
+        pid = participant_id(ds, t["session"])
+        if pid is None:
+            sys.exit(f"no participant id (out of release scope?): {ds} {t['session']}")
+        base = take_path(pid, ds, t["session"], stem)
+        have = []
+        for name in TAKE_FILES:
+            f = TRIALS / ds / stem / name
+            if name in t["files"] and f.exists():
+                manifest.append({"release_path": f"{base}/{name}", "source_path": f.as_posix(),
+                                 "bytes": f.stat().st_size})
+                have.append(name.split(".")[0])
+        motion = max(t.get("hand_frames", 0), t.get("body_frames", 0)) / 120.0
+        table.append({"path": base, "participant_id": pid, "group": participant_role(pid), "session": ds,
+                      "session_subject": t["session"], "source_take": stem, "modalities": " ".join(have),
+                      "audio_sec": t.get("audio_sec"), "motion_sec": round(motion, 3) if motion else None,
+                      "midi_notes": t.get("n_notes"), "muted_sec": t.get("muted_sec"),
+                      "performance_path": performance_of.get(stem)})
+        v = totals.setdefault(ds, {"takes": 0, "audio_hours": 0.0, "motion_hours": 0.0, "midi_notes": 0,
+                                   "motion_only_takes": 0, "muted_hours": 0.0})
+        v["takes"] += 1
+        v["audio_hours"] += (t.get("audio_sec") or 0.0) / 3600
+        v["motion_hours"] += motion / 3600
+        v["muted_hours"] += (t.get("muted_sec") or 0.0) / 3600
+        v["midi_notes"] += t.get("n_notes") or 0
+        v["motion_only_takes"] += "audio" not in have and "midi" not in have
+    for v in totals.values():
+        for k in ("audio_hours", "motion_hours", "muted_hours"):
+            v[k] = round(v[k], 3)
+    return manifest, table, totals
+
+
+def piece_status(p: dict, kept: set[str]) -> str:
+    """What became of a Stage 04 cut, in the order piece_rows decides it."""
+    if p.get("boundary_confirmed_by") == "not_a_piece":
+        return "not_a_piece"
+    if p["piece"] in kept:
+        return "confirmed"
+    if p.get("boundary_verdict") == "no":
+        return "rejected"
+    if not p.get("name"):
+        return "unnamed" if p.get("confirmed") else "unreviewed"
+    if p.get("represented_by") and not p.get("confirmed"):
+        return "retake"
+    if PRACTICE_VARIANT.match(p["name"]) or not p["name"].isascii():
+        return "practice_variant"
+    return "retake" if p.get("confirmed") else "unreviewed"
+
+
+def pieces_table(datasets: list[str], index: dict, best: dict[str, str]) -> list[dict]:
+    """pieces.csv: every piece window Stage 04 cut in a released take."""
+    rows = []
+    for ds in datasets:
+        for p in read_json(QA / ds / "_status.json", {}).get("pieces", []):
+            info = parse(p["piece"])
+            if (ds, info["session"]) in EXCLUDED_FROM_RELEASE:
+                continue
+            pid = participant_id(ds, info["session"])
+            t = index.get(info["trial"])
+            if pid is None or t is None:
+                continue
+            status = piece_status(p, set(best))
+            name, note = (p.get("name") or ""), ""
+            if status == "not_a_piece":
+                name = ""
+            practice = status == "practice_variant" or bool(name and (PRACTICE_VARIANT.match(name) or not name.isascii()))
+            if name and not name.isascii():
+                name, note = "unlisted", "the session log names it in another language"
+            task, piece_id = "", ""
+            if ds in TAKE_LEVEL:
+                task = "free"
+            elif practice:
+                task = "practice"
+            elif name:
+                try:
+                    task, piece_id = classify(ds, info["task"], name)
+                except ValueError:
+                    task = "unclassified"
+            c = t.get("pieces", {}).get(p["piece"], {})
+            hand, body = c.get("hand") or {}, c.get("body") or {}
+            checked = [c[m].get("ok") for m in ("audio", "midi", "hand", "body") if m in c]
+            rows.append({"participant_id": pid, "take": take_path(pid, ds, info["session"], info["trial"]),
+                         "source_piece": p["piece"], "start_sec": p["window_sec"][0], "end_sec": p["window_sec"][1],
+                         "hand_start_frame": hand.get("start_frame"), "hand_end_frame": hand.get("end_frame"),
+                         "body_start_frame": body.get("start_frame"), "body_end_frame": body.get("end_frame"),
+                         "motion_residual_frames": hand.get("residual_frames", body.get("residual_frames")),
+                         "piece_id": piece_id, "name": name, "name_note": note, "task": task, "status": status,
+                         "best": p["piece"] in best, "best_path": best.get(p["piece"], ""),
+                         "confirmed_by": p.get("boundary_confirmed_by") or "",
+                         "reproduces_piece_files": all(checked) if checked else None})
+    rows.sort(key=lambda r: (r["participant_id"], r["take"], r["start_sec"]))
+    return rows
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--version", required=True)
@@ -289,6 +434,8 @@ def main():
                          "e.g. top=240523,220819 while the rest is still being processed")
     ap.add_argument("--imputed-model", default=None,
                     help="model tag under Data/Pipeline/06_hand_imputation/Release/ whose fill is listed")
+    ap.add_argument("--no-takes", action="store_true",
+                    help="leave out the take folders, takes.csv and pieces.csv")
     args = ap.parse_args()
     only: dict[str, set[str]] = {}
     for spec in args.optional_in:
@@ -321,11 +468,13 @@ def main():
                              r["window_sec"][0] if r["window_sec"] else 0.0))
     count: dict[tuple, int] = {}
     manifest, table, missing = [], [], {}
+    best, performance_of = {}, {}            # piece stem / take stem -> its piece-level folder
     for r in perf:
         k = (r["pid"], r["cat"], r["piece_id"])
         count[k] = count.get(k, 0) + 1
         leaf = f"take{count[k]:02d}" if r["level"] == "take" else f"{r['piece_id']}/r{count[k]}"
         base = f"data/P{r['pid']:02d}/{r['cat']}/{leaf}"
+        (performance_of if r["level"] == "take" else best)[r["piece"]] = base
         r["src"] = {**r["src"], "hand_suspect_mask": SUSPECT / base / "hand_suspect_mask.csv"}
         if args.imputed_model:
             fill = IMPUTED / args.imputed_model / base
@@ -366,6 +515,20 @@ def main():
         if r["piece_id"]:
             titles.setdefault((r["cat"], r["piece_id"]), r["name"])
 
+    takes, pieces, take_totals = [], [], {}
+    if not args.no_takes:
+        index = read_json(TRIALS / "_trials.json", None)
+        if index is None:
+            sys.exit(f"{TRIALS / '_trials.json'} missing: run pipeline/12_release/build_trials.py first (or --no-takes)")
+        dss = sorted(args.dataset, key=SESSION_ORDER.index)
+        take_manifest, takes, take_totals = take_rows_full(dss, index, performance_of)
+        manifest += take_manifest
+        pieces = pieces_table(dss, index, best)
+        for r in takes:                                # participants released through their takes only
+            p = participants.setdefault(r["participant_id"], {"participant_id": r["participant_id"],
+                                                              "group": r["group"], "sessions": set()})
+            p["sessions"].add(r["session"])
+
     out = OUT / f"v{args.version}"
     out.mkdir(parents=True, exist_ok=True)
     tables = {
@@ -375,6 +538,9 @@ def main():
                              for _, p in sorted(participants.items())],
         "repertoire.csv": [{"piece_id": pc, "task": cat, "title": title} for (cat, pc), title in sorted(titles.items())],
     }
+    if not args.no_takes:
+        tables["takes.csv"] = takes
+        tables["pieces.csv"] = pieces
     for name, rows in tables.items():
         if not rows:                               # e.g. no piece ids when only take-level data is listed
             (out / name).write_text("", encoding="utf-8")
@@ -383,7 +549,23 @@ def main():
             w = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
             w.writeheader()
             w.writerows(rows)
-    (out / "pieces.csv").unlink(missing_ok=True)
+    if args.no_takes:
+        (out / "pieces.csv").unlink(missing_ok=True)
+    else:
+        summary["takes"] = {"count": len(takes),
+                            "audio_hours": round(sum(v["audio_hours"] for v in take_totals.values()), 3),
+                            "motion_hours": round(sum(v["motion_hours"] for v in take_totals.values()), 3),
+                            "muted_hours": round(sum(v["muted_hours"] for v in take_totals.values()), 3),
+                            "midi_notes": sum(v["midi_notes"] for v in take_totals.values()),
+                            "participants": len({t["participant_id"] for t in takes}),
+                            "datasets": take_totals}
+        summary["piece_windows"] = {"count": len(pieces),
+                                    "by_status": {k: sum(r["status"] == k for r in pieces)
+                                                  for k in sorted({r["status"] for r in pieces})},
+                                    "best": sum(bool(r["best"]) for r in pieces)}
+        print(f"takes: {summary['takes']['count']}, {summary['takes']['audio_hours']:.2f} h audio, "
+              f"{summary['takes']['motion_hours']:.2f} h motion, {summary['takes']['midi_notes']} notes; "
+              f"{len(pieces)} piece windows {summary['piece_windows']['by_status']}")
     summary["performances"] = len(table)
     summary["files"] = len(manifest)
     summary["bytes"] = sum(r["bytes"] for r in manifest)

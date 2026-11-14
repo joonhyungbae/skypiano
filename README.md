@@ -218,8 +218,8 @@ paper's 2,269-note audit was labeled with it.
 
 `pipeline/12_release/build_manifest.py --version X.Y.Z` writes
 `Data/Release/vX.Y.Z/manifest.csv` (released path → source file in `Data/`;
-nothing is copied), `performances.csv`, `participants.csv`, `repertoire.csv`
-and `summary.json`. The released layout is
+nothing is copied), `performances.csv`, `participants.csv`, `repertoire.csv`,
+`takes.csv`, `pieces.csv` and `summary.json`. The piece-level layout is
 
 ```
 data/P<id>/<task>/<piece>/r<n>/      one performance (free repertoire: free/take<nn>/)
@@ -237,6 +237,26 @@ whole takes. `top.mp4` is the EgoBlur-anonymized top view
 (`--optional-in top=<sessions>`); the imputed files (`--imputed-model TAG`)
 are the gap-filled hand motion, its mask (1 = filled) and the fingering
 computed from it.
+
+The full recordings are released as well: `build_trials.py` writes every take
+of every released session, whole, to `Data/Pipeline/12_release/trials/` on the
+clock the piece cuts use (time 0 = the take's audio start; motion at 120 fps),
+with the audio muted wherever the piano is silent by the MIDI (each note kept
+from 0.1 s before its onset to 0.5 s after it stops sounding, sustain pedal
+included; 20 ms fades). It checks that cutting these files at each piece
+window reproduces the piece files. The manifest lists them as
+
+```
+data/P<id>/takes/<session>_<take>/   one whole take, e.g. takes/240828_T1_P13_t1/
+  audio.wav  midi.mid  hand.csv  body.csv
+```
+
+(221112 participants 14 and 18 have motion only; take-level video is not
+released yet), with `takes.csv` (one row per take) and `pieces.csv`: every
+piece window cut in a take (start and end on the take clock, motion rows),
+its piece id, task and status (`confirmed`, `retake`, `rejected`,
+`practice_variant`, `not_a_piece`, ...), and `best` with the path of the
+representative performance in the piece-level folders.
 
 `upload_hf.py --version X.Y.Z --repo SKY-Piano/SKY-Piano` sends a version
 straight from `Data/` (only changed files) and tags it `vX.Y.Z`;
