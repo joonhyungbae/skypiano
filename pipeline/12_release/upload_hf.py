@@ -91,6 +91,7 @@ def git_blob_sha1(data: bytes) -> str:
 
 
 META_TABLES = ("performances.csv", "participants.csv", "repertoire.csv")
+TAKE_TABLES = ("takes.csv", "pieces.csv")      # versions with take folders (0.3.0 on)
 TASKS = ("technique1", "technique2", "technique_extra", "graded", "free")
 
 
@@ -159,17 +160,32 @@ data/P<id>/<task>/<piece>/r<n>/audio.wav    audio
                                hand_imputed_mask.csv  1 = value filled by the model
                                fingering_imputed.csv  fingering labeled from hand_imputed.csv
                                top.mp4      top-view video, faces blurred (where available)
-data/P<id>/free/take<nn>/...                free repertoire, whole takes
+data/P<id>/takes/<date>_<take>/audio.wav   every recorded take, whole (see below)
+                               midi.mid, hand.csv, body.csv
 metadata/performances.csv   one row per performance: path, participant, task,
                             piece, round, recording session and source take,
                             window in the take, first onset and release
+metadata/takes.csv          one row per take: path, participant, session, source
+                            take, modalities, durations, MIDI notes, muted audio
+metadata/pieces.csv         one row per piece window in a take: start and end
+                            in the take, piece, task, status (confirmed, retake,
+                            practice variant, not a piece, rejected), best = the
+                            performance released in its piece folder
 metadata/participants.csv   participant id (1-19), group, sessions
 metadata/repertoire.csv     piece id, task, title
 metadata/summary.json       counts per session, and what was left out and why
 ```
 
 `<id>` is the participant (1-19); `r<n>` numbers a participant's performances
-of a piece in play order. Frame 0 of the motion files is time 0 of the audio and MIDI. Motion samples
+of a piece in play order. The piece folders hold one representative
+performance per participant, piece and round; the take folders hold every
+recorded take whole, on the same clock as the piece cuts, and `pieces.csv`
+locates every piece window in them, with `best` marking the representative one.
+In the takes' audio, every stretch where the MIDI shows no key or sustain pedal
+sounding (from 0.1 s before a note to 0.5 s after it stops sounding) is muted,
+so talk between pieces is removed; a take recorded without MIDI keeps its audio
+as recorded (`audio_muted` in `takes.csv`). Two amateur participants were
+recorded without audio and MIDI; their takes carry motion only. Frame 0 of the motion files is time 0 of the audio and MIDI. Motion samples
 the capture system lost are left empty in this version. `fingering.csv` has one
 row per note of `midi.mid` (onset, offset in seconds from the file's start,
 pitch, velocity, hand L/R, finger 1-5, tier A geometric / B press-depth refined
@@ -222,7 +238,7 @@ def main():
 
     vdir = REL / f"v{args.version}"
     manifest = list(csv.DictReader(open(vdir / "manifest.csv", encoding="utf-8")))
-    tables = {name: (vdir / name).read_bytes() for name in META_TABLES}
+    tables = {name: (vdir / name).read_bytes() for name in META_TABLES + TAKE_TABLES if (vdir / name).exists()}
     summary = json.loads((vdir / "summary.json").read_text(encoding="utf-8"))
     perf = list(csv.DictReader(tables["performances.csv"].decode("utf-8").splitlines()))
 
@@ -230,8 +246,11 @@ def main():
     missing = [m["source_path"] for m in manifest if not Path(m["source_path"]).exists()]
     bad_scope = [r["path"] for r in perf if (r["session"], r["session_subject"]) in EXCLUDED_FROM_RELEASE
                  or not r["participant_id"]]
+    takes = list(csv.DictReader(tables["takes.csv"].decode("utf-8").splitlines())) if "takes.csv" in tables else []
+    bad_scope += [r["path"] for r in takes if (r["session"], r["session_subject"]) in EXCLUDED_FROM_RELEASE
+                  or not r["participant_id"]]
     released = {m["release_path"].rsplit("/", 1)[0] for m in manifest}
-    unlisted = sorted(released - {r["path"] for r in perf})
+    unlisted = sorted(released - {r["path"] for r in perf} - {r["path"] for r in takes})
     if bad_scope or missing or unlisted:
         sys.exit(f"out of scope: {bad_scope[:5]}; missing sources: {missing[:5]}; not in performances: {unlisted[:5]}")
     non_ascii = [n for n, b in tables.items() if not b.isascii()]
