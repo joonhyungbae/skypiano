@@ -118,10 +118,18 @@ class Detectors:
             return [bb + [ss] for bb, ss in zip(b[keep].tolist(), s[keep].tolist())]
 
     def heads(self, bgr):
-        """(head boxes with a score, hand boxes, whether a person is seen)."""
+        """(head boxes with a score, hand boxes, whether a person is seen).
+
+        Hand boxes are the player's only (the person whose confident keypoints span the largest area): an
+        onlooker's raised hand must not open the mask over the onlooker's face."""
         kps, scores = self.pose(bgr)
         out, hands = [], []
-        for k, s in zip(kps, scores):
+
+        def extent(k, s):
+            pts = k[s >= KEYPOINT_THRESHOLD]
+            return float(np.prod(pts.max(0) - pts.min(0))) if len(pts) > 1 else 0.0
+        player = max(range(len(kps)), key=lambda i: extent(kps[i], scores[i]), default=None)
+        for k, s in ([(kps[player], scores[player])] if player is not None else []):
             for wi, ei in ((9, 7), (10, 8)):                                 # wrists, elbows (COCO)
                 if s[wi] < KEYPOINT_THRESHOLD:
                     continue
