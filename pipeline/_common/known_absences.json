@@ -257,6 +257,60 @@
       "reason": "No session audio/MIDI recording belongs to this subject: the 221112 session recordings are paired with the motion folders by their content (Normalized/221112/_pairing.json) and none matches this one, so every take keeps its hand and body motion only (participant 18).",
       "since": "2026-11-14",
       "discovered_by": "Stage 01 221112 content placement (session_file none); Stage 12 full-take release"
+    },
+    {
+      "id": "220819_body_not_captured",
+      "kind": "body_data",
+      "scope": {
+        "ds": "220819"
+      },
+      "selectors": {
+        "trial_stems": [
+          "220819_C0_N1_T1_P2_t2",
+          "220819_C0_N1_T1_P3_t1",
+          "220819_C0_N1_T1_P3_t2",
+          "220819_C0_N2_T1_P1_t1",
+          "220819_C0_N2_T1_P3_t1",
+          "220819_C1_N1_T1_P4_t2"
+        ]
+      },
+      "reason": "Body-motion capture does not exist for these trials in the raw data (user-confirmed); the released pieces ship without body.csv.",
+      "since": "2026-11-16",
+      "discovered_by": "Stage 12 release audit of missing files (v0.3.3 summary)"
+    },
+    {
+      "id": "221112_C1_N11_T1_P2_body_not_captured",
+      "kind": "body_data",
+      "scope": {
+        "ds": "221112",
+        "cohort": "C1_N11"
+      },
+      "selectors": {
+        "trial_stems": [
+          "221112_C1_N11_T1_P2_t1",
+          "221112_C1_N11_T1_P2_t2"
+        ]
+      },
+      "reason": "Body-motion capture does not exist for these trials in the raw data (user-confirmed); the released pieces ship without body.csv.",
+      "since": "2026-11-16",
+      "discovered_by": "Stage 12 release audit of missing files (v0.3.3 summary)"
+    },
+    {
+      "id": "240523_C1_N0_T9_P8_P9_body_not_captured",
+      "kind": "body_data",
+      "scope": {
+        "ds": "240523",
+        "cohort": "C1_N0"
+      },
+      "selectors": {
+        "trial_stems": [
+          "240523_C1_N0_T9_P8_t1",
+          "240523_C1_N0_T9_P9_t1"
+        ]
+      },
+      "reason": "Body-motion capture does not exist for these trials in the raw data (user-confirmed); the released pieces ship without body.csv.",
+      "since": "2026-11-16",
+      "discovered_by": "Stage 12 release audit of missing files (v0.3.3 summary)"
     }
   ]
 }
