@@ -235,8 +235,6 @@ def main():
 
     jobs, skipped = [], {}
     for p in perfs:
-        if args.dataset and p["session"] not in args.dataset:
-            continue
         midi = src.get(f"{p['path']}/midi.mid")
         if args.hand_root:
             hand = args.hand_root / p["path"] / HAND_FILES[args.hand]
@@ -250,6 +248,10 @@ def main():
         stem = piece_stem(p, midi)
         jobs.append({"path": p["path"], "dataset": p["session"], "subject": p["session_subject"],
                      "midi": midi, "hand": hand, "out": output_path(out_root, p["session"], stem)})
+    # coverage covers every performance of the version; --dataset / --limit only narrow what is labeled
+    all_jobs = jobs
+    if args.dataset:
+        jobs = [j for j in jobs if j["dataset"] in args.dataset]
     if args.limit:
         jobs = jobs[:args.limit]
     todo = [j for j in jobs if args.overwrite or not j["out"].exists()]
@@ -276,7 +278,7 @@ def main():
             if k % 25 == 0 or k == len(todo):
                 print(f"  {k}/{len(todo)}  {time.time() - t0:.0f} s", flush=True)
 
-    cov = coverage(jobs)
+    cov = coverage(all_jobs)
     if cov:
         write_csv(out_root / "_coverage.csv", cov, list(cov[0].keys()))
         tot = {k: sum(c[k] for c in cov) for k in ("performances", "notes", "tier_a", "tier_b", "tier_c",
