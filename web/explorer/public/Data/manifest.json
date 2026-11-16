@@ -27,7 +27,12 @@
       "task": "T2",
       "pieceLabel": "Clementi — Sonatina Op.36 No.1, C major",
       "basePath": "/samples",
-      "videoViews": [],
+      "videoViews": [
+        "top",
+        "right",
+        "low_right",
+        "left"
+      ],
       "modalities": {
         "audio": true,
         "midi": true,
@@ -35,7 +40,7 @@
         "motionBody": true,
         "kinematics": true,
         "fingering": true,
-        "video": false,
+        "video": true,
         "score": true
       },
       "narrativeBlurb": "Beginner-grade Set1 piece — Clementi — Sonatina Op.36 No.1, C major. Source trial 240828_C0_N4_T2_P6_t1 piece 1, ~49s, 736 performance notes. Score↔performance alignment quality 0.979 (score-match 0.992, perf-match 0.967).",
@@ -50,7 +55,12 @@
       "task": "T2",
       "pieceLabel": "Bach (Petzold) — Minuet in G major, BWV Anh.114",
       "basePath": "/samples",
-      "videoViews": [],
+      "videoViews": [
+        "top",
+        "right",
+        "low_right",
+        "left"
+      ],
       "modalities": {
         "audio": true,
         "midi": true,
@@ -58,7 +68,7 @@
         "motionBody": true,
         "kinematics": true,
         "fingering": true,
-        "video": false,
+        "video": true,
         "score": true
       },
       "narrativeBlurb": "Beginner-grade Set1 piece — Bach (Petzold) — Minuet in G major, BWV Anh.114. Source trial 240828_C0_N5_T2_P5_t1 piece 1, ~45s, 214 performance notes. Score↔performance alignment quality 0.974 (score-match 1.000, perf-match 0.949).",
@@ -73,7 +83,11 @@
       "task": "T2",
       "pieceLabel": "Schubert — Impromptu Op.90 No.4 (Allegretto)",
       "basePath": "/samples",
-      "videoViews": [],
+      "videoViews": [
+        "top",
+        "right",
+        "left"
+      ],
       "modalities": {
         "audio": true,
         "midi": true,
@@ -81,7 +95,7 @@
         "motionBody": true,
         "kinematics": true,
         "fingering": true,
-        "video": false,
+        "video": true,
         "score": true
       },
       "narrativeBlurb": "Advanced-grade Set1 piece — Schubert — Impromptu Op.90 No.4 (Allegretto). Source trial 240828_C0_N6_T2_P6_t1 piece 1, ~94s, 1014 performance notes. Score↔performance alignment quality 0.921 (score-match 0.918, perf-match 0.924).",
@@ -96,7 +110,12 @@
       "task": "T2",
       "pieceLabel": "Chopin — Prelude Op.28 No.4 in E minor",
       "basePath": "/samples",
-      "videoViews": [],
+      "videoViews": [
+        "top",
+        "right",
+        "low_right",
+        "left"
+      ],
       "modalities": {
         "audio": true,
         "midi": true,
@@ -104,7 +123,7 @@
         "motionBody": true,
         "kinematics": true,
         "fingering": true,
-        "video": false,
+        "video": true,
         "score": true
       },
       "narrativeBlurb": "Intermediate-grade Set1 piece — Chopin — Prelude Op.28 No.4 in E minor. Source trial 240828_C0_N7_T2_P1_t1 piece 1, ~111s, 601 performance notes. Score↔performance alignment quality 0.983 (score-match 0.992, perf-match 0.975).",
@@ -119,7 +138,12 @@
       "task": "T2",
       "pieceLabel": "Mozart — Piano Sonata K.545, 1st mvt",
       "basePath": "/samples",
-      "videoViews": [],
+      "videoViews": [
+        "top",
+        "right",
+        "low_right",
+        "left"
+      ],
       "modalities": {
         "audio": true,
         "midi": true,
@@ -127,7 +151,7 @@
         "motionBody": true,
         "kinematics": true,
         "fingering": true,
-        "video": false,
+        "video": true,
         "score": true
       },
       "narrativeBlurb": "Intermediate-grade Set1 piece — Mozart — Piano Sonata K.545, 1st mvt. Source trial 240828_C0_N8_T2_P3_t1 piece 1, ~60s, 517 performance notes. Score↔performance alignment quality 0.960 (score-match 0.990, perf-match 0.932).",
