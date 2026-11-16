@@ -189,7 +189,11 @@ recorded without audio and MIDI; their takes carry motion only. Frame 0 of the m
 the capture system lost are left empty in this version. `fingering.csv` has one
 row per note of `midi.mid` (onset, offset in seconds from the file's start,
 pitch, velocity, hand L/R, finger 1-5, tier A geometric / B press-depth refined
-/ C learned fill, ambiguity flag, candidates, confidence). `hand_suspect_mask.csv`
+/ C learned fill, ambiguity flag, candidates, confidence). For two participants
+of the 2022 amateur session (P10, P11) the fingertip markers are missing in most
+recordings; their fingering is almost entirely Tier C (model-filled, ambiguity
+= no_candidate) and should be treated as a symbolic prior rather than a
+measurement. `hand_suspect_mask.csv`
 has the columns of `hand.csv`; 1 marks an observed value that is implausible --
 more than 150 mm from the median of the same hand's markers in that frame, or a
 one-frame excursion of more than 50 mm out and back -- typically a ghost
