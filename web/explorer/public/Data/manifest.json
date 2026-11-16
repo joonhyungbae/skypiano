@@ -86,6 +86,7 @@
       "videoViews": [
         "top",
         "right",
+        "low_right",
         "left"
       ],
       "modalities": {
