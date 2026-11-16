@@ -43,6 +43,9 @@ and one row of --stats-csv): frames, frames_masked, mask_area, confirmed,
 flagged_frames, passed (no flagged frame). A flagged clip keeps its output
 under {clip}.flagged.mp4 for review.
 
+--hand-priority (per clip, recorded in the clip JSON): a face box that overlaps a hand box while pose
+sees no head within +-HOLD is dropped; for Top clips where EgoBlur takes a raised forearm for a face.
+
 Detector weights: EgoBlur `pipeline/10_face_blur/models/ego_blur_face.jit`;
 RTMO, RetinaFace and YOLOv8-face are fetched by rtmlib / batch-face /
 huggingface_hub on first use. The detectors take one frame per call; run
@@ -219,7 +222,7 @@ def apply_mask(fr: np.ndarray, m: np.ndarray, shape: str) -> None:
 
 
 def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zone: bool,
-            face_stride: int = 1) -> dict:
+            face_stride: int = 1, hand_priority: bool = False) -> dict:
     cap = cv2.VideoCapture(str(src))
     fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
     w, h = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -242,6 +245,17 @@ def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zo
                     "heads": [padded(b, w, h) for b in d["pose_head"]], "hands": hands,
                     "zone": left_zone and view == "Left" and person})
     n = len(per)
+    dropped = 0
+    if hand_priority:
+        # a face box on a hand while pose sees no head within +-HOLD is a hand, not a face
+        for i, f in enumerate(per):
+            near = range(max(0, i - HOLD), min(n, i + HOLD + 1))
+            if not f["faces"] or any(per[j]["heads"] for j in near):
+                continue
+            keep = [k for k, b in enumerate(f["cores"])
+                    if not any(min(b[2], hb[2]) > max(b[0], hb[0]) and min(b[3], hb[3]) > max(b[1], hb[1]) for hb in f["hands"])]
+            dropped += len(f["faces"]) - len(keep)
+            f["faces"], f["cores"] = [f["faces"][k] for k in keep], [f["cores"][k] for k in keep]
     # pass 2: write the masked clip; the coverage check runs on each frame's mask
     tmp = dst.with_suffix(".part.mp4")
     dst.parent.mkdir(parents=True, exist_ok=True)
@@ -289,7 +303,8 @@ def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zo
     tmp.replace(out)
     return {"clip": dst.name, "view": view, "mask": shape, "mosaic_cell": MOSAIC_CELL if shape == "mosaic" else None, "frames": n, "frames_masked": masked,
             "mask_area": round(area / max(1, n), 4), "confirmed": confirmed, "flagged_frames": flagged,
-            "flag_times_sec": flags[:50], "passed": flagged == 0}
+            "flag_times_sec": flags[:50], "passed": flagged == 0,
+            **({"hand_priority": True, "faces_dropped_on_hands": dropped} if hand_priority else {})}
 
 
 def confirmed_faces(d: dict, heads: list) -> list:
@@ -323,7 +338,7 @@ def worker(a, names: list[str], q) -> None:
         view = a.view or next((v for v in ("RightLow", "Right", "Left", "Top") if f"_{v}." in name), "")
         print(f"START {name}", flush=True)
         t0 = time.time()
-        row = process(det, src_dir / name, dst, view, a.mask, a.left_zone, a.face_stride)
+        row = process(det, src_dir / name, dst, view, a.mask, a.left_zone, a.face_stride, a.hand_priority)
         row["face_stride"] = a.face_stride
         row["elapsed_sec"] = round(time.time() - t0, 1)
         meta.write_text(json.dumps(row), encoding="utf-8")
@@ -344,6 +359,8 @@ def main():
     ap.add_argument("--retinaface", action="store_true", help="add RetinaFace-R50 boxes to the mask")
     ap.add_argument("--left-zone", action=argparse.BooleanOptionalAction, default=True,
                     help="Left view: mask the bottom-right head zone while pose sees the player")
+    ap.add_argument("--hand-priority", action="store_true",
+                    help="drop a face box that overlaps a hand while pose sees no head within +-HOLD (per-clip fix)")
     ap.add_argument("--gpu", type=int, default=0)
     ap.add_argument("--workers", type=int, default=1)
     ap.add_argument("--force", action="store_true")
