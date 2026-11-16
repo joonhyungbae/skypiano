@@ -43,6 +43,9 @@ and one row of --stats-csv): frames, frames_masked, mask_area, confirmed,
 flagged_frames, passed (no flagged frame). A flagged clip keeps its output
 under {clip}.flagged.mp4 for review.
 
+--fixed-zone X1,Y1,X2,Y2 (per camera, recorded in the clip JSON): a box masked in every frame, with no
+hand cut-outs (onlookers' hands would open it; place it clear of the keyboard), for a wide view where onlookers sit in the background (220819 Left).
+
 --hand-priority (per clip, recorded in the clip JSON): a face box that overlaps a hand box while pose
 sees no head within +-HOLD is dropped; for Top clips where EgoBlur takes a raised forearm for a face.
 
@@ -222,12 +225,14 @@ def apply_mask(fr: np.ndarray, m: np.ndarray, shape: str) -> None:
 
 
 def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zone: bool,
-            face_stride: int = 1, hand_priority: bool = False) -> dict:
+            face_stride: int = 1, hand_priority: bool = False, fixed_zone=None) -> dict:
     cap = cv2.VideoCapture(str(src))
     fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
     w, h = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     cap.release()
-    zone = tuple(int(v * s) for v, s in zip(LEFT_ZONE, (w / 1920, h / 1080, w / 1920, h / 1080)))
+    scale = (w / 1920, h / 1080, w / 1920, h / 1080)
+    zone = tuple(int(v * s) for v, s in zip(LEFT_ZONE, scale))
+    fixed = tuple(int(v * s) for v, s in zip(fixed_zone, scale)) if fixed_zone else None
     # pass 1: detections on the original frames
     per = []
     t0 = time.time()
@@ -281,6 +286,8 @@ def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zo
             # their own, and a hand cut next to the face would otherwise eat into it
             cores = [b for j in range(max(0, i - face_stride), min(n, i + face_stride + 1)) for b in per[j]["cores"]]
             m = mask_of(faces, cores, heads, z, hands, w, h, shape)
+            if fixed:                                    # onlookers' own hands must not open it: no cut-outs
+                m[fixed[1]:fixed[3], fixed[0]:fixed[2]] = 255
             masked += bool(m.any())
             area += float((m > 0).mean())
             seen = confirmed_faces(per[i]["d"], heads)
@@ -304,6 +311,7 @@ def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zo
     return {"clip": dst.name, "view": view, "mask": shape, "mosaic_cell": MOSAIC_CELL if shape == "mosaic" else None, "frames": n, "frames_masked": masked,
             "mask_area": round(area / max(1, n), 4), "confirmed": confirmed, "flagged_frames": flagged,
             "flag_times_sec": flags[:50], "passed": flagged == 0,
+            **({"fixed_zone": list(fixed_zone)} if fixed_zone else {}),
             **({"hand_priority": True, "faces_dropped_on_hands": dropped} if hand_priority else {})}
 
 
@@ -338,7 +346,8 @@ def worker(a, names: list[str], q) -> None:
         view = a.view or next((v for v in ("RightLow", "Right", "Left", "Top") if f"_{v}." in name), "")
         print(f"START {name}", flush=True)
         t0 = time.time()
-        row = process(det, src_dir / name, dst, view, a.mask, a.left_zone, a.face_stride, a.hand_priority)
+        fz = tuple(int(v) for v in a.fixed_zone.split(",")) if a.fixed_zone else None
+        row = process(det, src_dir / name, dst, view, a.mask, a.left_zone, a.face_stride, a.hand_priority, fz)
         row["face_stride"] = a.face_stride
         row["elapsed_sec"] = round(time.time() - t0, 1)
         meta.write_text(json.dumps(row), encoding="utf-8")
@@ -359,6 +368,8 @@ def main():
     ap.add_argument("--retinaface", action="store_true", help="add RetinaFace-R50 boxes to the mask")
     ap.add_argument("--left-zone", action=argparse.BooleanOptionalAction, default=True,
                     help="Left view: mask the bottom-right head zone while pose sees the player")
+    ap.add_argument("--fixed-zone", default=None, metavar="X1,Y1,X2,Y2",
+                    help="a box (1920x1080 pixels) masked in every frame, no hand cut-outs, e.g. where onlookers sit")
     ap.add_argument("--hand-priority", action="store_true",
                     help="drop a face box that overlaps a hand while pose sees no head within +-HOLD (per-clip fix)")
     ap.add_argument("--gpu", type=int, default=0)
