@@ -159,7 +159,8 @@ data/P<id>/<task>/<piece>/r<n>/audio.wav    audio
                                hand_imputed.csv       hand motion with short gaps filled (where listed)
                                hand_imputed_mask.csv  1 = value filled by the model
                                fingering_imputed.csv  fingering labeled from hand_imputed.csv
-                               top.mp4      top-view video, faces blurred (where available)
+                               top.mp4      top-view video, faces masked (where available)
+                               left.mp4, right.mp4, right_low.mp4  side views, faces masked (where available)
 data/P<id>/takes/<date>_<take>/audio.wav   every recorded take, whole (see below)
                                midi.mid, hand.csv, body.csv
 metadata/performances.csv   one row per performance: path, participant, task,

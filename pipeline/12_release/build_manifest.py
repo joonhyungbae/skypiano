@@ -72,9 +72,11 @@ audio is muted (audio_muted; false, with audio_note, for a take with no MIDI).
 
 Modalities per version (MODALITIES): audio (.wav), MIDI (.mid), hand and body
 motion (.csv, 120 fps, frame 0 = time 0 of the audio and MIDI); optional ones
-(OPTIONAL, listed only where the file exists, never counted missing): the Top
-camera view as cut at the same window and passed through EgoBlur (Stage 10,
-Data/Pipeline/10_face_blur/{ds}/videos_blurred/{stem}_Top.mp4), and per-note
+(OPTIONAL, listed only where the file exists, never counted missing): the camera
+views as cut at the same window and passed through the Stage 10 release mask (top.mp4,
+left.mp4, right.mp4, right_low.mp4 from Data/Pipeline/10_face_blur/{ds}/videos_blurred/
+{stem}_{Top|Left|Right|RightLow}.mp4; a clip ships only with a passed or review-passed
+record), and per-note
 fingering labeled from the raw hand motion (Stage 08 step 03,
 Data/Pipeline/08_fingering/Notes/raw/{ds}/{stem}.csv -> fingering.csv).
 
@@ -152,12 +154,15 @@ SUSPECT = PIPE / "06_hand_imputation" / "Suspect"       # <release path>/hand_su
 TRIALS = PIPE / "12_release" / "trials"                 # build_trials.py: whole takes on the trial clock
 TAKE_FILES = ("audio.wav", "midi.mid", "hand.csv", "body.csv")
 MODALITIES["top"] = "top.mp4"
+SIDE_VIEWS = {"left": "Left", "right": "Right", "right_low": "RightLow"}   # file name -> camera of the clip
+for _m in SIDE_VIEWS:
+    MODALITIES[_m] = f"{_m}.mp4"
 MODALITIES["fingering"] = "fingering.csv"
 MODALITIES["hand_imputed"] = "hand_imputed.csv"
 MODALITIES["hand_imputed_mask"] = "hand_imputed_mask.csv"
 MODALITIES["fingering_imputed"] = "fingering_imputed.csv"
 MODALITIES["hand_suspect_mask"] = "hand_suspect_mask.csv"
-OPTIONAL = {"top", "fingering", "hand_imputed", "hand_imputed_mask", "fingering_imputed", "hand_suspect_mask"}
+OPTIONAL = {"top", *SIDE_VIEWS, "fingering", "hand_imputed", "hand_imputed_mask", "fingering_imputed", "hand_suspect_mask"}
 IMPUTED_MODALITIES = ("hand_imputed", "hand_imputed_mask", "fingering_imputed")
 SESSION_ORDER = ["220819", "221112", "240523", "240828"]
 PRACTICE_VARIANT = re.compile(r"^\d+\s*\((left|right|both) hands?\)$")   # one-hand practice of a Fink exercise
@@ -299,6 +304,7 @@ def video_released(f: Path) -> bool:
 def files_for_piece(r: dict) -> dict[str, Path]:
     return {**{m: PIECES / r["dataset"] / f"{r['piece']}{suf}" for m, suf in PIECE_SOURCES.items()},
             "top": BLURRED / r["dataset"] / "videos_blurred" / f"{r['piece']}_Top.mp4",
+            **{m: BLURRED / r["dataset"] / "videos_blurred" / f"{r['piece']}_{v}.mp4" for m, v in SIDE_VIEWS.items()},
             "fingering": FINGERING / r["dataset"] / f"{r['piece']}.csv"}
 
 
@@ -325,6 +331,7 @@ def files_for_take(r: dict, raw_stems: dict[str, str]) -> dict[str, Path]:
             "hand": HAND / ds / f"{stem}.csv",
             "body": BODY / ds / f"{stem}.csv",
             "top": BLURRED / ds / "videos_blurred" / f"{stem}_Top.mp4",
+            **{m: BLURRED / ds / "videos_blurred" / f"{stem}_{v}.mp4" for m, v in SIDE_VIEWS.items()},
             "fingering": FINGERING / ds / f"{stem}.csv"}
 
 
@@ -532,7 +539,7 @@ def main():
         for m, f in r["src"].items():
             if m in only and r["dataset"] not in only[m]:
                 continue
-            if f.exists() and (m != "top" or video_released(f)):
+            if f.exists() and (not f.suffix == ".mp4" or video_released(f)):
                 manifest.append({"release_path": f"{base}/{MODALITIES[m]}", "source_path": f.as_posix(),
                                  "bytes": f.stat().st_size})
                 have.append(m)
