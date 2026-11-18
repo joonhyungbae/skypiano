@@ -43,6 +43,9 @@ and one row of --stats-csv): frames, frames_masked, mask_area, confirmed,
 flagged_frames, passed (no flagged frame). A flagged clip keeps its output
 under {clip}.flagged.mp4 for review.
 
+--heads-win: the pose head boxes are drawn after the hand cut-outs, so a hand raised to the face never opens
+the head (side views, where a player touching the face showed a cheek through the cut).
+
 --fixed-zone X1,Y1,X2,Y2 (per camera, recorded in the clip JSON): a box masked in every frame, with no
 hand cut-outs (onlookers' hands would open it; place it clear of the keyboard), for a wide view where onlookers sit in the background (220819 Left).
 
@@ -214,9 +217,12 @@ def mask_of(faces, cores, heads, zone, hands, w: int, h: int, shape: str) -> np.
         m[max(0, y1):max(0, y2), max(0, x1):max(0, x2)] = 0
     for x1, y1, x2, y2 in cores:                             # the faces themselves always stay masked
         m[y1:y2, x1:x2] = 255
+    if HEADS_WIN:                                            # --heads-win: a hand never opens a head box
+        draw(heads)
     return m
 
 
+HEADS_WIN = False         # --heads-win
 MOSAIC_CELL = 48          # pixels per mosaic cell (--mosaic-cell); 24 px still showed hair and face outline
 
 
@@ -341,8 +347,8 @@ def confirmed_faces(d: dict, heads: list) -> list:
 
 
 def worker(a, names: list[str], q) -> None:
-    global MOSAIC_CELL
-    MOSAIC_CELL = a.mosaic_cell
+    global MOSAIC_CELL, HEADS_WIN
+    MOSAIC_CELL, HEADS_WIN = a.mosaic_cell, a.heads_win
     det = Detectors(a.gpu, a.retinaface, verify=True)
     src_dir, dst_dir = Path(a.src_dir), Path(a.dst_dir)
     for name in names:
@@ -376,6 +382,8 @@ def main():
     ap.add_argument("--retinaface", action="store_true", help="add RetinaFace-R50 boxes to the mask")
     ap.add_argument("--left-zone", action=argparse.BooleanOptionalAction, default=True,
                     help="Left view: mask the bottom-right head zone while pose sees the player")
+    ap.add_argument("--heads-win", action="store_true",
+                    help="pose head boxes are drawn after the hand cut-outs (a hand raised to the face cannot open it)")
     ap.add_argument("--fixed-zone", default=None, metavar="X1,Y1,X2,Y2",
                     help="a box (1920x1080 pixels) masked in every frame, no hand cut-outs, e.g. where onlookers sit")
     ap.add_argument("--hand-priority", action="store_true",
