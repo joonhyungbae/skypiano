@@ -46,11 +46,27 @@ under {clip}.flagged.mp4 for review.
 --heads-win: the pose head boxes are drawn after the hand cut-outs, so a hand raised to the face never opens
 the head (side views, where a player touching the face showed a cheek through the cut).
 
+--arm-guard: a face detection that lies on the player's upper arm or forearm (pose shoulder-elbow-wrist),
+outside every pose head box of the frames within +-HOLD, is neither masked nor checked (a low side view sees
+the raised upper arm large, and two detectors both take it for a face). While pose sees no head within
++-HOLD nothing is dropped. Recorded per clip (arm_guard, faces_dropped_on_arms).
+
 --fixed-zone X1,Y1,X2,Y2 (per camera, recorded in the clip JSON): a box masked in every frame, with no
 hand cut-outs (onlookers' hands would open it; place it clear of the keyboard), for a wide view where onlookers sit in the background (220819 Left).
 
 --hand-priority (per clip, recorded in the clip JSON): a face box that overlaps a hand box while pose
 sees no head within +-HOLD is dropped; for Top clips where EgoBlur takes a raised forearm for a face.
+
+--head-shape: SAM 2 (ultralytics, --sam-weights) segments each pose head box, and only the segment (grown
+by SEG_DILATE px, kept inside the box) is masked instead of the whole box; a segment covering less than
+SEG_MIN of its box falls back to the box. Face detector boxes stay boxes.
+
+--face-labels: the reviewer's labels of the face scan (s05_face_scan.py, src/face_labels.py) decide per clip.
+A clip whose scan found nothing, or whose episodes are all labelled and none is a face, is copied unmasked
+(label_gate no_hits / no_face). A clip with an unlabelled episode is skipped (label_gate unlabelled, no output).
+In a clip with a face episode, each face episode's box is masked from one second before it to one second after
+it, and a detector box matching an episode labelled not a face is neither masked nor checked. A clip with no
+scan is masked as without the option (label_gate no_scan).
 
 Detector weights: EgoBlur `pipeline/10_face_blur/models/ego_blur_face.jit`;
 RTMO, RetinaFace and YOLOv8-face are fetched by rtmlib / batch-face /
@@ -66,12 +82,17 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import shutil
 import subprocess
+import sys
 import time
 from pathlib import Path
 
 import cv2
 import numpy as np
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+import face_labels as FL  # noqa: E402
 
 MODEL_PATH = Path("pipeline/10_face_blur/models/ego_blur_face.jit")
 RTMO_URL = ("https://download.openmmlab.com/mmpose/v1/projects/rtmo/onnx_sdk/"
@@ -109,6 +130,7 @@ class Detectors:
             from ultralytics import YOLO
             self.yolo = YOLO(hf_hub_download(*YOLO_FACE))
         self.gpu = gpu
+        self.sam = None                                    # --head-shape, loaded on first use
 
     def egoblur(self, bgr):
         torch = self.torch
@@ -121,18 +143,21 @@ class Detectors:
             return [bb + [ss] for bb, ss in zip(b[keep].tolist(), s[keep].tolist())]
 
     def heads(self, bgr):
-        """(head boxes with a score, hand boxes, whether a person is seen).
+        """(head boxes with a score, hand boxes, whether a person is seen, the player's arm segments).
 
         Hand boxes are the player's only (the person whose confident keypoints span the largest area): an
         onlooker's raised hand must not open the mask over the onlooker's face."""
         kps, scores = self.pose(bgr)
-        out, hands = [], []
+        out, hands, arms = [], [], []
 
         def extent(k, s):
             pts = k[s >= KEYPOINT_THRESHOLD]
             return float(np.prod(pts.max(0) - pts.min(0))) if len(pts) > 1 else 0.0
         player = max(range(len(kps)), key=lambda i: extent(kps[i], scores[i]), default=None)
         for k, s in ([(kps[player], scores[player])] if player is not None else []):
+            for a, b in ((5, 7), (7, 9), (6, 8), (8, 10)):                  # shoulder-elbow, elbow-wrist
+                if min(s[a], s[b]) >= KEYPOINT_THRESHOLD:
+                    arms.append((k[a].astype(float), k[b].astype(float)))
             for wi, ei in ((9, 7), (10, 8)):                                 # wrists, elbows (COCO)
                 if s[wi] < KEYPOINT_THRESHOLD:
                     continue
@@ -156,7 +181,7 @@ class Detectors:
             cx, cy = (x1 + x2) / 2, (y1 + y2) / 2
             out.append([cx - r, cy - r * 1.2, cx + r, cy + r, float(np.mean(s[head]))])
         person = any(float(np.max(s)) >= KEYPOINT_THRESHOLD for s in scores)
-        return out, hands, person
+        return out, hands, person, arms
 
     def retinaface(self, bgr):
         if self.retina is None:
@@ -188,16 +213,18 @@ def iou(a, b) -> float:
     return inter / u if u > 0 else 0.0
 
 
-def padded(b, w: int, h: int, pad: float = PAD):
+def padded(b, w: int, h: int, pad: float | None = None):
+    pad = PAD if pad is None else pad
     dx, dy = (b[2] - b[0]) * pad, (b[3] - b[1]) * pad
     return (max(0, int(b[0] - dx)), max(0, int(b[1] - dy)), min(w, int(b[2] + dx + 1)), min(h, int(b[3] + dy + 1)))
 
 
-def mask_of(faces, cores, heads, zone, hands, w: int, h: int, shape: str) -> np.ndarray:
+def mask_of(faces, cores, heads, zone, hands, w: int, h: int, shape: str, head_mask=None) -> np.ndarray:
     """Face boxes as the ellipse inscribed in the padded box (solid) or the box (mosaic); the zone as a box.
 
     The inscribed ellipse still holds the whole unpadded face box: with PAD = 0.4 on each side the face is
     1/1.8 of the padded box, inside the ellipse's inner rectangle of 0.707.
+    With --head-shape, `head_mask` (the segmented heads) is drawn in place of the head boxes.
     """
     m = np.zeros((h, w), np.uint8)
 
@@ -211,18 +238,71 @@ def mask_of(faces, cores, heads, zone, hands, w: int, h: int, shape: str) -> np.
 
     if zone is not None:
         m[zone[1]:zone[3], zone[0]:zone[2]] = 255
-    draw(heads)
+    draw_heads = (lambda: np.maximum(m, head_mask, out=m)) if head_mask is not None else (lambda: draw(heads))
+    draw_heads()
     draw(faces)
     for x1, y1, x2, y2 in hands:                             # no padding, head box or zone hides a hand
         m[max(0, y1):max(0, y2), max(0, x1):max(0, x2)] = 0
     for x1, y1, x2, y2 in cores:                             # the faces themselves always stay masked
         m[y1:y2, x1:x2] = 255
     if HEADS_WIN:                                            # --heads-win: a hand never opens a head box
-        draw(heads)
+        draw_heads()
     return m
 
 
 HEADS_WIN = False         # --heads-win
+HEAD_SHAPE = False        # --head-shape
+SAM_WEIGHTS = "sam2.1_b.pt"
+SEG_DILATE = 15           # px grown around a head segment
+SEG_MIN = 0.15            # a segment below this share of its box falls back to the whole box
+LABEL_PAD = 0.3          # --face-labels: margin of a labelled face episode box
+
+
+def merge_boxes(boxes) -> list:
+    """Union of overlapping boxes (the held head boxes of +-HOLD frames are one head)."""
+    out = [list(b[:4]) for b in boxes]
+    changed = True
+    while changed:
+        changed = False
+        for i in range(len(out)):
+            for j in range(i + 1, len(out)):
+                a, b = out[i], out[j]
+                if min(a[2], b[2]) > max(a[0], b[0]) and min(a[3], b[3]) > max(a[1], b[1]):
+                    out[i] = [min(a[0], b[0]), min(a[1], b[1]), max(a[2], b[2]), max(a[3], b[3])]
+                    del out[j]
+                    changed = True
+                    break
+            if changed:
+                break
+    return out
+
+
+def head_segments(det, fr: np.ndarray, boxes: list) -> np.ndarray:
+    """--head-shape: SAM 2 segments each (merged) head box; the mask is the segment, grown by SEG_DILATE px and
+    kept inside its box. A box whose segment covers less than SEG_MIN of it is masked whole."""
+    h, w = fr.shape[:2]
+    m = np.zeros((h, w), np.uint8)
+    boxes = merge_boxes(boxes)
+    if not boxes:
+        return m
+    if det.sam is None:
+        from ultralytics import SAM
+        det.sam = SAM(SAM_WEIGHTS)
+    r = det.sam(fr, bboxes=[[float(v) for v in b] for b in boxes], verbose=False, device=det.gpu)[0]
+    segs = r.masks.data.cpu().numpy() if r.masks is not None else []
+    kernel = np.ones((2 * SEG_DILATE + 1, 2 * SEG_DILATE + 1), np.uint8)
+    for k, (x1, y1, x2, y2) in enumerate(tuple(int(v) for v in b) for b in boxes):
+        x1, y1, x2, y2 = max(0, x1), max(0, y1), min(w, x2), min(h, y2)
+        if x2 <= x1 or y2 <= y1:
+            continue
+        seg = cv2.resize(segs[k].astype(np.uint8), (w, h), interpolation=cv2.INTER_NEAREST) if k < len(segs) else None
+        box = np.zeros((h, w), np.uint8)
+        box[y1:y2, x1:x2] = 1
+        if seg is None or (seg & box).sum() < SEG_MIN * box.sum():
+            m[y1:y2, x1:x2] = 255
+            continue
+        m[(cv2.dilate(seg, kernel) & box) > 0] = 255
+    return m
 MOSAIC_CELL = 48          # pixels per mosaic cell (--mosaic-cell); 24 px still showed hair and face outline
 
 
@@ -239,7 +319,8 @@ def apply_mask(fr: np.ndarray, m: np.ndarray, shape: str) -> None:
 
 
 def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zone: bool,
-            face_stride: int = 1, hand_priority: bool = False, fixed_zone=None) -> dict:
+            face_stride: int = 1, hand_priority: bool = False, fixed_zone=None, arm_guard: bool = False,
+            labels: dict | None = None) -> dict:
     cap = cv2.VideoCapture(str(src))
     fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
     w, h = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -255,13 +336,13 @@ def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zo
             print(f"PROGRESS {dst.name} detect {len(per)} frames {time.time() - t0:.0f}s", flush=True)
         on = len(per) % face_stride == 0
         d = {"egoblur": det.egoblur(fr) if on else [], "retinaface": det.retinaface(fr) if on else []}
-        d["pose_head"], hands, person = det.heads(fr)
+        d["pose_head"], hands, person, arms = det.heads(fr)
         if det.yolo is not None:
             d["yolo_face"] = det.yolo_face(fr)
         face_boxes = [b for b in d["egoblur"] + d["retinaface"] if b[4] >= FACE_THRESHOLD]
         per.append({"d": d, "faces": [padded(b, w, h) for b in face_boxes],
                     "cores": [padded(b, w, h, CORE_PAD) for b in face_boxes],
-                    "heads": [padded(b, w, h) for b in d["pose_head"]], "hands": hands,
+                    "heads": [padded(b, w, h) for b in d["pose_head"]], "hands": hands, "arms": arms,
                     "zone": left_zone and view == "Left" and person})
     n = len(per)
     dropped = 0
@@ -275,6 +356,29 @@ def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zo
                     if not any(min(b[2], hb[2]) > max(b[0], hb[0]) and min(b[3], hb[3]) > max(b[1], hb[1]) for hb in f["hands"])]
             dropped += len(f["faces"]) - len(keep)
             f["faces"], f["cores"] = [f["faces"][k] for k in keep], [f["cores"][k] for k in keep]
+    arm_dropped = 0
+    if arm_guard:
+        for i, f in enumerate(per):
+            if not f["faces"]:
+                continue
+            keep = [k for k, b in enumerate(f["cores"]) if not on_arm(b, per, i)]
+            arm_dropped += len(f["faces"]) - len(keep)
+            f["faces"], f["cores"] = [f["faces"][k] for k in keep], [f["cores"][k] for k in keep]
+    labelled_off = labelled_on = 0
+    if labels is not None:
+        g = FL.GAP_SEC * fps
+        notface = lambda b, i: any(e["start"] - g <= i <= e["end"] + g and FL.near(b, e["box"])
+                                   for e in labels["non_face_episodes"])
+        for i, f in enumerate(per):
+            keep = [k for k, b in enumerate(f["cores"]) if not notface(b, i)]
+            labelled_off += len(f["faces"]) - len(keep)
+            f["faces"], f["cores"] = [f["faces"][k] for k in keep], [f["cores"][k] for k in keep]
+        for e in labels["face_episodes"]:
+            for i in range(max(0, int(e["start"] - g)), min(n, int(e["end"] + g) + 1)):
+                b = padded(e["box"], w, h, max(PAD, LABEL_PAD))   # the face moves within an episode
+                per[i]["faces"].append(b)
+                per[i]["cores"].append(padded(e["box"], w, h, CORE_PAD))
+                labelled_on += 1
     # pass 2: write the masked clip; the coverage check runs on each frame's mask
     tmp = dst.with_suffix(".part.mp4")
     dst.parent.mkdir(parents=True, exist_ok=True)
@@ -299,12 +403,17 @@ def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zo
             # face cores of the frames within +-face_stride: with a stride, most frames have no EgoBlur box of
             # their own, and a hand cut next to the face would otherwise eat into it
             cores = [b for j in range(max(0, i - face_stride), min(n, i + face_stride + 1)) for b in per[j]["cores"]]
-            m = mask_of(faces, cores, heads, z, hands, w, h, shape)
+            hm = head_segments(det, fr, heads) if HEAD_SHAPE else None
+            m = mask_of(faces, cores, heads, z, hands, w, h, shape, hm)
             if fixed:                                    # onlookers' own hands must not open it: no cut-outs
                 m[fixed[1]:fixed[3], fixed[0]:fixed[2]] = 255
             masked += bool(m.any())
             area += float((m > 0).mean())
             seen = confirmed_faces(per[i]["d"], heads)
+            if arm_guard:
+                seen = [b for b in seen if not on_arm(b, per, i)]
+            if labels is not None:
+                seen = [b for b in seen if not notface(b, i)]
             confirmed += len(seen)
             for f in seen:
                 x1, y1, x2, y2 = (max(0, int(f[0])), max(0, int(f[1])), min(w, int(f[2])), min(h, int(f[3])))
@@ -326,7 +435,36 @@ def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zo
             "mask_area": round(area / max(1, n), 4), "confirmed": confirmed, "flagged_frames": flagged,
             "flag_times_sec": flags[:50], "passed": flagged == 0,
             **({"fixed_zone": list(fixed_zone)} if fixed_zone else {}),
-            **({"hand_priority": True, "faces_dropped_on_hands": dropped} if hand_priority else {})}
+            **({"hand_priority": True, "faces_dropped_on_hands": dropped} if hand_priority else {}),
+            **({"arm_guard": True, "faces_dropped_on_arms": arm_dropped} if arm_guard else {}),
+            **({"head_shape": True} if HEAD_SHAPE else {}),
+            **({"label_gate": "face", "face_boxes_dropped_by_labels": labelled_off,
+                "face_episode_box_frames": labelled_on} if labels is not None else {})}
+
+
+ARM_PX = 60.0            # --arm-guard: a box centre this close to an arm segment (or 0.25 x its length) is on it
+
+
+def on_arm(b, per: list, i: int) -> bool:
+    """--arm-guard: a face box is the player's arm when pose sees the head within +-HOLD, the box centre lies
+    in none of those (unpadded) pose head boxes, and it lies on a shoulder-elbow or elbow-wrist segment of
+    the nearest frame with arms. With no pose head within +-HOLD it is never dropped."""
+    n = len(per)
+    near = range(max(0, i - HOLD), min(n, i + HOLD + 1))
+    heads = [hb for j in near for hb in per[j]["d"]["pose_head"]]
+    if not heads:
+        return False
+    c = np.array([(b[0] + b[2]) / 2, (b[1] + b[3]) / 2], float)
+    if any(hb[0] <= c[0] <= hb[2] and hb[1] <= c[1] <= hb[3] for hb in heads):
+        return False
+    arms = next((per[j]["arms"] for j in sorted(near, key=lambda j: abs(j - i)) if per[j]["arms"]), [])
+    for a, e in arms:
+        ab = e - a
+        L = float(np.linalg.norm(ab))
+        t = float(np.clip(np.dot(c - a, ab) / max(L * L, 1e-6), 0, 1))
+        if np.linalg.norm(c - (a + t * ab)) <= max(ARM_PX, 0.25 * L):
+            return True
+    return False
 
 
 def confirmed_faces(d: dict, heads: list) -> list:
@@ -347,8 +485,9 @@ def confirmed_faces(d: dict, heads: list) -> list:
 
 
 def worker(a, names: list[str], q) -> None:
-    global MOSAIC_CELL, HEADS_WIN
-    MOSAIC_CELL, HEADS_WIN = a.mosaic_cell, a.heads_win
+    global MOSAIC_CELL, HEADS_WIN, PAD, CORE_PAD, HOLD, HEAD_SHAPE, SAM_WEIGHTS
+    MOSAIC_CELL, HEADS_WIN, PAD, CORE_PAD, HOLD = a.mosaic_cell, a.heads_win, a.pad, a.core_pad, a.hold
+    HEAD_SHAPE, SAM_WEIGHTS = a.head_shape, a.sam_weights
     det = Detectors(a.gpu, a.retinaface, verify=True)
     src_dir, dst_dir = Path(a.src_dir), Path(a.dst_dir)
     for name in names:
@@ -361,8 +500,38 @@ def worker(a, names: list[str], q) -> None:
         print(f"START {name}", flush=True)
         t0 = time.time()
         fz = tuple(int(v) for v in a.fixed_zone.split(",")) if a.fixed_zone else None
-        row = process(det, src_dir / name, dst, view, a.mask, a.left_zone, a.face_stride, a.hand_priority, fz)
+        labels, gate = None, None
+        if a.face_labels:
+            ds = name.split("_")[0]
+            scan_f = Path(a.face_scan_root) / ds / "face_scan" / f"{Path(name).stem}.json"
+            if not scan_f.exists():
+                gate = "no_scan"
+            else:
+                dec = FL.clip_decision(json.loads(scan_f.read_text(encoding="utf-8")),
+                                       FL.read_labels(ds, Path(a.metadata_root)))
+                gate = dec["status"]
+                if gate == "unlabelled":
+                    print(f"SKIP {name}: {dec['episodes'] - dec['labelled']} face-scan episodes not labelled", flush=True)
+                    q.put({"clip": name, "view": view, "label_gate": gate, "passed": False, "skipped": True})
+                    continue
+                if gate in ("no_hits", "no_face"):
+                    dst.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copyfile(src_dir / name, dst.with_suffix(".part.mp4"))
+                    dst.with_suffix(".part.mp4").replace(dst)
+                    row = {"clip": name, "view": view, "mask": None, "frames_masked": 0, "mask_area": 0.0,
+                           "flagged_frames": 0, "passed": True, "label_gate": gate,
+                           "face_scan_episodes": dec["episodes"]}
+                    meta.write_text(json.dumps(row), encoding="utf-8")
+                    print("DONE " + json.dumps(row), flush=True)
+                    q.put(row)
+                    continue
+                labels = dec
+        row = process(det, src_dir / name, dst, view, a.mask, a.left_zone, a.face_stride, a.hand_priority, fz,
+                      a.arm_guard, labels)
+        if gate == "no_scan":
+            row["label_gate"] = gate
         row["face_stride"] = a.face_stride
+        row.update(pad=a.pad, core_pad=a.core_pad, hold=a.hold)
         row["elapsed_sec"] = round(time.time() - t0, 1)
         meta.write_text(json.dumps(row), encoding="utf-8")
         print("DONE " + json.dumps(row), flush=True)
@@ -388,6 +557,18 @@ def main():
                     help="a box (1920x1080 pixels) masked in every frame, no hand cut-outs, e.g. where onlookers sit")
     ap.add_argument("--hand-priority", action="store_true",
                     help="drop a face box that overlaps a hand while pose sees no head within +-HOLD (per-clip fix)")
+    ap.add_argument("--pad", type=float, default=PAD, help="margin added on each side of face and pose head boxes")
+    ap.add_argument("--core-pad", type=float, default=CORE_PAD, help="margin of the face core no hand cut removes")
+    ap.add_argument("--hold", type=int, default=HOLD, help="boxes of the frames within +-HOLD are merged into a frame's mask")
+    ap.add_argument("--arm-guard", action="store_true",
+                    help="drop a face box on the player's arm while pose sees the head elsewhere (mask and check)")
+    ap.add_argument("--head-shape", action="store_true",
+                    help="mask the SAM 2 segment inside each pose head box instead of the whole box")
+    ap.add_argument("--sam-weights", default=SAM_WEIGHTS, help="SAM 2 checkpoint for --head-shape")
+    ap.add_argument("--face-labels", action="store_true",
+                    help="gate each clip by the reviewer's face-scan labels (see the docstring)")
+    ap.add_argument("--face-scan-root", default="Data/Pipeline/10_face_blur", help="{root}/{dataset}/face_scan/")
+    ap.add_argument("--metadata-root", default="Data/Metadata", help="{root}/{dataset}/_face_labels.json")
     ap.add_argument("--gpu", type=int, default=0)
     ap.add_argument("--workers", type=int, default=1)
     ap.add_argument("--force", action="store_true")

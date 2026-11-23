@@ -214,6 +214,26 @@ Tier A labels); `s03` refuses to overwrite existing weights without
 roll, top-view video and 3D hand markers and records a finger per note; the
 paper's 2,269-note audit was labeled with it.
 
+### Face anonymization (10)
+
+`10_face_blur/steps/s04_strict_blur.py` masks faces with a mosaic: EgoBlur
+face boxes and pose head boxes, merged over neighbouring frames, with the
+player's hands cut out. A coverage check flags any frame where a face that
+two detectors agree on is not inside the mask, and a flagged clip is not
+released. `--arm-guard` drops face detections on the player's arm, and
+`--head-shape` masks the SAM 2 segment of the head instead of its whole box.
+
+Where a face is seldom in view (the 240828 left camera looks down on the
+keyboard), `s05_face_scan.py` first runs the face detectors alone and groups
+their hits into episodes (`src/face_labels.py`). A reviewer labels each
+episode as the player's face, another person's face, an arm or hand, or
+something else. The labels are kept in `Data/Metadata/{dataset}/_face_labels.json`
+by frame range and box, so they still apply after a re-scan. With
+`--face-labels`, a clip is released unmasked when the scan found nothing or
+when none of its episodes is a face. A clip with a face episode is masked as
+usual, and each face episode's box is masked as well. A clip with an
+unlabelled episode is skipped.
+
 ### Release (12)
 
 `pipeline/12_release/build_manifest.py --version X.Y.Z` writes
