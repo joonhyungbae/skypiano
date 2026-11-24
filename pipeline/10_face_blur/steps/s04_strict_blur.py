@@ -61,6 +61,10 @@ sees no head within +-HOLD is dropped; for Top clips where EgoBlur takes a raise
 by SEG_DILATE px, kept inside the box) is masked instead of the whole box; a segment covering less than
 SEG_MIN of its box falls back to the box. Face detector boxes stay boxes.
 
+--mask-confirmed: the faces the coverage check confirms (frames within +-2, padded CONFIRMED_PAD) are masked
+too, so a face the pose head box or its segment misses (at the frame edge, head bowed) is still covered. The
+check then flags only what is left uncovered after that (hand cut-outs cannot open these boxes).
+
 --face-labels: the reviewer's labels of the face scan (s05_face_scan.py, src/face_labels.py) decide per clip.
 A clip whose scan found nothing, or whose episodes are all labelled and none is a face, is copied unmasked
 (label_gate no_hits / no_face). A clip with an unlabelled episode is skipped (label_gate unlabelled, no output).
@@ -253,7 +257,10 @@ def mask_of(faces, cores, heads, zone, hands, w: int, h: int, shape: str, head_m
 HEADS_WIN = False         # --heads-win
 HEAD_SHAPE = False        # --head-shape
 SAM_WEIGHTS = "sam2.1_b.pt"
-SEG_DILATE = 15           # px grown around a head segment
+SEG_DILATE = 15           # px grown around a head segment (--seg-dilate)
+MASK_CONFIRMED = False    # --mask-confirmed
+CONFIRMED_PAD = 0.2       # margin of a confirmed face box drawn by --mask-confirmed
+SEG_BOX_PAD = 0.0         # the segment is kept inside its head box padded by this share (--seg-box-pad)
 SEG_MIN = 0.15            # a segment below this share of its box falls back to the whole box
 LABEL_PAD = 0.3          # --face-labels: margin of a labelled face episode box
 
@@ -279,7 +286,8 @@ def merge_boxes(boxes) -> list:
 
 def head_segments(det, fr: np.ndarray, boxes: list) -> np.ndarray:
     """--head-shape: SAM 2 segments each (merged) head box; the mask is the segment, grown by SEG_DILATE px and
-    kept inside its box. A box whose segment covers less than SEG_MIN of it is masked whole."""
+    kept inside its box padded by SEG_BOX_PAD on each side (the pose head box can be smaller than the head).
+    A box whose segment covers less than SEG_MIN of it is masked whole."""
     h, w = fr.shape[:2]
     m = np.zeros((h, w), np.uint8)
     boxes = merge_boxes(boxes)
@@ -301,7 +309,10 @@ def head_segments(det, fr: np.ndarray, boxes: list) -> np.ndarray:
         if seg is None or (seg & box).sum() < SEG_MIN * box.sum():
             m[y1:y2, x1:x2] = 255
             continue
-        m[(cv2.dilate(seg, kernel) & box) > 0] = 255
+        dx, dy = int((x2 - x1) * SEG_BOX_PAD), int((y2 - y1) * SEG_BOX_PAD)
+        keep = np.zeros((h, w), np.uint8)
+        keep[max(0, y1 - dy):min(h, y2 + dy), max(0, x1 - dx):min(w, x2 + dx)] = 1
+        m[(cv2.dilate(seg, kernel) & keep) > 0] = 255
     return m
 MOSAIC_CELL = 48          # pixels per mosaic cell (--mosaic-cell); 24 px still showed hair and face outline
 
@@ -389,6 +400,16 @@ def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zo
     masked = flagged = confirmed = 0
     area = 0.0
     flags = []
+    # each frame's confirmed faces (the coverage check's faces), after the arm guard and the labels
+    held = lambda i: [b for j in range(max(0, i - HOLD), min(n, i + HOLD + 1)) for b in per[j]["heads"]]
+    seen_at = []
+    for i in range(n):
+        sb = confirmed_faces(per[i]["d"], held(i))
+        if arm_guard:
+            sb = [b for b in sb if not on_arm(b, per, i)]
+        if labels is not None:
+            sb = [b for b in sb if not notface(b, i)]
+        seen_at.append(sb)
     try:
         for i, fr in enumerate(frames(src)):
             if i % 600 == 0:
@@ -403,17 +424,16 @@ def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zo
             # face cores of the frames within +-face_stride: with a stride, most frames have no EgoBlur box of
             # their own, and a hand cut next to the face would otherwise eat into it
             cores = [b for j in range(max(0, i - face_stride), min(n, i + face_stride + 1)) for b in per[j]["cores"]]
+            if MASK_CONFIRMED:    # --mask-confirmed: faces two detectors agree on (frames within +-2) are masked
+                cc = [padded(b, w, h, CONFIRMED_PAD) for j in range(max(0, i - 2), min(n, i + 3)) for b in seen_at[j]]
+                faces, cores = faces + cc, cores + cc
             hm = head_segments(det, fr, heads) if HEAD_SHAPE else None
             m = mask_of(faces, cores, heads, z, hands, w, h, shape, hm)
             if fixed:                                    # onlookers' own hands must not open it: no cut-outs
                 m[fixed[1]:fixed[3], fixed[0]:fixed[2]] = 255
             masked += bool(m.any())
             area += float((m > 0).mean())
-            seen = confirmed_faces(per[i]["d"], heads)
-            if arm_guard:
-                seen = [b for b in seen if not on_arm(b, per, i)]
-            if labels is not None:
-                seen = [b for b in seen if not notface(b, i)]
+            seen = seen_at[i]
             confirmed += len(seen)
             for f in seen:
                 x1, y1, x2, y2 = (max(0, int(f[0])), max(0, int(f[1])), min(w, int(f[2])), min(h, int(f[3])))
@@ -437,7 +457,8 @@ def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zo
             **({"fixed_zone": list(fixed_zone)} if fixed_zone else {}),
             **({"hand_priority": True, "faces_dropped_on_hands": dropped} if hand_priority else {}),
             **({"arm_guard": True, "faces_dropped_on_arms": arm_dropped} if arm_guard else {}),
-            **({"head_shape": True} if HEAD_SHAPE else {}),
+            **({"head_shape": True, "seg_dilate": SEG_DILATE, "seg_box_pad": SEG_BOX_PAD} if HEAD_SHAPE else {}),
+            **({"mask_confirmed": True} if MASK_CONFIRMED else {}),
             **({"label_gate": "face", "face_boxes_dropped_by_labels": labelled_off,
                 "face_episode_box_frames": labelled_on} if labels is not None else {})}
 
@@ -485,9 +506,10 @@ def confirmed_faces(d: dict, heads: list) -> list:
 
 
 def worker(a, names: list[str], q) -> None:
-    global MOSAIC_CELL, HEADS_WIN, PAD, CORE_PAD, HOLD, HEAD_SHAPE, SAM_WEIGHTS
+    global MOSAIC_CELL, HEADS_WIN, PAD, CORE_PAD, HOLD, HEAD_SHAPE, SAM_WEIGHTS, SEG_DILATE, SEG_BOX_PAD, MASK_CONFIRMED
     MOSAIC_CELL, HEADS_WIN, PAD, CORE_PAD, HOLD = a.mosaic_cell, a.heads_win, a.pad, a.core_pad, a.hold
-    HEAD_SHAPE, SAM_WEIGHTS = a.head_shape, a.sam_weights
+    HEAD_SHAPE, SAM_WEIGHTS, SEG_DILATE, SEG_BOX_PAD = a.head_shape, a.sam_weights, a.seg_dilate, a.seg_box_pad
+    MASK_CONFIRMED = a.mask_confirmed
     det = Detectors(a.gpu, a.retinaface, verify=True)
     src_dir, dst_dir = Path(a.src_dir), Path(a.dst_dir)
     for name in names:
@@ -565,6 +587,11 @@ def main():
     ap.add_argument("--head-shape", action="store_true",
                     help="mask the SAM 2 segment inside each pose head box instead of the whole box")
     ap.add_argument("--sam-weights", default=SAM_WEIGHTS, help="SAM 2 checkpoint for --head-shape")
+    ap.add_argument("--mask-confirmed", action="store_true",
+                    help="also mask the faces the coverage check confirms (padded CONFIRMED_PAD, frames within +-2)")
+    ap.add_argument("--seg-dilate", type=int, default=SEG_DILATE, help="--head-shape: px grown around the segment")
+    ap.add_argument("--seg-box-pad", type=float, default=SEG_BOX_PAD,
+                    help="--head-shape: the segment is kept inside the head box padded by this share")
     ap.add_argument("--face-labels", action="store_true",
                     help="gate each clip by the reviewer's face-scan labels (see the docstring)")
     ap.add_argument("--face-scan-root", default="Data/Pipeline/10_face_blur", help="{root}/{dataset}/face_scan/")
