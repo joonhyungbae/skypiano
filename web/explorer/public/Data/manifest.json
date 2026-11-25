@@ -76,12 +76,12 @@
       "pieceLevel": "Beginner"
     },
     {
-      "trialId": "240828_C0_N4_T2_Bach_MinuetG",
+      "trialId": "240828_C0_N7_T2_Badarzewska_MaidensPrayer",
       "session": "240828",
-      "subject": "C0_N4",
+      "subject": "C0_N7",
       "level": "Professional",
       "task": "T2",
-      "pieceLabel": "Bach (Petzold) — Minuet in G major, BWV Anh.114",
+      "pieceLabel": "Bądarzewska — The Maiden's Prayer, Op.4",
       "basePath": "/samples",
       "videoViews": [
         "top",
@@ -99,8 +99,8 @@
         "video": true,
         "score": true
       },
-      "narrativeBlurb": "Beginner-grade Set1 piece — Bach (Petzold) — Minuet in G major, BWV Anh.114. Source trial 240828_C0_N4_T2_P4_t1 piece 1, ~41s, 213 performance notes. Score↔performance alignment quality 0.971 (score-match 0.995, perf-match 0.948).",
-      "durationLabel": "~0:41",
+      "narrativeBlurb": "Beginner-grade Set1 piece — Bądarzewska — The Maiden's Prayer, Op.4. Source trial 240828_C0_N7_T2_P3_t1 piece 1, ~72s, 673 performance notes. Score↔performance alignment quality 0.759 (score-match 0.855, perf-match 0.682).",
+      "durationLabel": "~1:12",
       "pieceLevel": "Beginner"
     },
     {
