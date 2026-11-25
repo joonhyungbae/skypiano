@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/skypiano/explorer/grand-piano.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#F7F7FA" />
+    <meta
+      name="description"
+      content="SKY Piano — an interactive browser for a multimodal piano performance dataset with synchronized motion capture, audio, MIDI, video, and scores"
+    />
+    <meta property="og:title" content="SKY Piano" />
+    <meta
+      property="og:description"
+      content="Browse synchronized hand and body motion capture, audio, MIDI, multi-view video, and scores from the SKY Piano dataset."
+    />
+    <title>SKY Piano</title>
+    <script>
+      // GitHub Pages SPA redirect — restore path after 404.html redirect.
+      (function (l) {
+        if (l.search[1] === '/') {
+          var decoded = l.search.slice(1).split('&').map(function (s) {
+            return s.replace(/~and~/g, '&');
+          }).join('?');
+          window.history.replaceState(null, '', l.pathname.slice(0, -1) + decoded + l.hash);
+        }
+      })(window.location);
+    </script>
+    <style>
+      /* Prevent flash of unstyled content */
+      html, body {
+        background: #F7F7FA;
+        min-height: 100vh;
+        margin: 0;
+        color: #1A1A2E;
+      }
+      #app { min-height: 100vh; }
+    </style>
+    <script type="module" crossorigin src="/skypiano/explorer/assets/index-B6kYT87U.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+  </body>
+</html>
