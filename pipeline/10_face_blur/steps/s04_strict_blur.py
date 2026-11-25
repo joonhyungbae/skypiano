@@ -65,6 +65,11 @@ SEG_MIN of its box falls back to the box. Face detector boxes stay boxes.
 too, so a face the pose head box or its segment misses (at the frame edge, head bowed) is still covered. The
 check then flags only what is left uncovered after that (hand cut-outs cannot open these boxes).
 
+--label-zone (with --face-labels): in a face clip, only the face zone of the view (face_labels.face_zone: the box
+around every face label of that view) is masked, from ZONE_SEC before to ZONE_SEC after each face episode and
+each corner mark of the reviewer (face_labels.zone_windows); hands are cut out of it as from the Left zone.
+Detector and pose boxes are not masked, so nothing outside the corner is; the coverage check still runs.
+
 --face-labels: the reviewer's labels of the face scan (s05_face_scan.py, src/face_labels.py) decide per clip.
 A clip whose scan found nothing, or whose episodes are all labelled and none is a face, is copied unmasked
 (label_gate no_hits / no_face). A clip with an unlabelled episode is skipped (label_gate unlabelled, no output).
@@ -331,7 +336,7 @@ def apply_mask(fr: np.ndarray, m: np.ndarray, shape: str) -> None:
 
 def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zone: bool,
             face_stride: int = 1, hand_priority: bool = False, fixed_zone=None, arm_guard: bool = False,
-            labels: dict | None = None) -> dict:
+            labels: dict | None = None, label_zone=None) -> dict:
     cap = cv2.VideoCapture(str(src))
     fps = cap.get(cv2.CAP_PROP_FPS) or 30.0
     w, h = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -380,6 +385,17 @@ def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zo
         g = FL.GAP_SEC * fps
         notface = lambda b, i: any(e["start"] - g <= i <= e["end"] + g and FL.near(b, e["box"])
                                    for e in labels["non_face_episodes"])
+    if label_zone is not None:
+        # --label-zone: only the face zone is masked, in its time windows; detector and pose boxes are not
+        # masked (they still feed the coverage check through seen_at)
+        zone = tuple(int(v * s) for v, s in zip(label_zone[0], scale))
+        inside = np.zeros(n, bool)
+        for a_, b_ in label_zone[1]:
+            inside[max(0, a_):min(n, b_ + 1)] = True
+        for i, f in enumerate(per):
+            f["faces"], f["cores"], f["heads"], f["zone"] = [], [], [], bool(inside[i])
+        labelled_on = int(inside.sum())
+    elif labels is not None:
         for i, f in enumerate(per):
             keep = [k for k, b in enumerate(f["cores"]) if not notface(b, i)]
             labelled_off += len(f["faces"]) - len(keep)
@@ -424,10 +440,10 @@ def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zo
             # face cores of the frames within +-face_stride: with a stride, most frames have no EgoBlur box of
             # their own, and a hand cut next to the face would otherwise eat into it
             cores = [b for j in range(max(0, i - face_stride), min(n, i + face_stride + 1)) for b in per[j]["cores"]]
-            if MASK_CONFIRMED:    # --mask-confirmed: faces two detectors agree on (frames within +-2) are masked
+            if MASK_CONFIRMED and label_zone is None:    # --mask-confirmed: faces two detectors agree on (frames within +-2) are masked
                 cc = [padded(b, w, h, CONFIRMED_PAD) for j in range(max(0, i - 2), min(n, i + 3)) for b in seen_at[j]]
                 faces, cores = faces + cc, cores + cc
-            hm = head_segments(det, fr, heads) if HEAD_SHAPE else None
+            hm = head_segments(det, fr, heads) if HEAD_SHAPE and heads else None
             m = mask_of(faces, cores, heads, z, hands, w, h, shape, hm)
             if fixed:                                    # onlookers' own hands must not open it: no cut-outs
                 m[fixed[1]:fixed[3], fixed[0]:fixed[2]] = 255
@@ -460,7 +476,9 @@ def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zo
             **({"head_shape": True, "seg_dilate": SEG_DILATE, "seg_box_pad": SEG_BOX_PAD} if HEAD_SHAPE else {}),
             **({"mask_confirmed": True} if MASK_CONFIRMED else {}),
             **({"label_gate": "face", "face_boxes_dropped_by_labels": labelled_off,
-                "face_episode_box_frames": labelled_on} if labels is not None else {})}
+                "face_episode_box_frames": labelled_on} if labels is not None and label_zone is None else {}),
+            **({"label_gate": "face", "label_zone": list(label_zone[0]), "zone_frames": labelled_on}
+               if label_zone is not None else {})}
 
 
 ARM_PX = 60.0            # --arm-guard: a box centre this close to an arm segment (or 0.25 x its length) is on it
@@ -522,15 +540,16 @@ def worker(a, names: list[str], q) -> None:
         print(f"START {name}", flush=True)
         t0 = time.time()
         fz = tuple(int(v) for v in a.fixed_zone.split(",")) if a.fixed_zone else None
-        labels, gate = None, None
+        labels, gate, lz = None, None, None
         if a.face_labels:
             ds = name.split("_")[0]
             scan_f = Path(a.face_scan_root) / ds / "face_scan" / f"{Path(name).stem}.json"
             if not scan_f.exists():
                 gate = "no_scan"
             else:
-                dec = FL.clip_decision(json.loads(scan_f.read_text(encoding="utf-8")),
-                                       FL.read_labels(ds, Path(a.metadata_root)))
+                scan = json.loads(scan_f.read_text(encoding="utf-8"))
+                lab = FL.read_labels(ds, Path(a.metadata_root))
+                dec = FL.clip_decision(scan, lab)
                 gate = dec["status"]
                 if gate == "unlabelled":
                     print(f"SKIP {name}: {dec['episodes'] - dec['labelled']} face-scan episodes not labelled", flush=True)
@@ -548,8 +567,11 @@ def worker(a, names: list[str], q) -> None:
                     q.put(row)
                     continue
                 labels = dec
+                fzone = FL.face_zone(lab, view) if a.label_zone else None
+                if fzone:
+                    lz = (fzone, FL.zone_windows(dec, scan["fps"]))
         row = process(det, src_dir / name, dst, view, a.mask, a.left_zone, a.face_stride, a.hand_priority, fz,
-                      a.arm_guard, labels)
+                      a.arm_guard, labels, lz)
         if gate == "no_scan":
             row["label_gate"] = gate
         row["face_stride"] = a.face_stride
@@ -594,6 +616,10 @@ def main():
                     help="--head-shape: the segment is kept inside the head box padded by this share")
     ap.add_argument("--face-labels", action="store_true",
                     help="gate each clip by the reviewer's face-scan labels (see the docstring)")
+    ap.add_argument("--label-zone", action="store_true",
+                    help="with --face-labels: in a face clip of a view with face labels, mask only the face zone "
+                         "(the box around all face labels of the view) within ZONE_SEC of each face episode and "
+                         "corner mark; nothing else is masked")
     ap.add_argument("--face-scan-root", default="Data/Pipeline/10_face_blur", help="{root}/{dataset}/face_scan/")
     ap.add_argument("--metadata-root", default="Data/Metadata", help="{root}/{dataset}/_face_labels.json")
     ap.add_argument("--gpu", type=int, default=0)
