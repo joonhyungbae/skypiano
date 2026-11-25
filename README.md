@@ -47,7 +47,7 @@ difficulty and expertise.
 | Pianists | 19 (7 professional, 12 amateur) |
 | Pieces | 35 (technique, graded, free) |
 | Motion | hand and body, 120 Hz, flagged and imputed |
-| Video | up to 4 views (top, left, right, low right), face-anonymized |
+| Video | up to 4 views (top, left, right, low right); faces masked in the side views |
 | Annotations | MusicXML score alignment, per-note fingering, Visual3D kinematics |
 
 This repository holds the code that built the dataset: the preprocessing
@@ -130,7 +130,7 @@ with `pipeline/NN_<stage>/run_stage.sh`; Stage 12 is run by hand.
 | 07 | `body_imputation` | Outlier removal and training-free gap filling of body markers (gaps up to 2 s) | `221112` `240523` `240828` |
 | 08 | `fingering` | Per-note fingering in three tiers (see [Fingering](#fingering)) | released |
 | 09 | `visual3d` | Body segments and kinematics in the Visual3D convention | `240828` |
-| 10 | `face_blur` | EgoBlur face anonymization of released video | released (top view) |
+| 10 | `face_blur` | Face masking of the released side views | released (side views) |
 | 11 | `score_alignment` | Audiveris OMR and note-level score-to-MIDI alignment | `240828` |
 | 12 | `release` | Release manifest; Hugging Face and Zenodo upload | released |
 
@@ -272,10 +272,12 @@ the participant's n-th performance of the piece. The release holds one
 confirmed performance per participant, task, piece and round: `240828` one
 per programme pass, `221112` one confirmed take per subject and piece,
 `220819` every planned repeated take, and `240523` (amateur free repertoire)
-whole takes, released once as their take folders. `top.mp4` is the EgoBlur-anonymized top view
-(`--optional-in top=<sessions>`); the imputed files (`--imputed-model TAG`)
-are the gap-filled hand motion, its mask (1 = filled) and the fingering
-computed from it.
+whole takes, released once as their take folders. `top.mp4` is the overhead
+view, unmasked since it shows no face (`220819`, `240523`, `240828`; the
+`221112` camera named Top faces the player and is not released;
+`--optional-in top=<sessions>` limits it further). The imputed files
+(`--imputed-model TAG`) are the gap-filled hand motion, its mask (1 = filled)
+and the fingering computed from it.
 
 The full recordings are released as well: `build_trials.py` writes every take
 of every released session, whole, to `Data/Pipeline/12_release/trials/` on the

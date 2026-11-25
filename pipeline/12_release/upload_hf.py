@@ -159,7 +159,10 @@ data/P<id>/<task>/<piece>/r<n>/audio.wav    audio
                                hand_imputed.csv       hand motion with short gaps filled (where listed)
                                hand_imputed_mask.csv  1 = value filled by the model
                                fingering_imputed.csv  fingering labeled from hand_imputed.csv
-                               top.mp4      top-view video, faces masked (where available)
+                               body_imputed.csv       body motion with gaps up to 2 s filled (where listed)
+                               body_imputed_mask.csv  1 = value filled
+                               body_suspect_mask.csv  1 = body.csv value removed as an outlier
+                               top.mp4      overhead video of keyboard and hands (no face in view, not masked; where available)
                                left.mp4, right.mp4, right_low.mp4  side views, faces masked (where available)
 data/P<id>/takes/<date>_<take>/audio.wav   every recorded take, whole (see below)
                                midi.mid, hand.csv, body.csv
