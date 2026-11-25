@@ -76,6 +76,34 @@
       "pieceLevel": "Beginner"
     },
     {
+      "trialId": "240828_C0_N4_T2_Bach_MinuetG",
+      "session": "240828",
+      "subject": "C0_N4",
+      "level": "Professional",
+      "task": "T2",
+      "pieceLabel": "Bach (Petzold) — Minuet in G major, BWV Anh.114",
+      "basePath": "/samples",
+      "videoViews": [
+        "top",
+        "right",
+        "low_right",
+        "left"
+      ],
+      "modalities": {
+        "audio": true,
+        "midi": true,
+        "motionHand": true,
+        "motionBody": true,
+        "kinematics": true,
+        "fingering": true,
+        "video": true,
+        "score": true
+      },
+      "narrativeBlurb": "Beginner-grade Set1 piece — Bach (Petzold) — Minuet in G major, BWV Anh.114. Source trial 240828_C0_N4_T2_P4_t1 piece 1, ~41s, 213 performance notes. Score↔performance alignment quality 0.971 (score-match 0.995, perf-match 0.948).",
+      "durationLabel": "~0:41",
+      "pieceLevel": "Beginner"
+    },
+    {
       "trialId": "240828_C0_N6_T2_Schubert_Op90_No4",
       "session": "240828",
       "subject": "C0_N6",
