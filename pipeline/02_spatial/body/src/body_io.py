@@ -85,7 +85,20 @@ def parse_qualisys_tsv(filepath: str) -> Tuple[float, pd.DataFrame]:
     df = pd.DataFrame(rows, columns=columns)
     df = df.drop(columns=[c for c in df.columns if c in ('Frame', 'Time') or c.startswith('_extra')], errors='ignore')
 
-    return fps, df
+    return fps, zeros_to_nan(df)
+
+
+def zeros_to_nan(df: pd.DataFrame) -> pd.DataFrame:
+    """QTM writes a marker it did not see on a frame as exactly (0, 0, 0). Kept as a
+    point, the rigid body->hand transform turns it into a fixed spot in the room
+    (the transform's translation), and the marker jumps there on every gap (e.g. a
+    knee drawn metres from the leg). Such samples become NaN so later steps treat
+    them as gaps."""
+    for m in {c[:-2] for c in df.columns if c.endswith('_x')}:
+        cols = [f'{m}_x', f'{m}_y', f'{m}_z']
+        if all(c in df.columns for c in cols):
+            df.loc[(df[cols] == 0).all(axis=1), cols] = np.nan
+    return df
 
 
 def parse_processed_body_csv(filepath: str) -> Tuple[float, pd.DataFrame]:
