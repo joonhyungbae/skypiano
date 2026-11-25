@@ -24,7 +24,7 @@ EPOCHS = 1000
 PATIENCE = 30
 
 
-def run(only=None, skip=None, force=False, epochs=EPOCHS, patience=PATIENCE):
+def run(only=None, skip=None, force=False, epochs=EPOCHS, patience=PATIENCE, device=None):
     print("Stage 07 s02: Train SAITS per performer (full body)")
     print(f"  epochs={epochs}, patience={patience}")
     if only: print(f"  only: {only}")
@@ -38,10 +38,10 @@ def run(only=None, skip=None, force=False, epochs=EPOCHS, patience=PATIENCE):
         print("ERROR: pypots not installed. pip install pypots")
         return
 
-    device = "cuda" if torch.cuda.is_available() else "cpu"
+    if not torch.cuda.is_available():
+        raise SystemExit("ERROR: CUDA not available; body imputation never trains on CPU.")
+    device = device or "cuda:0"
     print(f"  device: {device}")
-    if device == "cpu":
-        print("  WARN: CUDA not available — CPU training will be slow")
 
     for (c, n), pieces in sorted(PERFORMER_MAP.items()):
         pid = performer_id(c, n)
@@ -97,6 +97,7 @@ if __name__ == "__main__":
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--epochs", type=int, default=EPOCHS)
     ap.add_argument("--patience", type=int, default=PATIENCE)
+    ap.add_argument("--device", default=None, help="cuda:0 / cuda:1 (default cuda:0)")
     args = ap.parse_args()
     run(only=args.only, skip=args.skip, force=args.force,
-        epochs=args.epochs, patience=args.patience)
+        epochs=args.epochs, patience=args.patience, device=args.device)

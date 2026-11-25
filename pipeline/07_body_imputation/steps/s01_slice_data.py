@@ -4,7 +4,7 @@ Stage 07 Step 01: slice per-performer body data into 3s windows with features.
 Features per frame: raw + residual + velocity + acceleration (no connection-based
 quaternion/distance — SAITS imputes directly from raw coords).
 
-Input:  Data/Pipeline/04_piece_split/{dataset}/{piece_prefix}_body.csv
+Input:  Data/Pipeline/07_body_imputation/Clean/{dataset}/{piece_prefix}_body.csv (s00: outliers removed)
 Output: Data/Pipeline/07_body_imputation/Sliced/{pid}/step1_sec3.npy
 """
 import functools
@@ -20,7 +20,7 @@ from src.utils import body_joint_cols
 from src.performers import (
     PERFORMER_MAP,
     performer_id,
-    get_piece_body_path,
+    get_clean_body_path,
     log_known_body_absences,
 )
 
@@ -78,7 +78,7 @@ def run():
         print(f"\n  {pid}: {len(pieces)} pieces")
         all_slices = []
         for dataset, piece_prefix in tqdm(pieces, desc=f"    {pid}"):
-            csv_path = get_piece_body_path(dataset, piece_prefix)
+            csv_path = get_clean_body_path(dataset, piece_prefix)
             if not csv_path.exists():
                 continue
             df = pd.read_csv(csv_path)

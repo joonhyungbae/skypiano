@@ -2,7 +2,7 @@
 Stage 07 Step 03: per-performer SAITS imputation for full body.
 
 Input:
-  - Data/Pipeline/04_piece_split/{dataset}/{piece_prefix}_body.csv
+  - Data/Pipeline/07_body_imputation/Clean/{dataset}/{piece_prefix}_body.csv (s00: outliers removed)
   - Data/Pipeline/07_body_imputation/Models/{pid}/saits_body.pypots
   - Data/Pipeline/07_body_imputation/Sliced/{pid}/step1_sec3.npy  (for n_features)
 Output:
@@ -18,7 +18,7 @@ from tqdm import tqdm
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from src.utils import body_joint_cols
-from src.performers import PERFORMER_MAP, performer_id, get_piece_body_path
+from src.performers import PERFORMER_MAP, performer_id, get_clean_body_path
 
 print = functools.partial(print, flush=True)
 
@@ -111,7 +111,7 @@ def run(only=None, skip=None):
 
         out_dir.mkdir(parents=True, exist_ok=True)
         for dataset, piece_prefix in tqdm(remaining, desc=f"    {pid}"):
-            csv_path = get_piece_body_path(dataset, piece_prefix)
+            csv_path = get_clean_body_path(dataset, piece_prefix)
             if not csv_path.exists():
                 continue
             df = pd.read_csv(csv_path)

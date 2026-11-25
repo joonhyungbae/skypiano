@@ -114,6 +114,10 @@ Imputed hand motion is listed only with --imputed-model: the gap-filled hand
 motion of that model (Stage 06 release fill, IMPUTED/<tag>/<release path>/
 hand_imputed.csv and hand_imputed_mask.csv, 1 = filled) and the fingering
 labeled from it (Stage 08 --hand imputed --tag TAG, FINGERING_IMPUTED/<tag>/{ds}/{stem}.csv).
+
+Gap-filled body motion is listed for every piece folder that has it (Stage 07 s04, BODY_FILL/{ds}/):
+body_imputed.csv (same rows and columns as body.csv), body_imputed_mask.csv (1 = filled) and
+body_suspect_mask.csv (1 = body.csv value judged an outlier by Stage 07 s00 and not used).
 """
 from __future__ import annotations
 
@@ -151,6 +155,7 @@ FINGERING = PIPE / "08_fingering" / "Notes" / "raw"
 FINGERING_IMPUTED = PIPE / "08_fingering" / "Notes" / "imputed"
 IMPUTED = PIPE / "06_hand_imputation" / "Release"       # <model tag>/<release path>/hand_imputed*.csv
 SUSPECT = PIPE / "06_hand_imputation" / "Suspect"       # <release path>/hand_suspect_mask.csv (flag_suspect_hand.py)
+BODY_FILL = PIPE / "07_body_imputation" / "Release"      # {ds}/{piece}_body_imputed*.csv, _body_suspect_mask.csv
 TRIALS = PIPE / "12_release" / "trials"                 # build_trials.py: whole takes on the trial clock
 TAKE_FILES = ("audio.wav", "midi.mid", "hand.csv", "body.csv")
 MODALITIES["top"] = "top.mp4"
@@ -162,7 +167,11 @@ MODALITIES["hand_imputed"] = "hand_imputed.csv"
 MODALITIES["hand_imputed_mask"] = "hand_imputed_mask.csv"
 MODALITIES["fingering_imputed"] = "fingering_imputed.csv"
 MODALITIES["hand_suspect_mask"] = "hand_suspect_mask.csv"
-OPTIONAL = {"top", *SIDE_VIEWS, "fingering", "hand_imputed", "hand_imputed_mask", "fingering_imputed", "hand_suspect_mask"}
+BODY_FILL_MODALITIES = ("body_imputed", "body_imputed_mask", "body_suspect_mask")
+for _m in BODY_FILL_MODALITIES:
+    MODALITIES[_m] = f"{_m}.csv"
+OPTIONAL = {"top", *SIDE_VIEWS, "fingering", "hand_imputed", "hand_imputed_mask", "fingering_imputed", "hand_suspect_mask",
+            *BODY_FILL_MODALITIES}
 IMPUTED_MODALITIES = ("hand_imputed", "hand_imputed_mask", "fingering_imputed")
 SESSION_ORDER = ["220819", "221112", "240523", "240828"]
 PRACTICE_VARIANT = re.compile(r"^\d+\s*\((left|right|both) hands?\)$")   # one-hand practice of a Fink exercise
@@ -530,6 +539,8 @@ def main():
                 sys.exit(f"{r['piece']}: not in {TRIALS / '_trials.json'}; run build_trials.py")
         (performance_of if r["level"] == "take" else best)[r["piece"]] = base
         r["src"] = {**r["src"], "hand_suspect_mask": SUSPECT / key / "hand_suspect_mask.csv"}
+        if r["level"] == "piece":   # Stage 07 fill of the piece's body.csv, listed where it exists
+            r["src"] = {**r["src"], **{m: BODY_FILL / r["dataset"] / f"{r['piece']}_{m}.csv" for m in BODY_FILL_MODALITIES}}
         if args.imputed_model:
             fill = IMPUTED / args.imputed_model / key
             r["src"] = {**r["src"], "hand_imputed": fill / "hand_imputed.csv",

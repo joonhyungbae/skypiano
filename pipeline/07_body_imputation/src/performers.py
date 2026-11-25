@@ -82,8 +82,17 @@ def performer_id(c, n):
     return f"{c}_{n}"
 
 
+CLEAN_ROOT = Path("Data/Pipeline/07_body_imputation/Clean")
+
+
 def get_piece_body_path(dataset, piece_prefix):
+    """The released body motion of a piece (Stage 04 piece split)."""
     return PIECE_SPLIT_ROOT / dataset / f"{piece_prefix}_body.csv"
+
+
+def get_clean_body_path(dataset, piece_prefix):
+    """The same piece with outliers set to NaN (s00); input of s01/s03/s04."""
+    return CLEAN_ROOT / dataset / f"{piece_prefix}_body.csv"
 
 
 def build_known_body_absent_trials():

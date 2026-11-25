@@ -77,7 +77,7 @@ bash setup.sh                     # conda env "piano-corpus" (Python 3.10) + req
 pip install -r requirements.txt   # or into an environment of your own
 ```
 
-SAITS imputation (Stages 06–07) and Tier C training (Stage 08) need PyTorch
+SAITS imputation (Stage 06) and Tier C training (Stage 08) need PyTorch
 with a GPU. Two external tools are installed separately:
 
 - **Audiveris** (Stage 11, OMR): install from
@@ -127,7 +127,7 @@ with `pipeline/NN_<stage>/run_stage.sh`; Stage 12 is run by hand.
 | 04 | `piece_split` | Piece windows and names; every modality cut per piece | all |
 | 05 | `alignment_qa` | Record of the by-eye sync and piece confirmations; the gate before post-processing | all |
 | 06 | `hand_imputation` | SAITS gap filling of hand markers, one model per performer | `240828` |
-| 07 | `body_imputation` | SAITS gap filling of body markers | `240828` |
+| 07 | `body_imputation` | Outlier removal and training-free gap filling of body markers (gaps up to 2 s) | `221112` `240523` `240828` |
 | 08 | `fingering` | Per-note fingering in three tiers (see [Fingering](#fingering)) | released |
 | 09 | `visual3d` | Body segments and kinematics in the Visual3D convention | `240828` |
 | 10 | `face_blur` | EgoBlur face anonymization of released video | released (top view) |
@@ -179,6 +179,24 @@ findings (overlap with a neighbour or a discard interval, a window ending
 while the last note sounds), its name and the name's source, and the verdict.
 A session passes when every trial with hand motion and every piece is
 confirmed; only sessions that passed are released.
+
+### Body gap filling (07)
+
+`s00_outlier_detect.py` sets body marker values that cannot be right to
+empty: a marker frozen at one position, a rigid pair whose distance departs
+from the performer's baseline, a cluster marker off its segment, and short
+jumps. `s04_replacement.py` then fills each gap of at most 2 s that has an
+observed frame on both sides (`src/fill.py`, method `rule`). Short gaps and
+the head use a cubic spline, and long trunk gaps do too. The arm and the
+remaining body use a rigid-body fill from the other markers on the same
+segment, with a PCA fallback for the arm. The rule was picked per body part
+and gap length on held-out gaps of three 2024 performers and checked on two
+others (`s06_compare_fill.py`). Mean error for 0.5 / 1 / 2 s gaps is 2.1 /
+5.7 / 12.1 mm, against 4.2 / 8.5 / 15.2 mm for linear interpolation. Longer
+gaps and markers a piece never observes stay empty, and the wrist markers
+come from Stage 06. A piece folder then holds `body_imputed.csv` (the layout
+of `body.csv`), `body_imputed_mask.csv` (1 = filled) and
+`body_suspect_mask.csv` (1 = a `body.csv` value removed as an outlier).
 
 ### Fingering
 
@@ -245,6 +263,7 @@ nothing is copied), `performances.csv`, `participants.csv`, `repertoire.csv`,
 data/P<id>/<task>/<piece>/r<n>/      one performance (free repertoire: its take folder, below)
   audio.wav  midi.mid  hand.csv  body.csv  fingering.csv  [top.mp4]
   [hand_imputed.csv  hand_imputed_mask.csv  fingering_imputed.csv]
+  [body_imputed.csv  body_imputed_mask.csv  body_suspect_mask.csv]
 ```
 
 with the participant id (1–19), the task read from the piece (`technique1`
