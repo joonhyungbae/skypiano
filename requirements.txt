@@ -17,6 +17,7 @@ pydub
 
 # Computer vision
 opencv-python>=4.5.0
+scikit-learn>=1.0
 
 # Utilities
 more-itertools>=8.0.0
