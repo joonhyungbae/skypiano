@@ -12,7 +12,10 @@
 #   STEPS    steps to run (default: s00 s04; s01-s03 = the earlier SAITS model, s05/s06 = held-out accuracy, on request)
 #=============================================================================
 set -euo pipefail
-cd "$(dirname "$0")"
+# Data paths are relative to the repository root; the step modules live in this folder.
+HERE="$(cd "$(dirname "$0")" && pwd)"
+cd "$HERE/../.."
+export PYTHONPATH="$(cygpath -w "$HERE" 2>/dev/null || echo "$HERE")"   # Windows Python needs a native path
 
 ARGS="$@"
 STEPS="${STEPS:-s00 s04}"
