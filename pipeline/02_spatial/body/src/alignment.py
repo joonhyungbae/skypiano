@@ -29,18 +29,21 @@ LANDMARK_WEIGHTS = [2.0, 2.0, 1.5, 1.5, 1.0, 1.0]
 # ── Temporal sync ──────────────────────────────────────
 
 def _speed_from_df(df: pd.DataFrame, joints: list) -> np.ndarray:
-    """Compute per-frame speed as avg displacement of given joints."""
-    coords = []
+    """Per-frame speed: each joint's own displacement, averaged over the joints
+    seen in both frames (0 where none is). Averaging positions first would make
+    the mean point jump between joints whenever one of them drops out."""
+    speeds = []
     for j in joints:
         cols = [f'{j}_x', f'{j}_y', f'{j}_z']
         if all(c in df.columns for c in cols):
-            coords.append(df[cols].values)
-    if not coords:
+            d = np.diff(df[cols].to_numpy(dtype=float), axis=0)
+            speeds.append(np.sqrt((d ** 2).sum(axis=1)))
+    if not speeds:
         return np.zeros(len(df))
-
-    avg = np.nanmean(coords, axis=0)  # (N, 3)
-    diff = np.diff(avg, axis=0)
-    speed = np.sqrt(np.nansum(diff ** 2, axis=1))
+    S = np.vstack(speeds)
+    seen = np.isfinite(S)
+    n = seen.sum(axis=0)
+    speed = np.where(n > 0, np.where(seen, S, 0).sum(axis=0) / np.maximum(n, 1), 0.0)
     return np.concatenate([[0], speed])
 
 
