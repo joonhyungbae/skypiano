@@ -67,8 +67,10 @@ check then flags only what is left uncovered after that (hand cut-outs cannot op
 
 --label-zone (with --face-labels): in a face clip, only the face zone of the view (face_labels.face_zone: the box
 around every face label of that view) is masked, from ZONE_SEC before to ZONE_SEC after each face episode and
-each corner mark of the reviewer (face_labels.zone_windows); hands are cut out of it as from the Left zone.
-Detector and pose boxes are not masked, so nothing outside the corner is; the coverage check still runs.
+each corner mark of the reviewer (face_labels.zone_windows), and within ZONE_SEC of every frame where this
+run's detectors see a face or a pose head with its centre in the zone (grown by ZONE_GROW); those face boxes are
+masked too. Hands are cut out of the zone as from the Left zone. No other detector or pose box is masked, so
+nothing away from the corner is; the coverage check still runs.
 
 --face-labels: the reviewer's labels of the face scan (s05_face_scan.py, src/face_labels.py) decide per clip.
 A clip whose scan found nothing, or whose episodes are all labelled and none is a face, is copied unmasked
@@ -268,6 +270,7 @@ CONFIRMED_PAD = 0.2       # margin of a confirmed face box drawn by --mask-confi
 SEG_BOX_PAD = 0.0         # the segment is kept inside its head box padded by this share (--seg-box-pad)
 SEG_MIN = 0.15            # a segment below this share of its box falls back to the whole box
 LABEL_PAD = 0.3          # --face-labels: margin of a labelled face episode box
+ZONE_GROW = 0.15         # --label-zone: a detection whose centre is this share of the zone's size outside it still counts
 
 
 def merge_boxes(boxes) -> list:
@@ -392,8 +395,21 @@ def process(det: Detectors, src: Path, dst: Path, view: str, shape: str, left_zo
         inside = np.zeros(n, bool)
         for a_, b_ in label_zone[1]:
             inside[max(0, a_):min(n, b_ + 1)] = True
+        # the reviewer's windows, plus ZONE_SEC around every frame where this run's own detectors see a face or a
+        # pose head with its centre in the zone (grown by ZONE_GROW); those faces are masked as boxes too
+        gw = int(FL.ZONE_SEC * fps)
+        zx, zy = ZONE_GROW * (zone[2] - zone[0]), ZONE_GROW * (zone[3] - zone[1])
+        inz = lambda b: zone[0] - zx <= (b[0] + b[2]) / 2 <= zone[2] + zx and zone[1] - zy <= (b[1] + b[3]) / 2 <= zone[3] + zy
+        zone_faces = []
         for i, f in enumerate(per):
-            f["faces"], f["cores"], f["heads"], f["zone"] = [], [], [], bool(inside[i])
+            hits = [b for k, bs in f["d"].items() for b in bs
+                    if (k == "pose_head" or b[4] >= VERIFY_THRESHOLD) and inz(b)]
+            zone_faces.append([padded(b, w, h, CONFIRMED_PAD) for k, bs in f["d"].items() if k != "pose_head"
+                               for b in bs if b[4] >= VERIFY_THRESHOLD and inz(b)])
+            if hits:
+                inside[max(0, i - gw):min(n, i + gw + 1)] = True
+        for i, f in enumerate(per):
+            f["faces"], f["cores"], f["heads"], f["zone"] = zone_faces[i], zone_faces[i], [], bool(inside[i])
         labelled_on = int(inside.sum())
     elif labels is not None:
         for i, f in enumerate(per):
