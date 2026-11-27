@@ -66,7 +66,7 @@ that are reusable are listed under [Reusable helpers](#reusable-helpers).
 | `pipeline/`          | Preprocessing pipeline, stages `01`–`12` in execution order |
 | `pipeline/_common/`  | Helpers shared by several stages |
 | `web/annotate/`      | Fingering annotation tool used for the paper's audit (React, Vite) |
-| `web/explorer/`      | In-browser explorer for sample performances (React, Vite) |
+| `web/explorer/`      | In-browser explorer: the curated samples online, and the whole release locally (React, Vite) |
 | `web/projectPage/`   | Project page; publishes itself with the explorer nested at `/explorer/` |
 | `setup.sh`, `requirements.txt` | Python environment |
 
@@ -92,6 +92,30 @@ The web apps are static Vite sites with no backend: `npm install` then
 `npm run dev` in `web/annotate`, `web/explorer` or `web/projectPage`. `npm run deploy` in
 `web/projectPage` builds the page with the explorer and publishes it to the
 `gh-pages` branch.
+
+### Browsing the whole dataset
+
+The public explorer shows a few curated samples. The same player opens every
+performance and every whole take of a release when the release is on your
+computer. Download the dataset from Hugging Face (`metadata/` and `data/`),
+build the explorer once, and start the local server from the repository root:
+
+```bash
+cd web/explorer && npm install && npm run build && cd ../..
+python web/explorer/serve_dataset.py --data path/to/SKY-Piano
+# or a release built by Stage 12, before upload:
+python web/explorer/serve_dataset.py --manifest Data/Release/v0.3.9/manifest.csv
+```
+
+Open the printed address (`http://127.0.0.1:8770/skypiano/explorer/data`). The
+**Dataset** page lists all performances (or whole takes) with filters for task,
+participant, group and modality; filters stay in the URL. A row opens the
+synchronised player: top / side videos, hand and body motion in 3D (raw or
+gap-filled), fingering, audio and MIDI, with the other rounds of the same piece
+one click away. The server reads the files in place and writes nothing next to
+them; motion is sent at 30 Hz (every 4th frame), and the body is drawn as the
+13 segments of `pipeline/09_visual3d`, computed on request and cached in the
+system temp folder.
 
 ## Data layout
 

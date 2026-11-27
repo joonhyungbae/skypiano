@@ -584,10 +584,15 @@ def main():
         p = participants.setdefault(r["participant_id"], {"participant_id": r["participant_id"],
                                                           "group": r["group"], "sessions": set()})
         p["sessions"].add(r["session"])
+    from _common.set1_pool_reference import SET1_POOL
+    pool_titles = {p["pool_id"]: p["title"] for p in SET1_POOL}
     titles: dict[tuple, str] = {}
     for r in perf:
         if r["piece_id"]:
-            titles.setdefault((r["cat"], r["piece_id"]), r["name"])
+            name = r["name"]
+            if not name or name == r["piece_id"]:          # graded pieces carry only their pool id
+                name = pool_titles.get(r["piece_id"], r["piece_id"])
+            titles.setdefault((r["cat"], r["piece_id"]), name)
 
     takes, pieces, take_totals = [], [], {}
     if not args.no_takes:

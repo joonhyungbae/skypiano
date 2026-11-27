@@ -6,6 +6,8 @@ const BRAND_TITLE = 'SKY Piano';
 
 const HomeView = lazy(() => import('./views/HomeView'));
 const SampleView = lazy(() => import('./views/SampleView'));
+const DatasetView = lazy(() => import('./views/DatasetView'));
+const DatasetPlayerView = lazy(() => import('./views/DatasetPlayerView'));
 
 function TitleUpdater() {
   const matches = useMatches();
@@ -36,6 +38,8 @@ export const router = createBrowserRouter(
       element: <Shell />,
       children: [
         { index: true, element: <HomeView />, handle: { title: 'Home' } },
+        { path: 'data', element: <DatasetView />, handle: { title: 'Dataset' } },
+        { path: 'data/view', element: <DatasetPlayerView />, handle: { title: 'Dataset' } },
         {
           path: 'sample/:trialId',
           element: <SampleView />,

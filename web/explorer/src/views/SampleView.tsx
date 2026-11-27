@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
@@ -11,7 +11,7 @@ import { loadSampleTrials } from '@/data/dataRepository';
 import type { FingeringData, MotionData, SampleTrialEntry } from '@/data/types';
 import { loadMotion } from '@/data/parsers/handBodyMotionParser';
 import { loadFingering } from '@/data/parsers/fingeringParser';
-import { buildSamplePaths } from '@/data/adapters/samples';
+import { buildSamplePaths, type SampleAssetPaths } from '@/data/adapters/samples';
 import { formatTime } from '@/utils/midiParser';
 import TopBar from '@/components/common/TopBar';
 import MotionViewer, { type CameraPreset } from '@/components/viewers/MotionViewer';
@@ -449,30 +449,7 @@ const VolumeInput = styled('input')({
 export default function SampleView() {
   const { trialId } = useParams<{ trialId: string }>();
   const [samples, setSamples] = useState<SampleTrialEntry[]>([]);
-  const [motion, setMotion] = useState<MotionData | null>(null);
-  const [fingering, setFingering] = useState<FingeringData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [motionStatus, setMotionStatus] = useState<'idle' | 'loading' | 'empty' | 'loaded'>('idle');
-  const [cameraPreset, setCameraPreset] = useState<CameraPreset>('3d');
-  const [showHand, setShowHand] = useState(true);
-  const [showBody, setShowBody] = useState(true);
-  const [stream, setStream] = useState<'raw_flagged' | 'imputed'>('imputed');
-  const [videoView, setVideoView] = useState<VideoView>('top');
-
-  // ── Shared playback state (video is the master clock) ────────────────────
-  // VideoViewer mounts every available angle up-front (preload="auto") and
-  // only the active one is visible/playing. View switches are handled inside
-  // VideoViewer: it transfers currentTime + playing-state from old → new,
-  // so no parent-side resume bookkeeping is needed. Audio comes from a
-  // separate <audio> element so blurred videos (ffmpeg -an) still have sound.
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [currentTimeSec, setCurrentTimeSec] = useState(0);
-  const [durationSec, setDurationSec] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [playbackRate, setPlaybackRate] = useState(1);
-  const [volume, setVolume] = useState(1);
-  const [muted, setMuted] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -498,8 +475,98 @@ export default function SampleView() {
     return m;
   }, [samples]);
   const partner = sample?.comparePartnerId ? byId.get(sample.comparePartnerId) ?? null : null;
-
   const paths = useMemo(() => (sample ? buildSamplePaths(sample) : null), [sample]);
+
+  if (loading) {
+    return (
+      <>
+        <TopBar />
+        <Page><InfoText>Loading…</InfoText></Page>
+      </>
+    );
+  }
+
+  if (!sample || !paths) {
+    return (
+      <>
+        <TopBar />
+        <Page>
+          <InfoText>
+            Sample <code>{trialId}</code> was not found in the manifest. Use the menu to pick another.
+          </InfoText>
+        </Page>
+      </>
+    );
+  }
+
+  return (
+    <PerformancePlayer
+      key={sample.trialId}
+      sample={sample}
+      paths={paths}
+      titleExtra={
+        partner && (
+          <Link className="pair-link" to={`/sample/${partner.trialId}`}>
+            <CompareArrowsIcon />
+            {partner.level === 'Professional' ? `Pro · ${partner.subject}` : `Amateur · ${partner.subject}`}
+          </Link>
+        )
+      }
+    />
+  );
+}
+
+/** Asset paths of one performance. The dataset browser adds the raw-body variant and the motion frame rate. */
+export interface PlayerPaths extends SampleAssetPaths {
+  /** Body segments of the raw (not gap-filled) body, shown when the Raw stream is selected. */
+  bodySegmentsRaw?: string;
+  /** Frame rate of the motion CSVs as fetched (default 30). */
+  motionFps?: number;
+}
+
+/** The synchronised video / motion / audio / MIDI / score player for one performance. */
+export function PerformancePlayer({
+  sample,
+  paths,
+  titleExtra,
+  taskLabel,
+  hideUnavailable = false,
+}: {
+  sample: SampleTrialEntry;
+  paths: PlayerPaths;
+  titleExtra?: ReactNode;
+  /** Overrides the task chip text (the dataset browser uses the release task names). */
+  taskLabel?: string;
+  /** Leave out the score and kinematics panels when the performance has none (dataset browser). */
+  hideUnavailable?: boolean;
+}) {
+  const trialId = sample.trialId;
+  const [motion, setMotion] = useState<MotionData | null>(null);
+  const [fingering, setFingering] = useState<FingeringData | null>(null);
+  const [motionStatus, setMotionStatus] = useState<'idle' | 'loading' | 'empty' | 'loaded'>('idle');
+  const [cameraPreset, setCameraPreset] = useState<CameraPreset>('3d');
+  const [showHand, setShowHand] = useState(true);
+  const [showBody, setShowBody] = useState(true);
+  const [stream, setStream] = useState<'raw_flagged' | 'imputed'>('imputed');
+  const [videoView, setVideoView] = useState<VideoView>('top');
+
+  // ── Shared playback state (video is the master clock) ────────────────────
+  // VideoViewer mounts every available angle up-front (preload="auto") and
+  // only the active one is visible/playing. View switches are handled inside
+  // VideoViewer: it transfers currentTime + playing-state from old → new,
+  // so no parent-side resume bookkeeping is needed. Audio comes from a
+  // separate <audio> element so blurred videos (ffmpeg -an) still have sound.
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [currentTimeSec, setCurrentTimeSec] = useState(0);
+  const [durationSec, setDurationSec] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [playbackRate, setPlaybackRate] = useState(1);
+  // Video is the master clock; without any video (motion/audio-only takes) the audio element is.
+  const hasVideo = sample.modalities.video && sample.videoViews.length > 0;
+  const clock = () => (hasVideo ? videoRef.current : audioRef.current);
+  const [volume, setVolume] = useState(1);
+  const [muted, setMuted] = useState(false);
 
   // Clamp video view to what this trial offers.
   useEffect(() => {
@@ -528,13 +595,13 @@ export default function SampleView() {
   // and motion frame index visibly jump. Sample currentTime via requestAnimationFrame
   // (~60Hz) while playing for smooth scrubbing across all viewers.
   useEffect(() => {
-    const v = videoRef.current;
+    const v = clock();
     if (!v) return;
     // During a view switch VideoViewer pauses the outgoing <video>; that pause
     // event can fire on the stale element after videoRef has already moved on.
     // Guard every handler on videoRef.current === v so we only react to events
     // from what is *currently* the active element.
-    const isActive = () => videoRef.current === v;
+    const isActive = () => clock() === v;
     const onDur = () => {
       if (!isActive()) return;
       setDurationSec(Number.isFinite(v.duration) ? v.duration : 0);
@@ -565,7 +632,7 @@ export default function SampleView() {
 
   // High-frequency playhead pump — only runs while video is playing.
   useEffect(() => {
-    const v = videoRef.current;
+    const v = clock();
     if (!v || !isPlaying) return;
     let raf = 0;
     const tick = () => {
@@ -577,14 +644,14 @@ export default function SampleView() {
   }, [isPlaying, sample, videoView]);
 
   const togglePlay = () => {
-    const v = videoRef.current;
+    const v = clock();
     if (!v) return;
     if (v.paused) void v.play();
     else v.pause();
   };
 
   const stopPlayback = () => {
-    const v = videoRef.current;
+    const v = clock();
     const a = audioRef.current;
     if (v) { v.pause(); v.currentTime = 0; }
     if (a) { a.pause(); a.currentTime = 0; }
@@ -593,7 +660,7 @@ export default function SampleView() {
   };
 
   const seek = (t: number) => {
-    const v = videoRef.current;
+    const v = clock();
     if (!v || !Number.isFinite(t)) return;
     v.currentTime = Math.max(0, Math.min(durationSec || t, t));
   };
@@ -604,7 +671,7 @@ export default function SampleView() {
   useEffect(() => {
     const v = videoRef.current;
     const a = audioRef.current;
-    if (!v || !a) return;
+    if (!hasVideo || !v || !a) return;
     const isActive = () => videoRef.current === v;
     const sync = () => {
       if (Math.abs(a.currentTime - v.currentTime) > 0.15) a.currentTime = v.currentTime;
@@ -625,6 +692,11 @@ export default function SampleView() {
     };
   }, [sample, videoView]);
 
+  // Without video nothing mirrors the rate onto the audio clock; apply it directly.
+  useEffect(() => {
+    if (!hasVideo && audioRef.current) audioRef.current.playbackRate = playbackRate;
+  }, [hasVideo, playbackRate]);
+
   // Apply volume / mute to the audio element (video stays muted).
   useEffect(() => {
     const a = audioRef.current;
@@ -640,7 +712,7 @@ export default function SampleView() {
       return;
     }
     let cancelled = false;
-    const p = buildSamplePaths(sample);
+    const p = paths;
     loadFingering({
       trialId: sample.trialId,
       eventsPath: p.fingeringEvents,
@@ -651,13 +723,13 @@ export default function SampleView() {
     return () => {
       cancelled = true;
     };
-  }, [sample]);
+  }, [sample, paths]);
 
   useEffect(() => {
     if (!sample) return;
     setMotionStatus('loading');
     let cancelled = false;
-    const p = buildSamplePaths(sample);
+    const p = paths;
     const handPath = stream === 'imputed' ? p.handImputed : p.handRawFlagged;
     // Body is rendered as Visual3D-style 13 segments (a/b endpoint pairs)
     // derived from the body marker CSV by pipeline/10_body_visual3D. The
@@ -666,7 +738,10 @@ export default function SampleView() {
       trialId: sample.trialId,
       stream,
       handCsv: sample.modalities.motionHand ? handPath : undefined,
-      bodyCsv: sample.modalities.motionBody ? p.bodySegments : undefined,
+      bodyCsv: sample.modalities.motionBody
+        ? stream === 'raw_flagged' && p.bodySegmentsRaw ? p.bodySegmentsRaw : p.bodySegments
+        : undefined,
+      fps: p.motionFps,
     }).then((data) => {
       if (cancelled) return;
       if (data.frameCount === 0) {
@@ -680,29 +755,7 @@ export default function SampleView() {
     return () => {
       cancelled = true;
     };
-  }, [sample, stream]);
-
-  if (loading) {
-    return (
-      <>
-        <TopBar />
-        <Page><InfoText>Loading…</InfoText></Page>
-      </>
-    );
-  }
-
-  if (!sample) {
-    return (
-      <>
-        <TopBar />
-        <Page>
-          <InfoText>
-            Sample <code>{trialId}</code> was not found in the manifest. Use the menu to pick another.
-          </InfoText>
-        </Page>
-      </>
-    );
-  }
+  }, [sample, paths, stream]);
 
   const taskColor = TASK_COLORS[sample.task];
 
@@ -714,7 +767,7 @@ export default function SampleView() {
             className="chip"
             style={{ background: `${taskColor}10`, color: taskColor, borderColor: `${taskColor}33` }}
           >
-            {TASK_LABEL[sample.task]}
+            {taskLabel ?? TASK_LABEL[sample.task]}
           </span>
           <span
             className="chip"
@@ -728,16 +781,12 @@ export default function SampleView() {
             {sample.level}
           </span>
           <h1 className="piece">{sample.pieceLabel}</h1>
-          {partner && (
-            <Link className="pair-link" to={`/sample/${partner.trialId}`}>
-              <CompareArrowsIcon />
-              {partner.level === 'Professional' ? `Pro · ${partner.subject}` : `Amateur · ${partner.subject}`}
-            </Link>
-          )}
+          {titleExtra}
         </TitleContent>
       </TopBar>
       <Page>
       <Stage>
+        {!(hideUnavailable && !sample.modalities.score) && (
         <ScoreColumn>
           <ScoreViewer
             src={sample.modalities.score && paths ? paths.score : ''}
@@ -746,6 +795,7 @@ export default function SampleView() {
             isPlaying={isPlaying}
           />
         </ScoreColumn>
+        )}
         <MainColumn>
       <ViewerGrid>
         <ViewerPanel>
@@ -863,6 +913,7 @@ export default function SampleView() {
             />
           </TrackBody>
         </Track>
+        {!(hideUnavailable && !sample.modalities.kinematics) && (
         <Track style={{ flex: '17 1 0' }}>
           <TrackLabel>
             <span className="title">Kinematics</span>
@@ -876,6 +927,7 @@ export default function SampleView() {
             />
           </TrackBody>
         </Track>
+        )}
       </TrackGroup>
         </MainColumn>
       </Stage>
