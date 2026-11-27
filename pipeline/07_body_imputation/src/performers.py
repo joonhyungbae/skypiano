@@ -2,10 +2,19 @@
 Performer mapping for Stage 07 (full-body imputation).
 
 Mirrors Stage 06's mapping but points at *_body.csv instead of *_hand.csv.
-Rebuilds from each dataset's `_pieces.json` manifest — shared with Stage 06.
+Rebuilds from each dataset's `_pieces.json` manifest — shared with Stage 06. A dataset
+without one (220819, cut by anchors_220819) contributes every `{trial}_p{k}_body.csv` of
+its Stage 04 folder, and the take-level dataset (240523) also its whole takes
+(Data/Pipeline/12_release/trials/240523/{trial}/body.csv, piece prefix = the trial stem).
+
+C/N codes are per session: a code used in two datasets (C1_N0 in 220819 and 240523, the
+same pianist recorded with markers placed anew) becomes one performer per dataset,
+`{C}_{N}_{dataset}`, so the outlier baselines (s00) never mix two marker placements.
+C0_N0 (the professor, never released) is left out.
 """
 import json
 import os
+import re
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -15,6 +24,9 @@ from _common.known_absences import all_entries
 
 
 PIECE_SPLIT_ROOT = Path("Data/Pipeline/04_piece_split")
+TRIALS_ROOT = Path("Data/Pipeline/12_release/trials")
+TAKE_LEVEL = ("240523",)      # datasets released (also) as whole takes
+_PIECE = re.compile(r"^(?P<trial>.+)_p\d+_body$")
 
 # Optional dataset filter via env var (comma-separated dataset ids like "240828,240809")
 _DATASETS_FILTER = os.environ.get("DATASETS", "").strip()
@@ -42,7 +54,7 @@ def build_performer_map():
     Returns: dict of (C, N) -> list of (dataset, piece_prefix).
     Only pieces whose *_body.csv exists are included.
     """
-    performers = defaultdict(list)
+    found = defaultdict(list)      # (C, N, dataset) -> pieces
 
     for ds_dir in sorted(PIECE_SPLIT_ROOT.iterdir()):
         if not ds_dir.is_dir():
@@ -54,27 +66,42 @@ def build_performer_map():
             continue
 
         manifest_path = ds_dir / "_pieces.json"
-        if not manifest_path.is_file():
+        if manifest_path.is_file():
+            with open(manifest_path, encoding="utf-8") as f:
+                manifest = json.load(f)
+            for entry in manifest:
+                trial_stem = entry["trial_stem"]
+                cn = _parse_performer_from_trial_stem(trial_stem)
+                if cn is None:
+                    continue
+                for p in entry.get("pieces", []):
+                    if p.get("excluded"):
+                        continue
+                    piece_prefix = f"{trial_stem}_p{p['piece_idx']}"
+                    if (ds_dir / f"{piece_prefix}_body.csv").exists():
+                        found[(*cn, dataset)].append(piece_prefix)
+        else:
+            for f in sorted(ds_dir.glob("*_body.csv")):
+                m = _PIECE.match(f.stem)
+                cn = m and _parse_performer_from_trial_stem(m["trial"])
+                if cn:
+                    found[(*cn, dataset)].append(f.stem[: -len("_body")])
+
+        if dataset in TAKE_LEVEL and (TRIALS_ROOT / dataset).is_dir():
+            for t in sorted((TRIALS_ROOT / dataset).iterdir()):
+                cn = _parse_performer_from_trial_stem(t.name)
+                if cn and (t / "body.csv").exists():
+                    found[(*cn, dataset)].append(t.name)
+
+    datasets_of = defaultdict(set)
+    for c, n, ds in found:
+        datasets_of[(c, n)].add(ds)
+    performers = defaultdict(list)
+    for (c, n, ds), pieces in sorted(found.items()):
+        if (c, n) == ("C0", "N0"):
             continue
-
-        with open(manifest_path, encoding="utf-8") as f:
-            manifest = json.load(f)
-
-        for entry in manifest:
-            trial_stem = entry["trial_stem"]
-            cn = _parse_performer_from_trial_stem(trial_stem)
-            if cn is None:
-                continue
-            for p in entry.get("pieces", []):
-                if p.get("excluded"):
-                    continue
-                idx = p["piece_idx"]
-                piece_prefix = f"{trial_stem}_p{idx}"
-                body_csv = ds_dir / f"{piece_prefix}_body.csv"
-                if not body_csv.exists():
-                    continue
-                performers[cn].append((dataset, piece_prefix))
-
+        key = (c, n) if len(datasets_of[(c, n)]) == 1 else (c, f"{n}_{ds}")
+        performers[key] += [(ds, pp) for pp in pieces]
     return dict(performers)
 
 
@@ -86,7 +113,10 @@ CLEAN_ROOT = Path("Data/Pipeline/07_body_imputation/Clean")
 
 
 def get_piece_body_path(dataset, piece_prefix):
-    """The released body motion of a piece (Stage 04 piece split)."""
+    """The released body motion of a piece (Stage 04 piece split), or of a whole take
+    (piece prefix = trial stem, no `_p{k}`)."""
+    if re.search(r"_p\d+$", piece_prefix) is None:
+        return TRIALS_ROOT / dataset / piece_prefix / "body.csv"
     return PIECE_SPLIT_ROOT / dataset / f"{piece_prefix}_body.csv"
 
 

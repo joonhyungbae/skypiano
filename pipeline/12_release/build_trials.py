@@ -228,9 +228,12 @@ def locate(src: np.ndarray, piece: np.ndarray, guess: int) -> int | None:
         return None
     i = int(np.argmax(head)) if head.max() > 0 else int(np.argmax(cnt))
     row = piece[i:i + 1]
+    # one row can repeat in the source (a body standing still), so a candidate must match
+    # the next 120 rows of the piece as well
+    block = piece[i:i + 120]
 
     def ok(k: int) -> bool:
-        return 0 <= k < len(src) and bool(rows_equal(src[k:k + 1], row)[0])
+        return 0 <= k and k + len(block) <= len(src) and bool(rows_equal(src[k:k + len(block)], block).all())
 
     for d in sorted(range(-3, 4), key=abs):
         if ok(guess + i + d):
