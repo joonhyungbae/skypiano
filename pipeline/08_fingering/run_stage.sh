@@ -9,25 +9,26 @@
 #   s02 export_annotations   annotate-tool verdicts -> human_annotations.json
 #   s03 train_tier_c         train the Tier C BiLSTM (opt-in, see below)
 #   s04 release_fingering    fingering per released performance (Tiers A/B/C)
+#   s05 human_fingering      the audit's hand labels per labeled performance
 #
 # Usage:
-#   ./run_stage.sh --version X.Y.Z --hand raw          # s01, s02, s04
+#   ./run_stage.sh --version X.Y.Z --hand raw          # s01, s02, s04, s05
 #   ./run_stage.sh --version X.Y.Z --hand imputed --dataset 240828
 #   STEPS="s04" ./run_stage.sh --version X.Y.Z --hand raw --overwrite
 #   STEPS="s01 s03" TRAIN_ARGS="--data mix --overwrite" ./run_stage.sh
 #
-# Arguments are forwarded to s04 only (s01 and s02 take none); s04 needs
+# Arguments are forwarded to s04 only (s01, s02 and s05 take none); s04 needs
 # --version and --hand. Training is not in the default STEPS: the released
 # Tier C weights already exist, so s03 runs only when STEPS names it.
 #
 # Environment variables:
-#   STEPS        steps to run (default: s01 s02 s04)
+#   STEPS        steps to run (default: s01 s02 s04 s05)
 #   TRAIN_ARGS   arguments for s03 (default: --data mix)
 #=============================================================================
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 
-STEPS="${STEPS:-s01 s02 s04}"
+STEPS="${STEPS:-s01 s02 s04 s05}"
 TRAIN_ARGS="${TRAIN_ARGS:---data mix}"
 STEP_DIR="pipeline/08_fingering/steps"
 
@@ -56,6 +57,7 @@ for step in $STEPS; do
     # shellcheck disable=SC2086
     s03) run_step "s03 train Tier C"        "$STEP_DIR/s03_train_tier_c.py" $TRAIN_ARGS ;;
     s04) run_step "s04 release fingering"   "$STEP_DIR/s04_release_fingering.py" "$@" ;;
+    s05) run_step "s05 human fingering"     "$STEP_DIR/s05_human_fingering.py" ;;
     *) echo "Unknown step: $step"; exit 1 ;;
   esac
 done

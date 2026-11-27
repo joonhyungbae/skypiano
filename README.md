@@ -220,7 +220,10 @@ others (`s06_compare_fill.py`). Mean error for 0.5 / 1 / 2 s gaps is 2.1 /
 gaps and markers a piece never observes stay empty, and the wrist markers
 come from Stage 06. A piece folder then holds `body_imputed.csv` (the layout
 of `body.csv`), `body_imputed_mask.csv` (1 = filled) and
-`body_suspect_mask.csv` (1 = a `body.csv` value removed as an outlier).
+`body_suspect_mask.csv` (1 = a `body.csv` value removed as an outlier). All
+four released sessions are filled, and so are the free-repertoire takes of
+240523. A C/N code recorded in two sessions is treated as two performers, so
+the outlier baselines never mix two marker placements.
 
 ### Fingering
 
@@ -247,14 +250,19 @@ measured fingertips, following the three tiers of the paper:
 | s02 | `steps/s02_export_annotations.py` | Human verdicts from the annotation tool → release annotation file |
 | s03 | `steps/s03_train_tier_c.py` | Train Tier C on SKY-Piano Tier A labels plus PIG (Nakamura et al. 2020, obtained separately) |
 | s04 | `steps/s04_release_fingering.py` | `fingering.csv` per released performance, Tiers A → B → C |
+| s05 | `steps/s05_human_fingering.py` | `fingering_human.csv`: the audit's hand labels, matched to the release notes |
 
-`run_stage.sh --version X.Y.Z --hand raw|imputed` runs s01, s02 and s04;
+`run_stage.sh --version X.Y.Z --hand raw|imputed` runs s01, s02, s04 and s05;
 training runs only when asked (`STEPS="s03" ./run_stage.sh`). The released
 Tier C weights were trained with `--data mix` (84.3% recovery of held-out
 Tier A labels); `s03` refuses to overwrite existing weights without
 `--overwrite`. The annotation tool in `web/annotate` shows a piece's piano
 roll, top-view video and 3D hand markers and records a finger per note; the
-paper's 2,269-note audit was labeled with it.
+paper's 2,269-note audit was labeled with it. Those labels are released as
+`fingering_human.csv` (`note_idx`, `onset`, `offset`, `pitch`, `hand`,
+`finger`; same notes and order as `fingering.csv`) for the three audited
+performances: P04 `clementi_op36_no1`, P06 `schubert_impromptu_op90_no4` and
+P07 `mozart_k545_1` (all `graded/.../r1`).
 
 ### Face anonymization (10)
 
@@ -285,7 +293,7 @@ nothing is copied), `performances.csv`, `participants.csv`, `repertoire.csv`,
 
 ```
 data/P<id>/<task>/<piece>/r<n>/      one performance (free repertoire: its take folder, below)
-  audio.wav  midi.mid  hand.csv  body.csv  fingering.csv  [top.mp4]
+  audio.wav  midi.mid  hand.csv  body.csv  fingering.csv  [top.mp4]  [fingering_human.csv]
   [hand_imputed.csv  hand_imputed_mask.csv  fingering_imputed.csv]
   [body_imputed.csv  body_imputed_mask.csv  body_suspect_mask.csv]
 ```

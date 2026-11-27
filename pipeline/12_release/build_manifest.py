@@ -79,8 +79,10 @@ face; Data/Pipeline/04_piece_split/{ds}/videos/{stem}_Top.mp4, sessions TOP_OVER
 right_low.mp4 passed through the Stage 10 release mask (Data/Pipeline/10_face_blur/{ds}/
 videos_blurred/{stem}_{Left|Right|RightLow}.mp4; a clip ships only with a passed or
 review-passed record), and per-note
-fingering labeled from the raw hand motion (Stage 08 step 03,
-Data/Pipeline/08_fingering/Notes/raw/{ds}/{stem}.csv -> fingering.csv).
+fingering labeled from the raw hand motion (Stage 08 step 04,
+Data/Pipeline/08_fingering/Notes/raw/{ds}/{stem}.csv -> fingering.csv), and,
+where the audit labeled a performance by hand, those labels (Stage 08 step 05,
+Notes/human/{ds}/{stem}.csv -> fingering_human.csv).
 
 Outputs, under Data/Release/v{version}/:
     manifest.csv       release_path, source_path, bytes
@@ -117,7 +119,8 @@ motion of that model (Stage 06 release fill, IMPUTED/<tag>/<release path>/
 hand_imputed.csv and hand_imputed_mask.csv, 1 = filled) and the fingering
 labeled from it (Stage 08 --hand imputed --tag TAG, FINGERING_IMPUTED/<tag>/{ds}/{stem}.csv).
 
-Gap-filled body motion is listed for every piece folder that has it (Stage 07 s04, BODY_FILL/{ds}/):
+Gap-filled body motion is listed for every piece folder, and every free-repertoire take folder, that has it
+(Stage 07 s04, BODY_FILL/{ds}/{piece or trial}_*):
 body_imputed.csv (same rows and columns as body.csv), body_imputed_mask.csv (1 = filled) and
 body_suspect_mask.csv (1 = body.csv value judged an outlier by Stage 07 s00 and not used).
 """
@@ -155,6 +158,7 @@ PIECE_SOURCES = {"audio": ".wav", "midi": ".mid", "hand": "_hand.csv", "body": "
 BLURRED = PIPE / "10_face_blur"
 FINGERING = PIPE / "08_fingering" / "Notes" / "raw"
 FINGERING_IMPUTED = PIPE / "08_fingering" / "Notes" / "imputed"
+FINGERING_HUMAN = PIPE / "08_fingering" / "Notes" / "human"    # Stage 08 step 05: the audit labels
 IMPUTED = PIPE / "06_hand_imputation" / "Release"       # <model tag>/<release path>/hand_imputed*.csv
 SUSPECT = PIPE / "06_hand_imputation" / "Suspect"       # <release path>/hand_suspect_mask.csv (flag_suspect_hand.py)
 BODY_FILL = PIPE / "07_body_imputation" / "Release"      # {ds}/{piece}_body_imputed*.csv, _body_suspect_mask.csv
@@ -166,6 +170,7 @@ SIDE_VIEWS = {"left": "Left", "right": "Right", "right_low": "RightLow"}   # fil
 for _m in SIDE_VIEWS:
     MODALITIES[_m] = f"{_m}.mp4"
 MODALITIES["fingering"] = "fingering.csv"
+MODALITIES["fingering_human"] = "fingering_human.csv"
 MODALITIES["hand_imputed"] = "hand_imputed.csv"
 MODALITIES["hand_imputed_mask"] = "hand_imputed_mask.csv"
 MODALITIES["fingering_imputed"] = "fingering_imputed.csv"
@@ -173,7 +178,7 @@ MODALITIES["hand_suspect_mask"] = "hand_suspect_mask.csv"
 BODY_FILL_MODALITIES = ("body_imputed", "body_imputed_mask", "body_suspect_mask")
 for _m in BODY_FILL_MODALITIES:
     MODALITIES[_m] = f"{_m}.csv"
-OPTIONAL = {"top", *SIDE_VIEWS, "fingering", "hand_imputed", "hand_imputed_mask", "fingering_imputed", "hand_suspect_mask",
+OPTIONAL = {"top", *SIDE_VIEWS, "fingering", "fingering_human", "hand_imputed", "hand_imputed_mask", "fingering_imputed", "hand_suspect_mask",
             *BODY_FILL_MODALITIES}
 IMPUTED_MODALITIES = ("hand_imputed", "hand_imputed_mask", "fingering_imputed")
 SESSION_ORDER = ["220819", "221112", "240523", "240828"]
@@ -323,7 +328,8 @@ def files_for_piece(r: dict) -> dict[str, Path]:
     return {**{m: PIECES / r["dataset"] / f"{r['piece']}{suf}" for m, suf in PIECE_SOURCES.items()},
             **top_view(r["dataset"], r["piece"]),
             **{m: BLURRED / r["dataset"] / "videos_blurred" / f"{r['piece']}_{v}.mp4" for m, v in SIDE_VIEWS.items()},
-            "fingering": FINGERING / r["dataset"] / f"{r['piece']}.csv"}
+            "fingering": FINGERING / r["dataset"] / f"{r['piece']}.csv",
+            "fingering_human": FINGERING_HUMAN / r["dataset"] / f"{r['piece']}.csv"}
 
 
 def take_rows(ds: str) -> list[dict]:
@@ -543,7 +549,9 @@ def main():
             base = take_path(r["pid"], r["dataset"], r["session"], r["piece"])
             t = index.get(r["piece"], {})
             r["src"] = {**r["src"], **{m: TRIALS / r["dataset"] / r["piece"] / MODALITIES[m]
-                                       for m in ("audio", "midi", "hand", "body")}}
+                                       for m in ("audio", "midi", "hand", "body")},
+                        # Stage 07 fills the whole take's body.csv too (piece prefix = trial stem)
+                        **{m: BODY_FILL / r["dataset"] / f"{r['piece']}_{m}.csv" for m in BODY_FILL_MODALITIES}}
             if not t:
                 sys.exit(f"{r['piece']}: not in {TRIALS / '_trials.json'}; run build_trials.py")
         (performance_of if r["level"] == "take" else best)[r["piece"]] = base
