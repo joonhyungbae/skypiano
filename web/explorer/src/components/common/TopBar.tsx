@@ -1,11 +1,11 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Link, useMatch } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import HomeIcon from '@mui/icons-material/Home';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import StorageIcon from '@mui/icons-material/Storage';
 import { TrialsMenuToggle } from './TrialsMenu';
-import { loadDatasetIndex } from '@/data/dataset';
+import { STANDALONE } from '@/data/dataset';
 import { BRAND, SURFACE } from '@/theme';
 
 const Root = styled('header')({
@@ -85,30 +85,31 @@ const HomeLink = styled(Link)({
 export default function TopBar({ children }: { children?: ReactNode }) {
   const onHome = useMatch('/');
   const onData = useMatch('/data');
-  // The full-dataset browser only exists when a release is served locally (serve_dataset.py).
-  const [hasData, setHasData] = useState(false);
-  useEffect(() => {
-    void loadDatasetIndex().then((i) => setHasData(i !== null));
-  }, []);
   return (
     <Root>
       {children}
       <RightSlot>
-        <ProjectPageLink href={PROJECT_PAGE_URL} title="Back to the project page">
-          <ChevronLeftIcon />
-          Project page
-        </ProjectPageLink>
-        {hasData && !onData && (
-          <HomeLink to="/data" aria-label="Browse the full dataset" title="Full dataset">
-            <StorageIcon />
-          </HomeLink>
+        {STANDALONE ? (
+          // The full-dataset explorer stands alone: its only home is the dataset list.
+          !onData && (
+            <HomeLink to="/data" aria-label="All data" title="All data">
+              <StorageIcon />
+            </HomeLink>
+          )
+        ) : (
+          <>
+            <ProjectPageLink href={PROJECT_PAGE_URL} title="Back to the project page">
+              <ChevronLeftIcon />
+              Project page
+            </ProjectPageLink>
+            {!onHome && (
+              <HomeLink to="/" aria-label="Go to home" title="Home">
+                <HomeIcon />
+              </HomeLink>
+            )}
+            <TrialsMenuToggle />
+          </>
         )}
-        {!onHome && (
-          <HomeLink to="/" aria-label="Go to home" title="Home">
-            <HomeIcon />
-          </HomeLink>
-        )}
-        <TrialsMenuToggle />
       </RightSlot>
     </Root>
   );

@@ -12,6 +12,9 @@ import type { PlayerPaths } from '@/views/SampleView';
  *
  * Set VITE_DATASET_URL to serve the release from somewhere else.
  */
+/** The standalone full-dataset build (npm run build:dataset): no project page, no sample pages. */
+export const STANDALONE = import.meta.env.VITE_STANDALONE === 'true';
+
 export const DATASET_URL: string = (
   import.meta.env.VITE_DATASET_URL || withBase('/dataset')
 ).replace(/\/$/, '');

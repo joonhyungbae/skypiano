@@ -95,27 +95,27 @@ The web apps are static Vite sites with no backend: `npm install` then
 
 ### Browsing the whole dataset
 
-The public explorer shows a few curated samples. The same player opens every
-performance and every whole take of a release when the release is on your
-computer. Download the dataset from Hugging Face (`metadata/` and `data/`),
-build the explorer once, and start the local server from the repository root:
+The public explorer under the project page shows a few curated samples. A
+separate, standalone build of the same player opens every performance and every
+whole take of a release on your computer; it has no project-page or sample
+navigation. Download the dataset from Hugging Face (`metadata/` and `data/`),
+build it once, and start the local server from the repository root:
 
 ```bash
-cd web/explorer && npm install && npm run build && cd ../..
+cd web/explorer && npm install && npm run build:dataset && cd ../..
 python web/explorer/serve_dataset.py --data path/to/SKY-Piano
 # or a release built by Stage 12, before upload:
 python web/explorer/serve_dataset.py --manifest Data/Release/v0.3.9/manifest.csv
 ```
 
-Open the printed address (`http://127.0.0.1:8770/skypiano/explorer/data`). The
-**Dataset** page lists all performances (or whole takes) with filters for task,
-participant, group and modality; filters stay in the URL. A row opens the
-synchronised player: top / side videos, hand and body motion in 3D (raw or
-gap-filled), fingering, audio and MIDI, with the other rounds of the same piece
-one click away. The server reads the files in place and writes nothing next to
-them; motion is sent at 30 Hz (every 4th frame), and the body is drawn as the
-13 segments of `pipeline/09_visual3d`, computed on request and cached in the
-system temp folder.
+Open the printed address (`http://127.0.0.1:8770/`). It opens on the list of
+all performances (or whole takes) with filters for task, participant, group and
+modality; filters stay in the URL. A row opens the synchronised player: top /
+side videos, hand and body motion in 3D (raw or gap-filled), fingering, audio
+and MIDI, with the other rounds of the same piece one click away. The server
+reads the files in place and writes nothing next to them; motion is sent at
+30 Hz (every 4th frame), and the body is drawn as the 13 segments of
+`pipeline/09_visual3d`, computed on request and cached in the system temp folder.
 
 ## Data layout
 

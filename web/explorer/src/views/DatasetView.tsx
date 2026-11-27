@@ -204,7 +204,7 @@ export default function DatasetView() {
   if (index === undefined) {
     return (
       <>
-        <TopBar><Brand><span className="name">Dataset</span></Brand></TopBar>
+        <TopBar><Brand><span className="name">SKY Piano Dataset</span></Brand></TopBar>
         <Page><Note>Loading the dataset index…</Note></Page>
       </>
     );
@@ -213,7 +213,7 @@ export default function DatasetView() {
   if (index === null) {
     return (
       <>
-        <TopBar><Brand><span className="name">Dataset</span></Brand></TopBar>
+        <TopBar><Brand><span className="name">SKY Piano Dataset</span></Brand></TopBar>
         <Page>
           <Note>
             <h3 style={{ marginTop: 0 }}>No dataset is being served</h3>
@@ -221,7 +221,7 @@ export default function DatasetView() {
               The full-dataset browser reads a local copy of the release. Download the dataset from
               Hugging Face, build the explorer once, and start the local server from the repository root:
             </p>
-            <pre>{`cd web/explorer && npm install && npm run build && cd ../..
+            <pre>{`cd web/explorer && npm install && npm run build:dataset && cd ../..
 python web/explorer/serve_dataset.py --data path/to/SKY-Piano`}</pre>
             <p>Then open the address it prints. The public site only carries the curated samples.</p>
           </Note>
@@ -241,7 +241,7 @@ python web/explorer/serve_dataset.py --data path/to/SKY-Piano`}</pre>
     <>
       <TopBar>
         <Brand>
-          <span className="name">Dataset</span>
+          <span className="name">SKY Piano Dataset</span>
           <span className="sub">
             {index.performances.length} performances · {index.takes.length} takes · {index.participants.length} participants
           </span>

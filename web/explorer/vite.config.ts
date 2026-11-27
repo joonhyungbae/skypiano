@@ -3,10 +3,15 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vitejs.dev/config/
-export default defineConfig({
-  // Mounted under the project page, which owns the /skypiano/ root.
-  base: '/skypiano/explorer/',
+// Two builds from one source:
+//   npm run build           the public explorer (curated samples), mounted under the project page
+//   npm run build:dataset   the standalone full-dataset explorer served by serve_dataset.py
+//                           (base '/', no project-page or sample navigation; .env.dataset)
+export default defineConfig(({ mode }) => ({
+  base: mode === 'dataset' ? '/' : '/skypiano/explorer/',
+  build: { outDir: mode === 'dataset' ? 'dist-dataset' : 'dist' },
+  // the sample media in public/ belong to the public site; serve_dataset.py serves keyboard.png itself
+  publicDir: mode === 'dataset' ? false : 'public',
   plugins: [react()],
   resolve: {
     alias: {
@@ -24,4 +29,4 @@ export default defineConfig({
       clientPort: 9999,
     },
   },
-})
+}))

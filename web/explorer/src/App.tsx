@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import { TrialsMenuProvider } from './components/common/TrialsMenu';
 import DesktopOnlyGate from './components/common/DesktopOnlyGate';
+import { STANDALONE } from './data/dataset';
 
 const Shell = styled('div')({
   height: '100vh',
@@ -21,13 +22,22 @@ const Main = styled('main')({
 export default function App() {
   return (
     <DesktopOnlyGate>
-      <TrialsMenuProvider>
+      {STANDALONE ? (
+        // the full-dataset explorer has no sample menu
         <Shell>
           <Main>
             <Outlet />
           </Main>
         </Shell>
-      </TrialsMenuProvider>
+      ) : (
+        <TrialsMenuProvider>
+          <Shell>
+            <Main>
+              <Outlet />
+            </Main>
+          </Shell>
+        </TrialsMenuProvider>
+      )}
     </DesktopOnlyGate>
   );
 }

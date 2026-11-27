@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect } from 'react';
-import { createBrowserRouter, useMatches } from 'react-router-dom';
+import { createBrowserRouter, Navigate, useMatches } from 'react-router-dom';
+import { STANDALONE } from './data/dataset';
 import App from './App';
 
 const BRAND_TITLE = 'SKY Piano';
@@ -36,16 +37,21 @@ export const router = createBrowserRouter(
     {
       path: '/',
       element: <Shell />,
-      children: [
-        { index: true, element: <HomeView />, handle: { title: 'Home' } },
-        { path: 'data', element: <DatasetView />, handle: { title: 'Dataset' } },
-        { path: 'data/view', element: <DatasetPlayerView />, handle: { title: 'Dataset' } },
-        {
-          path: 'sample/:trialId',
-          element: <SampleView />,
-          handle: { title: 'Sample' },
-        },
-      ],
+      children: STANDALONE
+        ? [
+            { index: true, element: <Navigate to="/data" replace /> },
+            { path: 'data', element: <DatasetView />, handle: { title: 'Dataset' } },
+            { path: 'data/view', element: <DatasetPlayerView />, handle: { title: 'Dataset' } },
+            { path: '*', element: <Navigate to="/data" replace /> },
+          ]
+        : [
+            { index: true, element: <HomeView />, handle: { title: 'Home' } },
+            {
+              path: 'sample/:trialId',
+              element: <SampleView />,
+              handle: { title: 'Sample' },
+            },
+          ],
     },
   ],
   // The site is served from a GitHub Pages project path, so routes resolve

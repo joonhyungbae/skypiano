@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """Browse the whole SKY-Piano release in the explorer, on this computer.
 
-Serves the built explorer (web/explorer/dist) and a release under /dataset/ next to it:
+Serves the standalone full-dataset explorer (web/explorer/dist-dataset) at / and a release under /dataset/:
 
   python web/explorer/serve_dataset.py --data PATH        # a downloaded copy of the Hugging Face dataset
                                                           #   (PATH holds metadata/ and data/)
   python web/explorer/serve_dataset.py --manifest Data/Release/v0.3.9/manifest.csv
                                                           # a release built by pipeline/12_release, before upload
-then open the printed address and pick "Dataset".
+then open the printed address.
 
-Build the explorer once first: `cd web/explorer && npm install && npm run build`.
+Build it once first: `cd web/explorer && npm install && npm run build:dataset`. This is its own app,
+separate from the public explorer under the project page: it opens on the dataset list and links nowhere else.
 
 The dataset routes, all read-only:
   /dataset/index.json            the metadata tables (performances, takes, participants, repertoire, pieces) as JSON
@@ -36,8 +37,9 @@ from urllib.parse import parse_qs, unquote, urlparse
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
-DIST = HERE / "dist"
-BASE = "/skypiano/explorer/"           # the base the explorer is built with (vite.config.ts)
+DIST = HERE / "dist-dataset"         # npm run build:dataset (base "/")
+PUBLIC = HERE / "public"             # keyboard.png for the motion viewer
+BASE = "/"
 TABLES = ("performances", "takes", "participants", "repertoire", "pieces")
 CACHE = Path(tempfile.gettempdir()) / "skypiano_explorer_cache"
 mimetypes.add_type("text/csv", ".csv")
@@ -137,19 +139,14 @@ def make_handler(rel: Release):
         def do_GET(self):
             u = urlparse(self.path)
             p, q = unquote(u.path), parse_qs(u.query)
-            if p in ("/", BASE.rstrip("/")):
-                self.send_response(302)
-                self.send_header("Location", BASE + "data")
-                self.end_headers()
-                return
-            if not p.startswith(BASE):
-                return self.send(404, b"not found", "text/plain")
             sub = p[len(BASE):]
             if sub.startswith("dataset/"):
                 return self.dataset(sub[len("dataset/"):], q)
             f = (DIST / sub).resolve()
             if sub and f.is_file() and DIST in f.parents:
                 return self.file(f)
+            if sub == "keyboard.png":
+                return self.file(PUBLIC / sub)
             return self.file(DIST / "index.html")        # client-side routes
 
         def dataset(self, sub, q):
@@ -214,11 +211,11 @@ def main():
     ap.add_argument("--port", type=int, default=8770)
     a = ap.parse_args()
     if not (DIST / "index.html").exists():
-        sys.exit("web/explorer/dist is missing: run `npm install && npm run build` in web/explorer first")
+        sys.exit("web/explorer/dist-dataset is missing: run `npm install && npm run build:dataset` in web/explorer first")
     rel = Release(a.data, a.manifest)
     n = len(rel.index()["performances"])
     srv = ThreadingHTTPServer((a.host, a.port), make_handler(rel))
-    print(f"{n} performances; open http://{a.host}:{a.port}{BASE}data")
+    print(f"{n} performances; open http://{a.host}:{a.port}/")
     srv.serve_forever()
 
 
