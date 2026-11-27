@@ -41,12 +41,15 @@ from pathlib import Path
 
 import requests
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from gz_store import ensure as gz_ensure, published_path  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[2]
 REL = Path("Data/Release")
 LICENSE = REL / "LICENSE.txt"
 API = "https://zenodo.org/api"
 META_TABLES = ("performances.csv", "participants.csv", "repertoire.csv")
-STORED = {".wav", ".mid"}                     # already compact; csv files are deflated
+STORED = {".wav", ".mid", ".gz"}              # already compact; data CSVs come as gzip copies (gz_store.py)
 
 TITLE = "SKY-Piano: A Multimodal Piano Performance Dataset"
 CREATORS = ["Bae, Joonhyung", "Park, Dawon", "Kwon, Taegyun", "Choi, Yoon-Seok", "Hur, Hyeon",
@@ -94,6 +97,7 @@ def zips(version: str, manifest: list[dict], out: Path) -> list[Path]:
     by: dict[str, list[dict]] = {}
     for m in manifest:
         by.setdefault(m["release_path"].split("/")[1], []).append(m)
+    publish = gz_ensure(manifest)                 # release path -> file to put in the zip
     paths = []
     for pid, files in sorted(by.items()):
         z = out / f"SKY-Piano_v{version}_{pid}.zip"
@@ -101,8 +105,9 @@ def zips(version: str, manifest: list[dict], out: Path) -> list[Path]:
             tmp = z.with_suffix(".part")
             with zipfile.ZipFile(tmp, "w") as zf:
                 for m in files:
-                    kind = zipfile.ZIP_STORED if Path(m["release_path"]).suffix in STORED else zipfile.ZIP_DEFLATED
-                    zf.write(m["source_path"], m["release_path"], compress_type=kind)
+                    name = published_path(m["release_path"])
+                    kind = zipfile.ZIP_STORED if Path(name).suffix in STORED else zipfile.ZIP_DEFLATED
+                    zf.write(publish[m["release_path"]], name, compress_type=kind)
             tmp.rename(z)
         print(f"  {z.name}: {z.stat().st_size / 1e9:.2f} GB")
         paths.append(z)

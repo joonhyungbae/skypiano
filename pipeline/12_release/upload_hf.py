@@ -2,7 +2,9 @@
 Stage 12: send a release version to its Hugging Face dataset repository.
 
 Reads the manifest that build_manifest.py wrote (Data/Release/v{version}/)
-and uploads each listed file from where it lies in Data/ -- nothing is copied.
+and uploads each listed file from where it lies in Data/ -- nothing is copied,
+except that every CSV under data/ is published as <name>.csv.gz from the gzip
+copies of gz_store.py (written there first when missing or stale).
 Only files whose content differs from the repository's are sent; files the
 repository holds that the version no longer lists are deleted. The version's
 metadata tables (performances, participants, repertoire) and summary.json go
@@ -43,7 +45,9 @@ from huggingface_hub import CommitOperationAdd, CommitOperationDelete, HfApi
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "paper_builders"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 from participant_map import EXCLUDED_FROM_RELEASE  # noqa: E402
+from gz_store import ensure as gz_ensure, published_path  # noqa: E402
 
 REL = Path("Data/Release")
 LICENSE = REL / "LICENSE.txt"
@@ -95,7 +99,7 @@ TAKE_TABLES = ("takes.csv", "pieces.csv")      # versions with take folders (0.3
 TASKS = ("technique1", "technique2", "technique_extra", "graded", "free")
 
 
-def card(version: str, summary: dict, perf: list[dict], license_text: str | None) -> str:
+def card(version: str, summary: dict, perf: list[dict], license_text: str | None, n_bytes: int) -> str:
     terms = license_text.strip() if license_text else "The license is not yet attached to this version."
     rows = "\n".join(
         f"| {t} | {len({r['participant_id'] for r in perf if r['task'] == t})} "
@@ -139,7 +143,9 @@ Requests are reviewed every Monday.
 |---|---:|---:|
 {rows}
 
-{summary['files']} files, {summary['bytes'] / 1e9:.1f} GB.
+{summary['files']} files, {n_bytes / 1e9:.1f} GB. Every CSV file under `data/` is
+gzip-compressed (`.csv.gz`); pandas reads it as is (`pd.read_csv("hand.csv.gz")`),
+and so does Python's `gzip` module or `gunzip` on the command line.
 
 Tasks: `technique1` the numbered exercises of Fink's *Mastering Piano
 Technique*; `technique2` the drills (scale, arpeggio, octave repeat, octave
@@ -152,20 +158,21 @@ professional cohort; `graded` the Set 1 graded pieces; `free` free repertoire.
 ```
 data/P<id>/<task>/<piece>/r<n>/audio.wav    audio
                                midi.mid     MIDI
-                               hand.csv     hand motion, 120 fps
-                               body.csv     body motion, 120 fps
-                               fingering.csv  per-note hand and finger, from the raw motion
-                               hand_suspect_mask.csv  1 = observed but implausible (ghost or swapped marker)
-                               hand_imputed.csv       hand motion with short gaps filled (where listed)
-                               hand_imputed_mask.csv  1 = value filled by the model
-                               fingering_imputed.csv  fingering labeled from hand_imputed.csv
-                               body_imputed.csv       body motion with gaps up to 2 s filled (where listed)
-                               body_imputed_mask.csv  1 = value filled
-                               body_suspect_mask.csv  1 = body.csv value removed as an outlier
+                               hand.csv.gz  hand motion, 120 fps
+                               body.csv.gz  body motion, 120 fps
+                               fingering.csv.gz  per-note hand and finger, from the raw motion
+                               fingering_human.csv.gz  per-note hand and finger labeled by hand (three performances)
+                               hand_suspect_mask.csv.gz  1 = observed but implausible (ghost or swapped marker)
+                               hand_imputed.csv.gz       hand motion with short gaps filled (where listed)
+                               hand_imputed_mask.csv.gz  1 = value filled by the model
+                               fingering_imputed.csv.gz  fingering labeled from hand_imputed.csv
+                               body_imputed.csv.gz       body motion with gaps up to 2 s filled (where listed)
+                               body_imputed_mask.csv.gz  1 = value filled
+                               body_suspect_mask.csv.gz  1 = body.csv value removed as an outlier
                                top.mp4      overhead video of keyboard and hands (no face in view, not masked; where available)
                                left.mp4, right.mp4, right_low.mp4  side views, faces masked (where available)
 data/P<id>/takes/<date>_<take>/audio.wav   every recorded take, whole (see below)
-                               midi.mid, hand.csv, body.csv
+                               midi.mid, hand.csv.gz, body.csv.gz (and the body fill files)
 metadata/performances.csv   one row per performance: path, participant, task,
                             piece, round, recording session and source take,
                             window in the take, first onset and release
@@ -197,7 +204,11 @@ pitch, velocity, hand L/R, finger 1-5, tier A geometric / B press-depth refined
 of the 2022 amateur session (P10, P11) the fingertip markers are missing in most
 recordings; their fingering is almost entirely Tier C (model-filled, ambiguity
 = no_candidate) and should be treated as a symbolic prior rather than a
-measurement. `hand_suspect_mask.csv`
+measurement. `fingering_human.csv` holds the fingering of the paper's audit,
+labeled note by note from the video and motion, for three graded performances
+(P04 `clementi_op36_no1`, P06 `schubert_impromptu_op90_no4`, P07
+`mozart_k545_1`, each `r1`): the same notes in the same order as
+`fingering.csv`, with hand L/R and finger 1-5. `hand_suspect_mask.csv`
 has the columns of `hand.csv`; 1 marks an observed value that is implausible --
 more than 150 mm from the median of the same hand's markers in that frame, or a
 one-frame excursion of more than 50 mm out and back -- typically a ghost
@@ -268,18 +279,20 @@ def main():
     if args.public and license_text is None:
         sys.exit(f"no license text at {LICENSE}; the repository stays private")
 
-    local: dict[str, tuple[Path | bytes, str]] = {}     # release path -> (source, sha256 or git sha1)
+    files = gz_ensure(manifest)                          # release path -> file to publish
+    n_bytes = sum(f.stat().st_size for f in files.values())
+    local: dict[str, tuple[Path | bytes, str]] = {}     # published path -> (source, sha256 or git sha1)
     cache = json.loads(SHA_CACHE.read_text(encoding="utf-8")) if SHA_CACHE.exists() else {}
     for i, m in enumerate(manifest, 1):
-        src = Path(m["source_path"])
-        local[m["release_path"]] = (src, sha256(src, cache))
+        src = files[m["release_path"]]
+        local[published_path(m["release_path"])] = (src, sha256(src, cache))
         if i % 500 == 0:
             print(f"  hashed {i}/{len(manifest)}")
             SHA_CACHE.write_text(json.dumps(cache), encoding="utf-8")
     SHA_CACHE.write_text(json.dumps(cache), encoding="utf-8")
     texts = {**{f"metadata/{n}": b for n, b in tables.items()},
              "metadata/summary.json": json.dumps(summary, indent=2).encode(),
-             "README.md": card(args.version, summary, perf, license_text).encode()}
+             "README.md": card(args.version, summary, perf, license_text, n_bytes).encode()}
     if license_text is not None:
         texts["LICENSE.txt"] = LICENSE.read_bytes()
     for p, data in texts.items():

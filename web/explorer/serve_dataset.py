@@ -4,7 +4,8 @@
 Serves the standalone full-dataset explorer (web/explorer/dist-dataset) at / and a release under /dataset/:
 
   python web/explorer/serve_dataset.py --data PATH        # a downloaded copy of the Hugging Face dataset
-                                                          #   (PATH holds metadata/ and data/)
+                                                          #   (PATH holds metadata/ and data/; its CSV
+                                                          #   files are .csv.gz and are served unpacked)
   python web/explorer/serve_dataset.py --manifest Data/Release/v0.3.9/manifest.csv
                                                           # a release built by pipeline/12_release, before upload
 then open the printed address.
@@ -23,6 +24,7 @@ Only files of the release are served; nothing is written next to the data.
 """
 import argparse
 import csv
+import gzip
 import hashlib
 import io
 import json
@@ -77,6 +79,8 @@ class Release:
             return None
         if self.root is not None:
             p = self.root / rel
+            if not p.is_file() and p.suffix == ".csv":      # published as .csv.gz from 0.3.12 on
+                p = p.with_name(p.name + ".gz")
             return p if p.is_file() else None
         p = self.files.get(rel)
         return p if p is not None and p.is_file() else None
@@ -87,6 +91,11 @@ class Release:
             with open(p, encoding="utf-8") as f:
                 out[t] = list(csv.DictReader(f))
         return out
+
+
+def csv_text(f):
+    """A released CSV as text, unpacked when it is a .csv.gz."""
+    return gzip.decompress(f.read_bytes()).decode("utf-8") if f.suffix == ".gz" else f.read_text(encoding="utf-8")
 
 
 def every_nth(text, n):
@@ -111,7 +120,13 @@ def body_segments(src):
                 from s01_segment_body_csv import write_body_segments_csv
                 CACHE.mkdir(parents=True, exist_ok=True)
                 tmp = out.with_suffix(".part")
+                if src.suffix == ".gz":
+                    plain = CACHE / f"{key}_in.csv"
+                    plain.write_text(csv_text(src), encoding="utf-8")
+                    src = plain
                 write_body_segments_csv(str(src), str(tmp), with_centers=False)
+                if src.name.endswith("_in.csv"):
+                    src.unlink()
                 tmp.replace(out)
     return out.read_text(encoding="utf-8")
 
@@ -165,8 +180,8 @@ def make_handler(rel: Release):
             f = rel.path(sub)
             if f is None:
                 return self.send(404, b"not found", "text/plain")
-            if f.suffix == ".csv" and every > 1:
-                return self.send(200, every_nth(f.read_text(encoding="utf-8"), every).encode(), "text/csv")
+            if f.suffix == ".gz" or (f.suffix == ".csv" and every > 1):
+                return self.send(200, every_nth(csv_text(f), every).encode(), "text/csv")
             return self.file(f)
 
         def file(self, f):

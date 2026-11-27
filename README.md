@@ -103,9 +103,9 @@ build it once, and start the local server from the repository root:
 
 ```bash
 cd web/explorer && npm install && npm run build:dataset && cd ../..
-python web/explorer/serve_dataset.py --data path/to/SKY-Piano
+python web/explorer/serve_dataset.py --data path/to/SKY-Piano      # .csv.gz files are read as is
 # or a release built by Stage 12, before upload:
-python web/explorer/serve_dataset.py --manifest Data/Release/v0.3.9/manifest.csv
+python web/explorer/serve_dataset.py --manifest Data/Release/v0.3.12/manifest.csv
 ```
 
 Open the printed address (`http://127.0.0.1:8770/`). It opens on the list of
@@ -334,7 +334,12 @@ representative performance in the piece-level folders.
 
 `upload_hf.py --version X.Y.Z --repo SKY-Piano/SKY-Piano` sends a version
 straight from `Data/` (only changed files) and tags it `vX.Y.Z`;
-`upload_zenodo.py` archives 1.0.0 on Zenodo. Versions follow semantic
+`upload_zenodo.py` archives 1.0.0 on Zenodo. From 0.3.12 on, every CSV under
+`data/` is published gzip-compressed as `<name>.csv.gz` (about 38 GB of CSV
+become about 17 GB; pandas reads them as is). The manifest and the pipeline
+keep the plain files: `gz_store.py` keeps the compressed copies in
+`Data/Release/_gz/` and rewrites one only when its source changed, and both
+uploads publish from there. Versions follow semantic
 versioning: pre-1.0 versions add sessions and modalities as they pass Stage 05
 and are finished, and 1.0.0 is the complete release described in the paper.
 The dataset card on Hugging Face lists what each version contains.
