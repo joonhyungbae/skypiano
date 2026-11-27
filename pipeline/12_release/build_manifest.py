@@ -131,6 +131,7 @@ import csv
 import json
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 import pretty_midi
@@ -593,7 +594,10 @@ def main():
                                                           "group": r["group"], "sessions": set()})
         p["sessions"].add(r["session"])
     from _common.set1_pool_reference import SET1_POOL
-    pool_titles = {p["pool_id"]: p["title"] for p in SET1_POOL}
+    def ascii_title(t: str) -> str:   # release tables are plain ASCII (upload_hf.py checks)
+        t = unicodedata.normalize("NFKD", t.replace(" — ", ": "))
+        return "".join(c for c in t if not unicodedata.combining(c))
+    pool_titles = {p["pool_id"]: ascii_title(p["title"]) for p in SET1_POOL}
     titles: dict[tuple, str] = {}
     for r in perf:
         if r["piece_id"]:
