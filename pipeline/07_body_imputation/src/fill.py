@@ -21,6 +21,10 @@ start or end of the piece are left as NaN. Coordinates are mm, one row per frame
           fallback for the arm; rigid for the rest. The comparison measured gaps of 0.1 / 0.5 / 1 / 2 s;
           SHORT_GAP_SEC and LONG_GAP_SEC are the geometric means of neighbouring lengths.
 
+When the caller merges the hand-capture wrist / elbow / shoulder markers (HAND_DONORS) into df, they join the
+arm segments of `rigid` as extra donors with Kabsch weight HAND_W (s08: arm joint error at 1 s gaps about
+halved).
+
 `fill(df, method, max_gap=None)` returns a copy of df with the runs filled; with max_gap (frames), longer runs
 are left as NaN.
 """
@@ -42,8 +46,8 @@ LONG_GAP_SEC = (0.5 * 1.0) ** 0.5
 # Rigid segments (sets of markers that move together). A marker may sit on two segments (e.g. a knee
 # marker on thigh and shank); per gap frame the segment with the most usable donors is used.
 _SIDE = {
-    "upper_arm": ["{s}UPARM1", "{s}UPARM2", "{s}ELBL", "ACRO{s}"],
-    "forearm": ["{s}LOWARM1", "{s}LOWARM2", "{s}ELBL", "{s}LAW"],
+    "upper_arm": ["{s}UPARM1", "{s}UPARM2", "{s}ELBL", "ACRO{s}", "{s}Elbow", "{s}Sh"],
+    "forearm": ["{s}LOWARM1", "{s}LOWARM2", "{s}ELBL", "{s}LAW", "{s}Wrist", "{s}Elbow"],
     "thigh": ["{s}THIGH1", "{s}THIGH2", "{s}KNEEL", "HIP{s}"],
     "shank": ["{s}SHANK1", "{s}SHANK2", "{s}KNEEL", "{s}ANKLEL", "{s}ANKLEM"],
     "foot": ["{s}HEEL", "{s}ANKLEL", "{s}ANKLEM", "{s}TOEL", "{s}TOEM", "{s}TOEF"],
@@ -90,10 +94,18 @@ def _spline(P, s, e):
     return CubicSpline(idx, P[idx], axis=0)(np.arange(s, e))
 
 
-def _kabsch(A, B):
-    """R, t with R @ a + t ~= b for rows of A, B (n x 3)."""
-    ca, cb = A.mean(0), B.mean(0)
-    U, _, Vt = np.linalg.svd((A - ca).T @ (B - cb))
+# Hand-capture markers (OptiTrack, same frame and rows as the body CSV once merged in by the caller) that
+# serve as extra, non-rigid donors of the arm segments: their distance to the body arm markers varies by
+# about 10 mm, so they get a lower Kabsch weight than the body markers (1). Absent columns are ignored.
+HAND_DONORS = {"RWrist", "RElbow", "RSh", "LWrist", "LElbow", "LSh"}
+HAND_W = 0.1
+
+
+def _kabsch(A, B, w=None):
+    """R, t with R @ a + t ~= b for rows of A, B (n x 3), optionally weighted per row."""
+    w = np.ones(len(A)) if w is None else np.asarray(w, float)
+    ca, cb = (w[:, None] * A).sum(0) / w.sum(), (w[:, None] * B).sum(0) / w.sum()
+    U, _, Vt = np.linalg.svd(((A - ca) * w[:, None]).T @ (B - cb))
     d = np.sign(np.linalg.det(Vt.T @ U.T))
     R = Vt.T @ np.diag([1, 1, d]) @ U.T
     return R, cb - R @ ca
@@ -112,7 +124,8 @@ def _rigid(df, m, P, s, e, fallback):
                 if len(ok) >= 3 and (best is None or len(ok) > len(best)):
                     best = ok
             if best:
-                R, tr = _kabsch(np.array([donors[d][ref] for d in best]), np.array([donors[d][t] for d in best]))
+                R, tr = _kabsch(np.array([donors[d][ref] for d in best]), np.array([donors[d][t] for d in best]),
+                                [HAND_W if d in HAND_DONORS else 1.0 for d in best])
                 est.append(R @ P[ref] + tr); w.append(wt)
         if est:
             w = np.array(w) / max(sum(w), 1e-9) if len(est) > 1 else np.ones(1)

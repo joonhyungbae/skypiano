@@ -151,9 +151,9 @@ with `pipeline/NN_<stage>/run_stage.sh`; Stage 12 is run by hand.
 | 04 | `piece_split` | Piece windows and names; every modality cut per piece | all |
 | 05 | `alignment_qa` | Record of the by-eye sync and piece confirmations; the gate before post-processing | all |
 | 06 | `hand_imputation` | SAITS gap filling of hand markers, one model per performer | `240828` |
-| 07 | `body_imputation` | Outlier removal and training-free gap filling of body markers (gaps up to 2 s) | `221112` `240523` `240828` |
+| 07 | `body_imputation` | Outlier removal, training-free gap filling of body markers, released body joints | `220819` `221112` `240523` `240828` |
 | 08 | `fingering` | Per-note fingering in three tiers (see [Fingering](#fingering)) | released |
-| 09 | `visual3d` | Body segments and kinematics in the Visual3D convention | `240828` |
+| 09 | `visual3d` | Body segments, joints and kinematics in the Visual3D convention | released (joints) |
 | 10 | `face_blur` | Face masking of the released side views | released (side views) |
 | 11 | `score_alignment` | Audiveris OMR and note-level score-to-MIDI alignment | `240828` |
 | 12 | `release` | Release manifest; Hugging Face and Zenodo upload | released |
@@ -209,21 +209,35 @@ confirmed; only sessions that passed are released.
 `s00_outlier_detect.py` sets body marker values that cannot be right to
 empty: a marker frozen at one position, a rigid pair whose distance departs
 from the performer's baseline, a cluster marker off its segment, and short
-jumps. `s04_replacement.py` then fills each gap of at most 2 s that has an
-observed frame on both sides (`src/fill.py`, method `rule`). Short gaps and
-the head use a cubic spline, and long trunk gaps do too. The arm and the
-remaining body use a rigid-body fill from the other markers on the same
-segment, with a PCA fallback for the arm. The rule was picked per body part
-and gap length on held-out gaps of three 2024 performers and checked on two
-others (`s06_compare_fill.py`). Mean error for 0.5 / 1 / 2 s gaps is 2.1 /
-5.7 / 12.1 mm, against 4.2 / 8.5 / 15.2 mm for linear interpolation. Longer
-gaps and markers a piece never observes stay empty, and the wrist markers
-come from Stage 06. A piece folder then holds `body_imputed.csv` (the layout
-of `body.csv`), `body_imputed_mask.csv` (1 = filled) and
-`body_suspect_mask.csv` (1 = a `body.csv` value removed as an outlier). All
-four released sessions are filled, and so are the free-repertoire takes of
-240523. A C/N code recorded in two sessions is treated as two performers, so
-the outlier baselines never mix two marker placements.
+jumps. `s09_v3d_release.py` then fills each marker gap that has an observed
+frame on both sides, up to 5 s for the lower body (pelvis, legs, feet) and 1 s
+for the upper body (head, trunk, arms) (`src/fill.py`, method `rule`) and turns
+the markers into Visual3D-style body joints (`09_visual3d/steps/s06_joints.py`).
+Short gaps and the head use a cubic spline, and long trunk gaps do too. The
+arm and the remaining body use a rigid-body fill from the other markers on
+the same segment, with a PCA fallback for the arm; the wrist, elbow and
+shoulder markers of the hand capture join the arm segments as low-weight
+extra donors, since the two capture systems rarely lose the arm at the same
+time. Filling the markers first and computing the joints afterwards was more
+accurate than filling the joints directly (`s08_eval_joints.py`). Mean joint
+error on held-out gaps of five 2024 performers is 0.1 / 1.4 / 3.7 / 9.6 mm
+for 0.1 / 0.5 / 1 / 2 s gaps, against 0.5 / 3.9 / 8.0 / 15.1 mm for linear
+interpolation of the markers. The length limits keep every joint near 10 mm
+or less: pelvis, hip, knee, ankle and foot stay at 2 to 11 mm on 5 s gaps,
+while head, shoulder, elbow and wrist reach 8 to 32 mm on 2 s gaps. Longer
+gaps and markers a piece never observes stay empty. The hand joints exist only
+in sessions whose body suit carried a hand marker (220819, 221112).
+
+The release holds body joints, not markers. `body.csv` has the joints of the
+recorded markers, unfilled: a joint is empty in a frame where any marker it is
+built from is missing, so no joint is computed from a partial set.
+`body_suspect_mask.csv` marks joint values that use a marker `s00` judged an
+outlier, `body_imputed.csv` has the joints after cleaning and filling (same
+rows and columns) and `body_imputed_mask.csv` marks the values that exist only
+because of the filling. All four released sessions are filled, and so are the
+free-repertoire takes of 240523. A C/N code recorded in two sessions is
+treated as two performers, so the outlier baselines never mix two marker
+placements.
 
 ### Fingering
 

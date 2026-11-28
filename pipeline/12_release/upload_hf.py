@@ -159,16 +159,16 @@ professional cohort; `graded` the Set 1 graded pieces; `free` free repertoire.
 data/P<id>/<task>/<piece>/r<n>/audio.wav    audio
                                midi.mid     MIDI
                                hand.csv.gz  hand motion, 120 fps
-                               body.csv.gz  body motion, 120 fps
+                               body.csv.gz  body joints (Visual3D-style), 120 fps, unfilled
                                fingering.csv.gz  per-note hand and finger, from the raw motion
                                fingering_human.csv.gz  per-note hand and finger labeled by hand (three performances)
                                hand_suspect_mask.csv.gz  1 = observed but implausible (ghost or swapped marker)
                                hand_imputed.csv.gz       hand motion with short gaps filled (where listed)
                                hand_imputed_mask.csv.gz  1 = value filled by the model
                                fingering_imputed.csv.gz  fingering labeled from hand_imputed.csv
-                               body_imputed.csv.gz       body motion with gaps up to 2 s filled (where listed)
-                               body_imputed_mask.csv.gz  1 = value filled
-                               body_suspect_mask.csv.gz  1 = body.csv value removed as an outlier
+                               body_imputed.csv.gz       body joints, marker gaps filled (lower body <= 5 s, upper <= 1 s)
+                               body_imputed_mask.csv.gz  1 = value present only because of the filling
+                               body_suspect_mask.csv.gz  1 = body.csv value uses a marker judged an outlier
                                top.mp4      overhead video of keyboard and hands (no face in view, not masked; where available)
                                left.mp4, right.mp4, right_low.mp4  side views, faces masked (where available)
 data/P<id>/takes/<date>_<take>/audio.wav   every recorded take, whole (see below)
@@ -227,6 +227,25 @@ recording; markers never observed in a recording, implausible observations
 filled. On recordings held out from training, masked gaps of 10-29 frames are
 filled with a mean error of about 1.4 mm (1.3% of values off by more than
 10 mm).
+
+`body.csv` holds body joints in the Visual3D segment convention (mm, columns
+`<joint>_x|y|z`): head_top, head_base (between the two lateral head markers),
+head_front (forehead marker, anterior reference), neck (between the
+acromions), pelvis (centre of the four iliac spine markers), and per side
+(`r_`, `l_`) shoulder, elbow, wrist, hand, hip, knee, ankle and foot. A joint
+is computed only from a full set of its markers, so it is empty in frames
+where one of them was lost; hand joints exist only where the body suit carried
+a hand marker (2022 sessions). `body_suspect_mask.csv` marks joint values that
+use a marker sample judged an outlier (a frozen or jumping marker, or one that
+breaks the performer's rigid marker distances). `body_imputed.csv` holds the
+same joints after those samples are removed and marker gaps are filled with
+training-free methods (spline, rigid-body fill from the markers of the same
+segment, with the hand capture's wrist, elbow and shoulder markers helping the
+arm), up to 5 s for the lower body and 1 s for the upper body;
+`body_imputed_mask.csv` marks values that exist only because of the filling.
+On held-out gaps the filled joints are off by 1.4 / 3.7 / 9.6 mm on average
+for 0.5 / 1 / 2 s gaps. Take folders other than the 2024 free-repertoire takes
+carry the unfilled `body.csv` only.
 
 ## License
 

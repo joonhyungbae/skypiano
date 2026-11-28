@@ -119,10 +119,11 @@ motion of that model (Stage 06 release fill, IMPUTED/<tag>/<release path>/
 hand_imputed.csv and hand_imputed_mask.csv, 1 = filled) and the fingering
 labeled from it (Stage 08 --hand imputed --tag TAG, FINGERING_IMPUTED/<tag>/{ds}/{stem}.csv).
 
-Gap-filled body motion is listed for every piece folder, and every free-repertoire take folder, that has it
-(Stage 07 s04, BODY_FILL/{ds}/{piece or trial}_*):
-body_imputed.csv (same rows and columns as body.csv), body_imputed_mask.csv (1 = filled) and
-body_suspect_mask.csv (1 = body.csv value judged an outlier by Stage 07 s00 and not used).
+Body motion is released as Visual3D-style body joints (Stage 09 s06 topology, mm), not as raw markers
+(Stage 07 s09, BODY_FILL/{ds}/{piece or trial}_v3d*.csv): body.csv = joints of the released markers, unfilled
+(empty where a defining marker is missing); body_suspect_mask.csv (1 = joint uses a marker Stage 07 s00 judged
+an outlier); body_imputed.csv = joints after gap filling of the cleaned markers (same rows and columns);
+body_imputed_mask.csv (1 = present only because of the filling).
 """
 from __future__ import annotations
 
@@ -162,7 +163,9 @@ FINGERING_IMPUTED = PIPE / "08_fingering" / "Notes" / "imputed"
 FINGERING_HUMAN = PIPE / "08_fingering" / "Notes" / "human"    # Stage 08 step 05: the audit labels
 IMPUTED = PIPE / "06_hand_imputation" / "Release"       # <model tag>/<release path>/hand_imputed*.csv
 SUSPECT = PIPE / "06_hand_imputation" / "Suspect"       # <release path>/hand_suspect_mask.csv (flag_suspect_hand.py)
-BODY_FILL = PIPE / "07_body_imputation" / "Release"      # {ds}/{piece}_body_imputed*.csv, _body_suspect_mask.csv
+BODY_FILL = PIPE / "07_body_imputation" / "ReleaseV3D"   # {ds}/{piece}_v3d*.csv (Stage 07 s09)
+BODY_V3D = {"body": "v3d", "body_imputed": "v3d_imputed", "body_imputed_mask": "v3d_imputed_mask",
+            "body_suspect_mask": "v3d_suspect_mask"}           # release modality -> Stage 07 s09 file suffix
 TRIALS = PIPE / "12_release" / "trials"                 # build_trials.py: whole takes on the trial clock
 TAKE_FILES = ("audio.wav", "midi.mid", "hand.csv", "body.csv")
 MODALITIES["top"] = "top.mp4"
@@ -386,6 +389,8 @@ def take_rows_full(datasets: list[str], index: dict, performance_of: dict[str, s
         have = []
         for name in TAKE_FILES:
             f = TRIALS / ds / stem / name
+            if name == "body.csv":            # released as Visual3D joints (Stage 07 s09)
+                f = BODY_FILL / ds / f"{stem}_v3d.csv"
             if name in t["files"] and f.exists():
                 have.append(name.split(".")[0])
                 if listed:
@@ -550,15 +555,13 @@ def main():
             base = take_path(r["pid"], r["dataset"], r["session"], r["piece"])
             t = index.get(r["piece"], {})
             r["src"] = {**r["src"], **{m: TRIALS / r["dataset"] / r["piece"] / MODALITIES[m]
-                                       for m in ("audio", "midi", "hand", "body")},
-                        # Stage 07 fills the whole take's body.csv too (piece prefix = trial stem)
-                        **{m: BODY_FILL / r["dataset"] / f"{r['piece']}_{m}.csv" for m in BODY_FILL_MODALITIES}}
+                                       for m in ("audio", "midi", "hand")}}
             if not t:
                 sys.exit(f"{r['piece']}: not in {TRIALS / '_trials.json'}; run build_trials.py")
         (performance_of if r["level"] == "take" else best)[r["piece"]] = base
         r["src"] = {**r["src"], "hand_suspect_mask": SUSPECT / key / "hand_suspect_mask.csv"}
-        if r["level"] == "piece":   # Stage 07 fill of the piece's body.csv, listed where it exists
-            r["src"] = {**r["src"], **{m: BODY_FILL / r["dataset"] / f"{r['piece']}_{m}.csv" for m in BODY_FILL_MODALITIES}}
+        # body: Visual3D joints of the piece or whole take (Stage 07 s09; prefix = piece stem or trial stem)
+        r["src"] = {**r["src"], **{m: BODY_FILL / r["dataset"] / f"{r['piece']}_{v}.csv" for m, v in BODY_V3D.items()}}
         if args.imputed_model:
             fill = IMPUTED / args.imputed_model / key
             r["src"] = {**r["src"], "hand_imputed": fill / "hand_imputed.csv",
